@@ -1,0 +1,16 @@
+# fastapi[standard]
+# modal
+# matplotlib
+# pandas
+# seaborn
+# scikit-learn
+# openpyxl
+
+fastapi[standard]
+matplotlib
+pandas
+seaborn
+scikit-learn
+openpyxl
+requests
+biopython
