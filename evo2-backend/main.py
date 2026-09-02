@@ -34,6 +34,7 @@ evo2_image = (
         "ninja",
         "setuptools",
         "wheel",
+        "huggingface_hub"
     )
     .pip_install(
         "torch==2.7.1",
@@ -48,7 +49,7 @@ evo2_image = (
         "https://github.com/ArcInstitute/evo2.git /evo2"
     )
     .run_commands(
-        "cd /evo2 && pip install . --no-deps"
+        "cd /evo2 && pip install ."
     )
     .pip_install_from_requirements("requirements.txt")
 )
@@ -392,7 +393,7 @@ def main():
 
     evo2Model = Evo2Model()
 
-    url = evo2Model.analyze_single_variant.web_url
+    url = evo2Model.analyze_single_variant.get_web_url()
 
     payload = {
         "variant_position": 43119628,
