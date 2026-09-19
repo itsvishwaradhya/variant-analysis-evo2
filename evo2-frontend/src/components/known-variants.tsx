@@ -25,6 +25,8 @@ import {
   Zap,
 } from "lucide-react";
 import { getClassificationColorClasses } from "~/utils/coloring-utils";
+import Link from "next/link";
+import { useAuth } from "~/hooks/use-auth";
 
 export default function KnownVariants({
   refreshVariants,
@@ -45,6 +47,7 @@ export default function KnownVariants({
   genomeId: string;
   gene: GeneFromSearch;
 }) {
+  const { user, loading: authLoading } = useAuth();
   const analyzeVariant = async (variant: ClinvarVariant) => {
     let variantDetails = null;
     const position = variant.location
@@ -197,9 +200,16 @@ export default function KnownVariants({
                     </TableCell>
                     <TableCell className="py-2 text-xs">
                       <div className="flex flex-col items-end gap-1">
-                        {variant.variation_type
-                          .toLowerCase()
-                          .includes("single nucleotide") ? (
+                        {!authLoading && !user ? (
+                          <Link
+                            href="/login"
+                            className="rounded-md border border-[#3c4f3d]/20 bg-[#e9eeea] px-3 py-1.5 text-xs text-[#3c4f3d] hover:bg-[#3c4f3d]/10"
+                          >
+                            Sign in to analyze
+                          </Link>
+                        ) : variant.variation_type
+                            .toLowerCase()
+                            .includes("single nucleotide") ? (
                           !variant.evo2Result ? (
                             <Button
                               variant="outline"

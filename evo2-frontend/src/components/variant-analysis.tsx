@@ -21,8 +21,9 @@ import {
   getNucleotideColorClass,
 } from "~/utils/coloring-utils";
 import { Button } from "./ui/button";
-import { match } from "node:assert";
 import { Zap } from "lucide-react";
+import Link from "next/link";
+import { useAuth } from "~/hooks/use-auth";
 
 export interface VariantAnalysisHandle {
   focusAlternativeInput: () => void;
@@ -62,6 +63,7 @@ const VariantAnalysis = forwardRef<VariantAnalysisHandle, VariantAnalysisProps>(
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [variantError, setVariantError] = useState<string | null>(null);
     const alternativeInputRef = useRef<HTMLInputElement>(null);
+    const { user, loading: authLoading } = useAuth();
 
     useImperativeHandle(ref, () => ({
       focusAlternativeInput: () => {
@@ -109,11 +111,33 @@ const VariantAnalysis = forwardRef<VariantAnalysisHandle, VariantAnalysisProps>(
         setVariantResult(data);
       } catch (err) {
         console.error(err);
-        setVariantError("Failed to analyze variant");
+        setVariantError(
+          err instanceof Error ? err.message : "Failed to analyze variant",
+        );
       } finally {
         setIsAnalyzing(false);
       }
     };
+
+    if (!authLoading && !user) {
+      return (
+        <Card className="gap-0 border-none bg-white py-0 shadow-sm">
+          <CardHeader className="pt-4 pb-2">
+            <CardTitle className="text-sm font-normal text-[#3c4f3d]/70">
+              Variant Analysis
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pb-4">
+            <div className="rounded-md border border-[#3c4f3d]/10 bg-[#e9eeea]/30 p-4 text-xs text-[#3c4f3d]">
+              Sign in to run Evo2 variant analysis.{" "}
+              <Link href="/login" className="text-[#de8246] hover:underline">
+                Sign in
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
 
     return (
       <Card className="gap-0 border-none bg-white py-0 shadow-sm">
@@ -358,5 +382,6 @@ const VariantAnalysis = forwardRef<VariantAnalysisHandle, VariantAnalysisProps>(
     );
   },
 );
+VariantAnalysis.displayName = "VariantAnalysis";
 
 export default VariantAnalysis;

@@ -1,5 +1,4 @@
 import { Viaoda_Libre } from "next/font/google";
-import { env } from "~/env";
 
 export interface GenomeAssemblyFromSearch {
   id: string;
@@ -361,13 +360,12 @@ export async function analyzeVariantWithAPI({
   genomeId: string;
   chromosome: string;
 }): Promise<AnalysisResult> {
-  const url = env.NEXT_PUBLIC_ANALYZE_SINGLE_VARIANT_BASE_URL;
-
-  const response = await fetch(url, {
+  const response = await fetch("/api/analyze", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({
       variant_position: position,
       alternative,
@@ -378,6 +376,9 @@ export async function analyzeVariantWithAPI({
 
   if (!response.ok) {
     const errorText = await response.text();
+    if (response.status === 401) {
+      throw new Error("Sign in required to run analysis");
+    }
     throw new Error("Failed to analyze variant " + errorText);
   }
 

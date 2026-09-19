@@ -8,6 +8,8 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
+    MONGODB_URI: z.string().min(1),
+    JWT_SECRET: z.string().min(32),
   },
 
   /**
@@ -25,6 +27,8 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
+    MONGODB_URI: process.env.MONGODB_URI,
+    JWT_SECRET: process.env.JWT_SECRET,
     NEXT_PUBLIC_ANALYZE_SINGLE_VARIANT_BASE_URL:
       process.env.NEXT_PUBLIC_ANALYZE_SINGLE_VARIANT_BASE_URL,
   },

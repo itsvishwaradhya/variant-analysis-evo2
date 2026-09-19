@@ -1,8 +1,28 @@
+import os
 import sys
 
 import modal
 
+from fastapi import Header, HTTPException, Request
 from pydantic import BaseModel
+
+
+def verify_jwt_token(authorization: str | None) -> dict:
+    import jwt
+
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Sign in required")
+    token = authorization.removeprefix("Bearer ").strip()
+    secret = os.environ.get("JWT_SECRET")
+    if not secret:
+        raise HTTPException(status_code=500, detail="Server auth not configured")
+    try:
+        return jwt.decode(token, secret, algorithms=["HS256"])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Session expired, sign in again")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
 
 class VariantRequest(BaseModel):
     variant_position: int
@@ -328,7 +348,7 @@ def analyze_variant(relative_pos_in_window, reference, alternative, window_seq, 
     }
 
 
-@app.cls(gpu="H100", volumes={mount_path: volume}, max_containers=3, retries=2, scaledown_window=120)
+@app.cls(gpu="H100", volumes={mount_path: volume}, max_containers=3, retries=2, scaledown_window=120, secrets=[modal.Secret.from_name("auth-secret")])
 class Evo2Model:
     @modal.enter()
     def load_evo2_model(self):
@@ -337,9 +357,26 @@ class Evo2Model:
         self.model = Evo2('evo2_7b')
         print("Evo2 model loaded")
 
+    def _verify_jwt(self, authorization: str | None) -> dict:
+        import jwt
+
+        if not authorization or not authorization.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Sign in required")
+        token = authorization.removeprefix("Bearer ").strip()
+        secret = os.environ.get("JWT_SECRET")
+        if not secret:
+            raise HTTPException(status_code=500, detail="Server auth not configured")
+        try:
+            return jwt.decode(token, secret, algorithms=["HS256"])
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Session expired, sign in again")
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Invalid session")
+
     # @modal.method()
     @modal.fastapi_endpoint(method="POST")
-    def analyze_single_variant(self, request: VariantRequest):
+    def analyze_single_variant(self, request: VariantRequest, req: Request):
+        self._verify_jwt(req.headers.get("authorization"))
         variant_position = request.variant_position
         alternative = request.alternative
         genome = request.genome

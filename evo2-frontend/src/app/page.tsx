@@ -1,6 +1,7 @@
 "use client";
 
 import { Clapperboard, Search, SearchCodeIcon } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import GeneViewer from "~/components/gene-viewer";
 import { Button } from "~/components/ui/button";
@@ -30,6 +31,7 @@ import {
   getGenomeChromosomes,
   searchGenes,
 } from "~/utils/genome-api";
+import { useAuth } from "~/hooks/use-auth";
 
 type Mode = "browse" | "search";
 
@@ -44,6 +46,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("search");
+  const { user, loading: authLoading, logout } = useAuth();
 
   useEffect(() => {
     const fetchGenomes = async () => {
@@ -149,17 +152,39 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#e9eeea]">
       <header className="border-b border-[#3c4f3d]/10 bg-white">
         <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <h1 className="text-xl font-light tracking-wide text-[#3c4f3d]">
-                <span className="font-normal">EVO</span>
-                <span className="text-[#de8246]">2</span>
-              </h1>
-              <div className="absolute -bottom-1 left-0 h-[2px] w-12 bg-[#de8246]"></div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <h1 className="text-xl font-light tracking-wide text-[#3c4f3d]">
+                  <span className="font-normal">EVO</span>
+                  <span className="text-[#de8246]">2</span>
+                </h1>
+                <div className="absolute -bottom-1 left-0 h-[2px] w-12 bg-[#de8246]"></div>
+              </div>
+              <span className="text-sm font-light text-[#3c4f3d]/70">
+                Variant Analysis
+              </span>
             </div>
-            <span className="text-sm font-light text-[#3c4f3d]/70">
-              Variant Analysis
-            </span>
+            <div className="text-xs text-[#3c4f3d]">
+              {authLoading ? null : user ? (
+                <span className="flex items-center gap-3">
+                  <span className="text-[#3c4f3d]/70">{user.email}</span>
+                  <button
+                    onClick={() => void logout()}
+                    className="cursor-pointer rounded-md border border-[#3c4f3d]/20 px-3 py-1 hover:bg-[#e9eeea]"
+                  >
+                    Logout
+                  </button>
+                </span>
+              ) : (
+                <Link
+                  href="/login"
+                  className="rounded-md bg-[#3c4f3d] px-3 py-1.5 text-white hover:bg-[#3c4f3d]/90"
+                >
+                  Sign in
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </header>
