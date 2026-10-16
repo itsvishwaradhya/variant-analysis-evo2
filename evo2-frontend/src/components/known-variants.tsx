@@ -2,6 +2,12 @@
 
 import {
   analyzeVariantWithAPI,
+  inferDeletionLengthFromTitle,
+  inferDelinsFromTitle,
+  inferInsertedSequenceFromTitle,
+  isDelinsClinvarVariant,
+  isDeletionClinvarVariant,
+  isInsertionClinvarVariant,
   type ClinvarVariant,
   type GeneFromSearch,
 } from "~/utils/genome-api";
@@ -48,29 +54,76 @@ export default function KnownVariants({
   gene: GeneFromSearch;
 }) {
   const { user, loading: authLoading } = useAuth();
+  const isAnalyzableVariant = (variant: ClinvarVariant): boolean => {
+    const vt = variant.variation_type?.toLowerCase() ?? "";
+    if (vt.includes("single nucleotide")) return true;
+    if (isDelinsClinvarVariant(variant)) {
+      return inferDelinsFromTitle(variant.title) != null;
+    }
+    if (
+      isInsertionClinvarVariant(variant) &&
+      !isDeletionClinvarVariant(variant)
+    ) {
+      // Only insertions with an explicit sequence can be scored
+      return inferInsertedSequenceFromTitle(variant.title) != null;
+    }
+    if (vt.includes("deletion") || isDeletionClinvarVariant(variant))
+      return true;
+    // Fall back to SNV title pattern so older data still works
+    return /(\w)>(\w)/.test(variant.title);
+  };
   const analyzeVariant = async (variant: ClinvarVariant) => {
-    let variantDetails = null;
     const position = variant.location
       ? parseInt(variant.location.replaceAll(",", ""))
       : null;
+    if (!position || isNaN(position)) return;
 
-    const refAltMatch = variant.title.match(/(\w)>(\w)/);
+    let apiArgs: Parameters<typeof analyzeVariantWithAPI>[0] | null = null;
 
-    if (refAltMatch && refAltMatch.length === 3) {
-      variantDetails = {
+    if (isDelinsClinvarVariant(variant)) {
+      const parsed = inferDelinsFromTitle(variant.title);
+      if (!parsed) return;
+      apiArgs = {
         position,
-        reference: refAltMatch[1],
-        alternative: refAltMatch[2],
+        variantType: "delins",
+        deletionLength: parsed.deletionLength,
+        insertedSequence: parsed.inserted,
+        genomeId: genomeId,
+        chromosome: gene.chrom,
       };
-    }
-
-    if (
-      !variantDetails ||
-      !variantDetails.position ||
-      !variantDetails.reference ||
-      !variantDetails.alternative
+    } else if (
+      isInsertionClinvarVariant(variant) &&
+      !isDeletionClinvarVariant(variant)
     ) {
-      return;
+      const ins = inferInsertedSequenceFromTitle(variant.title);
+      if (!ins) return;
+      apiArgs = {
+        position,
+        variantType: "insertion",
+        insertedSequence: ins,
+        genomeId: genomeId,
+        chromosome: gene.chrom,
+      };
+    } else if (isDeletionClinvarVariant(variant)) {
+      apiArgs = {
+        position,
+        variantType: "deletion",
+        deletionLength: inferDeletionLengthFromTitle(variant.title),
+        genomeId: genomeId,
+        chromosome: gene.chrom,
+      };
+    } else {
+      const refAltMatch = variant.title.match(/(\w)>(\w)/);
+      if (!refAltMatch || refAltMatch.length !== 3) return;
+      const alternative = refAltMatch[2];
+      if (!alternative) return;
+      apiArgs = {
+        position,
+        variantType: "snv",
+        alternative,
+        genomeId: genomeId,
+        chromosome: gene.chrom,
+      };
     }
 
     updateClinvarVariant(variant.clinvar_id, {
@@ -79,12 +132,7 @@ export default function KnownVariants({
     });
 
     try {
-      const data = await analyzeVariantWithAPI({
-        position: variantDetails.position,
-        alternative: variantDetails.alternative,
-        genomeId: genomeId,
-        chromosome: gene.chrom,
-      });
+      const data = await analyzeVariantWithAPI(apiArgs);
 
       const updatedVariant: ClinvarVariant = {
         ...variant,
@@ -207,9 +255,7 @@ export default function KnownVariants({
                           >
                             Sign in to analyze
                           </Link>
-                        ) : variant.variation_type
-                            .toLowerCase()
-                            .includes("single nucleotide") ? (
+                        ) : isAnalyzableVariant(variant) ? (
                           !variant.evo2Result ? (
                             <Button
                               variant="outline"

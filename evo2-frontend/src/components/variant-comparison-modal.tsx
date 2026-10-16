@@ -1,4 +1,5 @@
 import type { ClinvarVariant } from "~/utils/genome-api";
+import { inferDeletionLengthFromTitle } from "~/utils/genome-api";
 import { Button } from "./ui/button";
 import { Check, ExternalLink, Shield, X } from "lucide-react";
 import {
@@ -73,6 +74,57 @@ export function VariantComparisonModal({
                         </span>
                         <span className="font-mono text-xs">
                           {(() => {
+                            const evo2 = comparisonVariant.evo2Result;
+                            if (evo2?.variant_type === "deletion") {
+                              const ref = evo2.reference ?? "";
+                              const len =
+                                evo2.deletion_length ?? ref.length ?? 1;
+                              return (
+                                <>
+                                  <span>{ref}</span>
+                                  <span>{"→del"}</span>
+                                  {len > 1 && (
+                                    <span className="text-[#3c4f3d]/60">
+                                      {" "}
+                                      ({len}bp)
+                                    </span>
+                                  )}
+                                </>
+                              );
+                            }
+                            if (evo2?.variant_type === "insertion") {
+                              return (
+                                <>
+                                  <span>{evo2.reference ?? ""}</span>
+                                  <span>{"→ins"}</span>
+                                  <span>
+                                    {evo2.inserted_sequence ??
+                                      evo2.alternative ??
+                                      ""}
+                                  </span>
+                                </>
+                              );
+                            }
+                            if (evo2?.variant_type === "delins") {
+                              return (
+                                <>
+                                  <span>{evo2.reference ?? ""}</span>
+                                  <span>{"→"}</span>
+                                  <span>
+                                    {evo2.inserted_sequence ??
+                                      evo2.alternative ??
+                                      ""}
+                                  </span>
+                                  <span className="text-[#3c4f3d]/60">
+                                    {" "}
+                                    (del{" "}
+                                    {evo2.deletion_length ??
+                                      (evo2.reference?.length || "?")}
+                                    bp)
+                                  </span>
+                                </>
+                              );
+                            }
                             const match =
                               comparisonVariant.title.match(/(\w)>(\w)/);
                             if (match && match.length === 3) {
@@ -89,6 +141,31 @@ export function VariantComparisonModal({
                                     className={getNucleotideColorClass(alt!)}
                                   >
                                     {alt}
+                                  </span>
+                                </>
+                              );
+                            }
+                            if (/delins/i.test(comparisonVariant.title)) {
+                              return (
+                                <>
+                                  <span>{comparisonVariant.title}</span>
+                                  <span className="text-[#3c4f3d]/60">
+                                    {" "}
+                                    (delins)
+                                  </span>
+                                </>
+                              );
+                            }
+                            if (/del/i.test(comparisonVariant.title)) {
+                              const len = inferDeletionLengthFromTitle(
+                                comparisonVariant.title,
+                              );
+                              return (
+                                <>
+                                  <span>{comparisonVariant.title}</span>
+                                  <span className="text-[#3c4f3d]/60">
+                                    {" "}
+                                    (del{len > 1 ? ` ${len}bp` : ""})
                                   </span>
                                 </>
                               );
@@ -155,6 +232,11 @@ export function VariantComparisonModal({
                           <Shield className="h-3 w-3" />
                           {comparisonVariant.evo2Result.prediction}
                         </div>
+                        {comparisonVariant.evo2Result.provisional_prediction && (
+                          <div className="mt-2 w-fit rounded-md bg-yellow-50 px-2 py-1 text-xs text-yellow-700">
+                            Provisional — indel thresholds pending calibration
+                          </div>
+                        )}
                       </div>
                       {/* Delta score */}
                       <div className="mt-3">

@@ -242,6 +242,8 @@ export default function GeneViewer({
         referenceSequence={activeReferenceNucleotide}
         sequencePosition={activeSequencePosition}
         geneBounds={geneBounds}
+        geneSequenceData={geneSequence}
+        geneSequenceRange={actualRange}
       />
 
       <KnownVariants

@@ -50,6 +50,13 @@ export interface ClinvarVariant {
     prediction: string;
     delta_score: number;
     classification_confidence: number;
+    reference?: string;
+    alternative?: string;
+    variant_type?: "snv" | "deletion" | "insertion" | "delins";
+    deletion_length?: number;
+    inserted_sequence?: string;
+    provisional_prediction?: boolean;
+    position?: number;
   };
   isAnalyzing?: boolean;
   evo2Error?: string;
@@ -59,9 +66,105 @@ export interface AnalysisResult {
   position: number;
   reference: string;
   alternative: string;
+  variant_type: "snv" | "deletion" | "insertion" | "delins";
+  deletion_length?: number;
+  inserted_sequence?: string;
+  threshold_used?: number;
+  provisional_prediction?: boolean;
   delta_score: number;
   prediction: string;
   classification_confidence: number;
+}
+
+export function formatVariantLabel(result: Pick<
+  AnalysisResult,
+  "reference" | "alternative" | "variant_type" | "deletion_length" | "inserted_sequence"
+>): string {
+  if (result.variant_type === "deletion") {
+    const len = result.deletion_length ?? result.reference?.length ?? 1;
+    return `${result.reference}→del${len > 1 ? ` (${len}bp)` : ""}`;
+  }
+  if (result.variant_type === "insertion") {
+    const ins = result.inserted_sequence ?? result.alternative ?? "";
+    return `${result.reference}→ins${ins}`;
+  }
+  if (result.variant_type === "delins") {
+    const ins = result.inserted_sequence ?? result.alternative ?? "";
+    return `${result.reference}→${ins} (delins)`;
+  }
+  return `${result.reference}>${result.alternative}`;
+}
+
+export function isDeletionClinvarVariant(variant: ClinvarVariant): boolean {
+  const t = `${variant.variation_type} ${variant.title}`.toLowerCase();
+  return (
+    t.includes("deletion") ||
+    /\bdel\b/i.test(variant.title) ||
+    /delins/i.test(variant.title)
+  );
+}
+
+export function isInsertionClinvarVariant(variant: ClinvarVariant): boolean {
+  const t = `${variant.variation_type} ${variant.title}`.toLowerCase();
+  if (t.includes("delins")) return false;
+  return (
+    t.includes("insertion") ||
+    t.includes("duplication") ||
+    /\bins\b/i.test(variant.title)
+  );
+}
+
+export function isDelinsClinvarVariant(variant: ClinvarVariant): boolean {
+  return /delins/i.test(
+    `${variant.variation_type} ${variant.title}`,
+  );
+}
+
+/** Infer deletion length from a ClinVar title, falling back to 1. */
+export function inferDeletionLengthFromTitle(title: string): number {
+  // c.123_125del / g.123_125del / 123_125del -> range length
+  const rangeMatch = title.match(/(\d+)[_:](\d+)[^0-9]*del/i);
+  if (rangeMatch?.[1] && rangeMatch?.[2]) {
+    const start = parseInt(rangeMatch[1], 10);
+    const end = parseInt(rangeMatch[2], 10);
+    if (!isNaN(start) && !isNaN(end)) {
+      const len = Math.abs(end - start) + 1;
+      if (len >= 1 && len <= 500) return len;
+    }
+  }
+  // delATG / delA -> trailing sequence length
+  const seqMatch = title.match(/del\s*([ACGTN]+)/i);
+  if (seqMatch?.[1]) {
+    const len = seqMatch[1].length;
+    if (len >= 1 && len <= 500) return len;
+  }
+  return 1;
+}
+
+/** Extract an explicit inserted sequence (insATG / dupATG) or null. */
+export function inferInsertedSequenceFromTitle(title: string): string | null {
+  const m = title.match(/(?:ins|dup)\s*([ACGTN]{1,500})/i);
+  if (m?.[1]) return m[1].toUpperCase();
+  return null;
+}
+
+/** Parse delins titles like c.123_125delinsATG -> { deletionLength, inserted }. */
+export function inferDelinsFromTitle(title: string): {
+  deletionLength: number;
+  inserted: string;
+} | null {
+  const m = title.match(
+    /(?:c\.|g\.)?(\d+)(?:[_:](\d+))?[^A-Za-z0-9]*delins\s*([ACGTN]{1,500})/i,
+  );
+  if (!m) return null;
+  const start = parseInt(m[1]!, 10);
+  const end = m[2] ? parseInt(m[2], 10) : start;
+  if (isNaN(start) || isNaN(end)) return null;
+  const deletionLength = Math.min(
+    500,
+    Math.max(1, Math.abs(end - start) + 1),
+  );
+  return { deletionLength, inserted: (m[3] ?? "").toUpperCase() };
 }
 
 export async function getAvailableGenomes() {
@@ -352,26 +455,60 @@ export async function fetchClinvarVariants(
 export async function analyzeVariantWithAPI({
   position,
   alternative,
+  variantType = "snv",
+  deletionLength,
+  insertedSequence,
   genomeId,
   chromosome,
 }: {
   position: number;
-  alternative: string;
+  alternative?: string;
+  variantType?: "snv" | "deletion" | "insertion" | "delins";
+  deletionLength?: number;
+  insertedSequence?: string;
   genomeId: string;
   chromosome: string;
 }): Promise<AnalysisResult> {
+  const body =
+    variantType === "deletion"
+      ? {
+          variant_position: position,
+          variant_type: "deletion" as const,
+          deletion_length: deletionLength ?? 1,
+          genome: genomeId,
+          chromosome,
+        }
+      : variantType === "insertion"
+        ? {
+            variant_position: position,
+            variant_type: "insertion" as const,
+            inserted_sequence: (insertedSequence ?? "").toUpperCase(),
+            genome: genomeId,
+            chromosome,
+          }
+        : variantType === "delins"
+          ? {
+              variant_position: position,
+              variant_type: "delins" as const,
+              deletion_length: deletionLength ?? 1,
+              inserted_sequence: (insertedSequence ?? "").toUpperCase(),
+              genome: genomeId,
+              chromosome,
+            }
+          : {
+              variant_position: position,
+              variant_type: "snv" as const,
+              alternative,
+              genome: genomeId,
+              chromosome,
+            };
   const response = await fetch("/api/analyze", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({
-      variant_position: position,
-      alternative,
-      genome: genomeId,
-      chromosome,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

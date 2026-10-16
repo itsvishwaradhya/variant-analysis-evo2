@@ -4,12 +4,78 @@ import { z } from "zod";
 import { AUTH_COOKIE, verifyJWT } from "~/lib/auth";
 import { env } from "~/env";
 
-const schema = z.object({
-  variant_position: z.number().int(),
-  alternative: z.string().regex(/^[ATGC]$/),
-  genome: z.string().min(1),
-  chromosome: z.string().min(1),
-});
+const schema = z
+  .object({
+    variant_position: z.number().int().positive(),
+    variant_type: z
+      .enum(["snv", "deletion", "insertion", "delins"])
+      .optional()
+      .default("snv"),
+    alternative: z.string().optional(),
+    deletion_length: z.number().int().min(1).max(500).optional(),
+    inserted_sequence: z
+      .string()
+      .regex(/^[ATGCatgc\s]+$/)
+      .max(500)
+      .optional(),
+    genome: z.string().min(1),
+    chromosome: z.string().min(1),
+  })
+  .superRefine((val, ctx) => {
+    const fail = (message: string, path: (string | number)[]) =>
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message, path });
+    if (val.variant_type === "deletion") {
+      if (val.deletion_length == null) {
+        fail("deletion_length is required for deletion", ["deletion_length"]);
+      }
+      if (val.alternative != null && val.alternative !== "" && val.alternative !== "-") {
+        fail("alternative must not be set for deletion", ["alternative"]);
+      }
+      if (val.inserted_sequence != null && val.inserted_sequence !== "") {
+        fail("inserted_sequence must not be set for deletion (use delins)", [
+          "inserted_sequence",
+        ]);
+      }
+    } else if (val.variant_type === "insertion") {
+      const seq = (val.inserted_sequence ?? "").replace(/\s+/g, "").toUpperCase();
+      if (!/^[ATGC]+$/.test(seq)) {
+        fail("inserted_sequence must be 1-500bp of A, T, C, G", [
+          "inserted_sequence",
+        ]);
+      }
+      if (val.deletion_length != null) {
+        fail("deletion_length must not be set for insertion (use delins)", [
+          "deletion_length",
+        ]);
+      }
+      if (val.alternative != null && val.alternative !== "" && val.alternative !== "-") {
+        fail("alternative must not be set for insertion", ["alternative"]);
+      }
+    } else if (val.variant_type === "delins") {
+      if (val.deletion_length == null) {
+        fail("deletion_length is required for delins", ["deletion_length"]);
+      }
+      const seq = (val.inserted_sequence ?? "").replace(/\s+/g, "").toUpperCase();
+      if (!/^[ATGC]+$/.test(seq)) {
+        fail("inserted_sequence must be 1-500bp of A, T, C, G", [
+          "inserted_sequence",
+        ]);
+      }
+      if (val.alternative != null && val.alternative !== "" && val.alternative !== "-") {
+        fail("alternative must not be set for delins", ["alternative"]);
+      }
+    } else {
+      if (!val.alternative || !/^[ATGC]$/.test(val.alternative)) {
+        fail("alternative must be one of A, T, C, G", ["alternative"]);
+      }
+      if (val.deletion_length != null) {
+        fail("deletion_length must not be set for SNV", ["deletion_length"]);
+      }
+      if (val.inserted_sequence != null && val.inserted_sequence !== "") {
+        fail("inserted_sequence must not be set for SNV", ["inserted_sequence"]);
+      }
+    }
+  });
 
 export async function POST(req: Request) {
   const token = (await cookies()).get(AUTH_COOKIE)?.value;
