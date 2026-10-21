@@ -149,56 +149,60 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e9eeea]">
-      <header className="border-b border-[#3c4f3d]/10 bg-white">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <h1 className="text-xl font-light tracking-wide text-[#3c4f3d]">
-                  <span className="font-normal">EVO</span>
-                  <span className="text-[#de8246]">2</span>
-                </h1>
-                <div className="absolute -bottom-1 left-0 h-[2px] w-12 bg-[#de8246]"></div>
-              </div>
-              <span className="text-sm font-light text-[#3c4f3d]/70">
-                Variant Analysis
-              </span>
-            </div>
-            <div className="text-xs text-[#3c4f3d]">
-              {authLoading ? null : user ? (
-                <span className="flex items-center gap-3">
-                  <span className="text-[#3c4f3d]/70">{user.email}</span>
-                  <button
-                    onClick={() => void logout()}
-                    className="cursor-pointer rounded-md border border-[#3c4f3d]/20 px-3 py-1 hover:bg-[#e9eeea]"
-                  >
-                    Logout
-                  </button>
-                </span>
-              ) : (
-                <Link
-                  href="/login"
-                  className="rounded-md bg-[#3c4f3d] px-3 py-1.5 text-white hover:bg-[#3c4f3d]/90"
-                >
-                  Sign in
-                </Link>
-              )}
-            </div>
+    <div className="min-h-screen bg-[#e9eeea] relative dither-overlay">
+      <nav className="fixed top-4 left-1/2 z-50 -translate-x-1/2 rounded-2xl bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(60,79,61,0.08)] px-6 py-3 flex items-center gap-6 transition-[transform,box-shadow] duration-300 ease-[var(--ease-micro)] hover:shadow-[0_12px_40px_rgba(60,79,61,0.15)] hover:-translate-y-0.5 hover:scale-[1.01] active:scale-[0.99]" style={{ animation: 'fadeSlideDown 0.7s var(--ease-micro)' }}>
+        {/* Logo */}
+        <Link href="/" className="group flex items-center gap-2.5 transition-transform duration-300 ease-[var(--ease-micro)] hover:scale-105 active:scale-95">
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-[#de8246] to-[#b86e3c] shadow-sm overflow-hidden">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-t from-white/15 to-transparent"></div>
+            <span className="relative text-white font-bold text-sm tracking-tight">E2</span>
           </div>
-        </div>
-      </header>
+          <div className="flex flex-col leading-none">
+            <span className="text-[13px] font-semibold text-[#3c4f3d] tracking-wide">EVO</span>
+            <span className="text-[10px] text-[#de8246] font-medium tracking-widest">VARIANT</span>
+          </div>
+        </Link>
 
-      <main className="container mx-auto px-6 py-6">
+        {/* Divider */}
+        <div className="h-5 w-px bg-[#3c4f3d]/10 rounded-full"></div>
+
+        {/* Auth */}
+        <div className="flex items-center">
+          {authLoading ? (
+            <div className="w-20 h-7 rounded-full bg-[#e9eeea] animate-pulse"></div>
+          ) : user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] text-[#3c4f3d]/60 font-medium hidden sm:inline truncate max-w-[180px]">{user.email}</span>
+              <button
+                onClick={() => void logout()}
+                className="text-[11px] px-3.5 py-1.5 rounded-full bg-[#e9eeea] text-[#3c4f3d]/80 border border-[#3c4f3d]/10 hover:bg-[#3c4f3d]/10 hover:text-[#3c4f3d] hover:border-[#3c4f3d]/20 focus-visible:ring-2 focus-visible:ring-[#de8246]/50 outline-none transition-[background-color,border-color,color,transform] duration-200 ease-[var(--ease-micro)] hover:-translate-y-px active:translate-y-0"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="text-[11px] px-3.5 py-1.5 rounded-full bg-[#3c4f3d] text-white font-medium shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-[#de8246]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e9eeea] transition-[transform,box-shadow] duration-200 ease-[var(--ease-micro)] hover:shadow-md hover:-translate-y-px hover:scale-[1.04] active:translate-y-0 active:scale-[0.98]"
+            >
+              Sign in
+            </Link>
+          )}
+        </div>
+      </nav>
+
+      <main className="container mx-auto px-6 pt-24 pb-6 relative">
         {selectedGene ? (
-          <GeneViewer
-            gene={selectedGene}
-            genomeId={selectedGenome}
-            onClose={() => setSelectedGene(null)}
-          />
+          <div className="animate-[blurReveal_0.7s_ease-[var(--ease-micro)]]">
+            <GeneViewer
+              gene={selectedGene}
+              genomeId={selectedGenome}
+              onClose={() => setSelectedGene(null)}
+            />
+          </div>
         ) : (
           <>
-            <Card className="mb-6 gap-0 border-none bg-white py-0 shadow-sm">
+            <Card className="mb-6 gap-0 border-none bg-white py-0 shadow-sm animate-[blurReveal_0.8s_ease-[var(--ease-micro)]]">
               <CardHeader className="pt-4 pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-normal text-[#3c4f3d]/70">
@@ -238,7 +242,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="mt-6 gap-0 border-none bg-white py-0 shadow-sm">
+            <Card className="mt-6 gap-0 border-none bg-white py-0 shadow-sm animate-[blurReveal_1s_ease-[var(--ease-micro)]]">
               <CardHeader className="pt-4 pb-2">
                 <CardTitle className="text-sm font-normal text-[#3c4f3d]/70">
                   Browse
@@ -273,14 +277,16 @@ export default function HomePage() {
                         <div className="relative flex-1">
                           <Input
                             type="text"
-                            placeholder="Enter gene symbol or name"
+                            name="gene-search"
+                            aria-label="Gene symbol or name"
+                            placeholder="e.g. BRCA1…"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="h-9 border-[#3c4f3d]/10 pr-10"
                           />
                           <Button
                             type="submit"
-                            className="absolute top-0 right-0 h-full cursor-pointer rounded-l-none bg-[#3c4f3d] text-white hover:bg-[#3c4f3d]/90"
+                            className="absolute top-0 right-0 h-full cursor-pointer rounded-l-none bg-[#3c4f3d] text-white hover:bg-[#3c4f3d]/90 transition-[background-color,transform] duration-200 ease-[var(--ease-micro)] hover:-translate-y-px active:translate-y-0"
                             size="icon"
                             disabled={isLoading || !searchQuery.trim()}
                           >
@@ -291,7 +297,7 @@ export default function HomePage() {
                       </form>
                       <Button
                         variant="link"
-                        className="h-auto cursor-pointer p-0 text-[#de8246] hover:text-[#de8246]/80"
+                        className="h-auto cursor-pointer p-0 text-[#de8246] hover:text-[#de8246]/80 hover:-translate-y-px transition-[color,transform] duration-150 ease-[var(--ease-micro)]"
                         onClick={loadBRCA1Example}
                       >
                         Try BRCA1 example
@@ -307,7 +313,7 @@ export default function HomePage() {
                             key={chrom.name}
                             variant="outline"
                             size="sm"
-                            className={`h-8 cursor-pointer border-[#3c4f3d]/10 hover:bg-[#e9eeea] hover:text-[#3c4f3d] ${selectedChromosome === chrom.name ? "text[#3c4f3d] bg-[#e9eeea]" : ""}`}
+                            className={`h-8 cursor-pointer border-[#3c4f3d]/10 hover:bg-[#e9eeea] hover:text-[#3c4f3d] hover:-translate-y-px transition-[background-color,color,border-color,transform] duration-150 ease-[var(--ease-micro)] ${selectedChromosome === chrom.name ? "text-[#3c4f3d] bg-[#e9eeea]" : ""}`}
                             onClick={() => setSelectedChromosome(chrom.name)}
                           >
                             {chrom.name}
@@ -319,13 +325,17 @@ export default function HomePage() {
                 </Tabs>
 
                 {isLoading && (
-                  <div className="flex justify-center py-4">
-                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#3c4f3d]/30 border-t-[#de8243]"></div>
+                  <div className="flex justify-center py-4" aria-live="polite">
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#3c4f3d]/30 border-t-[#de8246]"></div>
+                    <span className="sr-only">Loading…</span>
                   </div>
                 )}
 
                 {error && (
-                  <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                  <div
+                    role="alert"
+                    className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+                  >
                     {error}
                   </div>
                 )}
@@ -355,7 +365,7 @@ export default function HomePage() {
                     <div className="overflow-hidden rounded-md border border-[#3c4f3d]/5">
                       <Table>
                         <TableHeader>
-                          <TableRow className="bg-[#e9eeea]/50 hover:bg-[e9eeea]/70">
+                          <TableRow className="bg-[#e9eeea]/50 hover:bg-[#e9eeea]/70">
                             <TableHead className="text-xs font-normal text-[#3c4f3d]/70">
                               Symbol
                             </TableHead>
@@ -371,8 +381,17 @@ export default function HomePage() {
                           {searchResults.map((gene, index) => (
                             <TableRow
                               key={`${gene.symbol}-${index}`}
-                              className="cursor-pointer border-b border-[#3c4f3d]/5 hover:bg-[#e9eeea]/50"
+                              tabIndex={0}
+                              role="button"
+                              aria-label={`Open gene ${gene.symbol}`}
+                              className="cursor-pointer border-b border-[#3c4f3d]/5 hover:bg-[#e9eeea]/50 focus-visible:bg-[#e9eeea]/50 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#de8246]/50 hover:-translate-y-px transition-[background-color,transform] duration-150 ease-[var(--ease-micro)]"
                               onClick={() => setSelectedGene(gene)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  setSelectedGene(gene);
+                                }
+                              }}
                             >
                               <TableCell className="py-2 font-medium text-[#3c4f3d]">
                                 {gene.symbol}
@@ -392,11 +411,11 @@ export default function HomePage() {
                 )}
 
                 {!isLoading && !error && searchResults.length === 0 && (
-                  <div className="flex h-48 flex-col items-center justify-center text-center text-gray-400">
-                    <Search className="mb-4 h-10 w-10 text-gray-400" />
+                  <div className="flex h-48 flex-col items-center justify-center text-center text-[#3c4f3d]/40">
+                    <Search className="mb-4 h-10 w-10 text-[#3c4f3d]/40" />
                     <p className="text-sm leading-relaxed">
                       {mode === "search"
-                        ? "Enter a gene or symbol and click search"
+                        ? "Enter a gene or symbol, then click Search"
                         : selectedChromosome
                           ? "No genes found on this chromosome"
                           : "Select a chromosome to view genes"}

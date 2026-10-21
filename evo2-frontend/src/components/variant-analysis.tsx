@@ -533,7 +533,7 @@ const VariantAnalysis = forwardRef<VariantAnalysisHandle, VariantAnalysisProps>(
                       ? !insertedSequence
                       : !deletionLength || !insertedSequence)
               }
-              className="h-8 cursor-pointer bg-[#3c4f3d] text-xs text-white hover:bg-[#3c4f3d]/90"
+              className="h-8 cursor-pointer bg-[#3c4f3d] text-xs text-white hover:bg-[#3c4f3d]/90 transition-all duration-200 ease-[var(--ease-micro)] hover:-translate-y-px active:translate-y-0"
               onClick={() => {
                 void handleVariantSubmit(variantPosition.replaceAll(",", ""));
               }}
@@ -615,7 +615,7 @@ const VariantAnalysis = forwardRef<VariantAnalysisHandle, VariantAnalysisProps>(
                             disabled={isAnalyzing}
                             variant="outline"
                             size="sm"
-                            className="h-7 cursor-pointer border-[#3c4f3d]/20 bg-[#e9eeea] text-xs text-[#3c4f3d] hover:bg-[#3c4f3d]/10"
+                            className="h-7 cursor-pointer border-[#3c4f3d]/20 bg-[#e9eeea] text-xs text-[#3c4f3d] hover:bg-[#3c4f3d]/10 transition-all duration-150 ease-[var(--ease-micro)] hover:-translate-y-px active:translate-y-0"
                             onClick={() => {
                               setVariantType("delins");
                               setDeletionLength(String(parsed.deletionLength));
@@ -693,7 +693,7 @@ const VariantAnalysis = forwardRef<VariantAnalysisHandle, VariantAnalysisProps>(
                             disabled={isAnalyzing}
                             variant="outline"
                             size="sm"
-                            className="h-7 cursor-pointer border-[#3c4f3d]/20 bg-[#e9eeea] text-xs text-[#3c4f3d] hover:bg-[#3c4f3d]/10"
+                            className="h-7 cursor-pointer border-[#3c4f3d]/20 bg-[#e9eeea] text-xs text-[#3c4f3d] hover:bg-[#3c4f3d]/10 transition-all duration-150 ease-[var(--ease-micro)] hover:-translate-y-px active:translate-y-0"
                             onClick={() => {
                               setVariantType("insertion");
                               setInsertedSequence(ins);
@@ -768,7 +768,7 @@ const VariantAnalysis = forwardRef<VariantAnalysisHandle, VariantAnalysisProps>(
                             disabled={isAnalyzing}
                             variant="outline"
                             size="sm"
-                            className="h-7 cursor-pointer border-[#3c4f3d]/20 bg-[#e9eeea] text-xs text-[#3c4f3d] hover:bg-[#3c4f3d]/10"
+                            className="h-7 cursor-pointer border-[#3c4f3d]/20 bg-[#e9eeea] text-xs text-[#3c4f3d] hover:bg-[#3c4f3d]/10 transition-all duration-150 ease-[var(--ease-micro)] hover:-translate-y-px active:translate-y-0"
                             onClick={() => {
                               setVariantType("deletion");
                               setDeletionLength(String(delLen));

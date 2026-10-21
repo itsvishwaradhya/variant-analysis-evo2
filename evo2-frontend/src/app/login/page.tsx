@@ -53,25 +53,51 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-3">
-            <Input
-              type="email"
-              required
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-9 border-[#3c4f3d]/10"
-            />
-            <Input
-              type="password"
-              required
-              minLength={8}
-              placeholder="Password (min 8 chars)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-9 border-[#3c4f3d]/10"
-            />
+            <div className="space-y-1">
+              <label
+                htmlFor="login-email"
+                className="block text-xs font-medium text-[#3c4f3d]/80"
+              >
+                Email
+              </label>
+              <Input
+                id="login-email"
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                spellCheck={false}
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-9 border-[#3c4f3d]/10"
+              />
+            </div>
+            <div className="space-y-1">
+              <label
+                htmlFor="login-password"
+                className="block text-xs font-medium text-[#3c4f3d]/80"
+              >
+                Password
+              </label>
+              <Input
+                id="login-password"
+                type="password"
+                name="password"
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                required
+                minLength={8}
+                placeholder="Minimum 8 characters…"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-9 border-[#3c4f3d]/10"
+              />
+            </div>
             {error && (
-              <div className="rounded-md bg-red-50 p-2 text-xs text-red-600">
+              <div
+                role="alert"
+                className="rounded-md bg-red-50 p-2 text-xs text-red-600"
+              >
                 {error}
               </div>
             )}
@@ -81,7 +107,7 @@ export default function LoginPage() {
               className="h-9 w-full cursor-pointer bg-[#3c4f3d] text-white hover:bg-[#3c4f3d]/90"
             >
               {loading
-                ? "Please wait..."
+                ? "Signing in…"
                 : mode === "login"
                   ? "Sign in"
                   : "Sign up"}
@@ -90,14 +116,16 @@ export default function LoginPage() {
           <div className="mt-4 text-center text-xs text-[#3c4f3d]/70">
             {mode === "login" ? (
               <button
-                className="cursor-pointer text-[#de8246] hover:underline"
+                type="button"
+                className="cursor-pointer rounded-sm text-[#de8246] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#de8246]/50"
                 onClick={() => setMode("signup")}
               >
                 Need an account? Sign up
               </button>
             ) : (
               <button
-                className="cursor-pointer text-[#de8246] hover:underline"
+                type="button"
+                className="cursor-pointer rounded-sm text-[#de8246] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[#de8246]/50"
                 onClick={() => setMode("login")}
               >
                 Have an account? Sign in

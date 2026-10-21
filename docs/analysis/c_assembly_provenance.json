@@ -1,0 +1,30 @@
+{
+  "anchor_pairs_indel_free": 680,
+  "anchor_pairs_total": 680,
+  "anchors_aligned": 681,
+  "bundled_fasta_matches_ucsc_hg19": true,
+  "example_alternative": "G",
+  "example_lifted_hg19_position": 41271645,
+  "example_position": 43119628,
+  "example_reference_base_hg19_lifted": "T",
+  "example_reference_base_hg19_same_coord": "C",
+  "example_reference_base_hg38": "T",
+  "example_window_identity_same_coord": 0.2523193359375,
+  "hg38_minus_hg19_offset": 1847983,
+  "hg38_minus_hg19_offset_max": 1847983,
+  "hg38_minus_hg19_offset_min": 1847983,
+  "lifted_ref_match": 500,
+  "lifted_ref_mismatch": 0,
+  "lifted_ref_mismatch_examples": [],
+  "ncbi_brca1_grch38": [
+    43170326,
+    43044294
+  ],
+  "same_coord_ref_match": 0,
+  "same_coord_ref_mismatch": 500,
+  "window_identity_lifted_mean": 1.0,
+  "window_identity_lifted_median_differing_bases": 0.0,
+  "window_identity_lifted_min": 1.0,
+  "window_identity_same_coord_mean": 0.0,
+  "window_identity_same_coord_min": 0.0
+}

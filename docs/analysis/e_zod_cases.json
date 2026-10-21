@@ -1,0 +1,775 @@
+{
+  "layer": "zod",
+  "cases": 55,
+  "conforming": 47,
+  "verdicts": [
+    {
+      "name": "snv/uppercase A",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "snv/uppercase T",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "T"
+      }
+    },
+    {
+      "name": "snv/uppercase C",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "C"
+      }
+    },
+    {
+      "name": "snv/uppercase G",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "G"
+      }
+    },
+    {
+      "name": "snv/lowercase g",
+      "expect": "accept",
+      "got": "reject",
+      "ok": false,
+      "detail": "alternative must be one of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "g"
+      }
+    },
+    {
+      "name": "snv/alternative with whitespace",
+      "expect": "accept",
+      "got": "reject",
+      "ok": false,
+      "detail": "alternative must be one of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": " G "
+      }
+    },
+    {
+      "name": "snv/alternative N",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "alternative must be one of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "N"
+      }
+    },
+    {
+      "name": "snv/alternative empty",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "alternative must be one of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": ""
+      }
+    },
+    {
+      "name": "snv/alternative two bases",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "alternative must be one of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "AT"
+      }
+    },
+    {
+      "name": "snv/alternative missing",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "alternative must be one of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv"
+      }
+    },
+    {
+      "name": "snv/with deletion_length",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "deletion_length must not be set for SNV",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "A",
+        "deletion_length": 3
+      }
+    },
+    {
+      "name": "snv/with inserted_sequence",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "inserted_sequence must not be set for SNV",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv",
+        "alternative": "A",
+        "inserted_sequence": "TT"
+      }
+    },
+    {
+      "name": "deletion/length 1",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": 1
+      }
+    },
+    {
+      "name": "deletion/length 500",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": 500
+      }
+    },
+    {
+      "name": "deletion/length 0",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Number must be greater than or equal to 1",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": 0
+      }
+    },
+    {
+      "name": "deletion/length 501",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Number must be less than or equal to 500",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": 501
+      }
+    },
+    {
+      "name": "deletion/length negative",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Number must be greater than or equal to 1",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": -1
+      }
+    },
+    {
+      "name": "deletion/length missing",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "deletion_length is required for deletion",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion"
+      }
+    },
+    {
+      "name": "deletion/with alternative",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "alternative must not be set for deletion",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": 3,
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "deletion/with alternative dash",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": 3,
+        "alternative": "-"
+      }
+    },
+    {
+      "name": "deletion/with inserted_sequence",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "inserted_sequence must not be set for deletion (use delins)",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "deletion",
+        "deletion_length": 3,
+        "inserted_sequence": "TT"
+      }
+    },
+    {
+      "name": "insertion/single base",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "A"
+      }
+    },
+    {
+      "name": "insertion/lowercase",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "acgt"
+      }
+    },
+    {
+      "name": "insertion/with spaces",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "A C G T"
+      }
+    },
+    {
+      "name": "insertion/whitespace only",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "inserted_sequence must be 1-500bp of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "   "
+      }
+    },
+    {
+      "name": "insertion/empty",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Invalid; inserted_sequence must be 1-500bp of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": ""
+      }
+    },
+    {
+      "name": "insertion/contains N",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Invalid; inserted_sequence must be 1-500bp of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "ACGN"
+      }
+    },
+    {
+      "name": "insertion/contains X",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Invalid; inserted_sequence must be 1-500bp of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "ACGTX"
+      }
+    },
+    {
+      "name": "insertion/500 bases",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "name": "insertion/495 bases plus 5 spaces",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA     "
+      }
+    },
+    {
+      "name": "insertion/501 raw characters",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "String must contain at most 500 character(s)",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "name": "insertion/495 bases plus 6 spaces",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "String must contain at most 500 character(s)",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      "
+      }
+    },
+    {
+      "name": "insertion/sequence missing",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "inserted_sequence must be 1-500bp of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion"
+      }
+    },
+    {
+      "name": "insertion/with deletion_length",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "deletion_length must not be set for insertion (use delins)",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "TT",
+        "deletion_length": 2
+      }
+    },
+    {
+      "name": "insertion/with alternative",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "alternative must not be set for insertion",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "insertion",
+        "inserted_sequence": "TT",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "delins/valid",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "delins",
+        "deletion_length": 2,
+        "inserted_sequence": "TT"
+      }
+    },
+    {
+      "name": "delins/length 500",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "delins",
+        "deletion_length": 500,
+        "inserted_sequence": "TT"
+      }
+    },
+    {
+      "name": "delins/length 501",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Number must be less than or equal to 500",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "delins",
+        "deletion_length": 501,
+        "inserted_sequence": "TT"
+      }
+    },
+    {
+      "name": "delins/length 0",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Number must be greater than or equal to 1",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "delins",
+        "deletion_length": 0,
+        "inserted_sequence": "TT"
+      }
+    },
+    {
+      "name": "delins/inserted_sequence missing",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "inserted_sequence must be 1-500bp of A, T, C, G",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "delins",
+        "deletion_length": 2
+      }
+    },
+    {
+      "name": "delins/deletion_length missing",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "deletion_length is required for delins",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "delins",
+        "inserted_sequence": "TT"
+      }
+    },
+    {
+      "name": "delins/with alternative",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "alternative must not be set for delins",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "delins",
+        "deletion_length": 2,
+        "inserted_sequence": "TT",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/default variant_type is snv",
+      "expect": "accept",
+      "got": "accept",
+      "ok": true,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/unknown variant_type",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Invalid enum value. Expected 'snv' | 'deletion' | 'insertion' | 'delins', received 'snv2'",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "variant_type": "snv2",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/position zero",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Number must be greater than 0",
+      "payload": {
+        "variant_position": 0,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/position negative",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Number must be greater than 0",
+      "payload": {
+        "variant_position": -5,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/position not an integer",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "Expected integer, received float",
+      "payload": {
+        "variant_position": 1.5,
+        "genome": "hg38",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/genome empty",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "String must contain at least 1 character(s)",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/chromosome empty",
+      "expect": "reject",
+      "got": "reject",
+      "ok": true,
+      "detail": "String must contain at least 1 character(s)",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/genome with UCSC parameter separator",
+      "expect": "reject",
+      "got": "accept",
+      "ok": false,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38;hubUrl=http://example.invalid",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/chromosome with UCSC parameter separator",
+      "expect": "reject",
+      "got": "accept",
+      "ok": false,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17;start=0",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/genome with newline",
+      "expect": "reject",
+      "got": "accept",
+      "ok": false,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38\n",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/chromosome with slash",
+      "expect": "reject",
+      "got": "accept",
+      "ok": false,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr17/../chr1",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/genome with space",
+      "expect": "reject",
+      "got": "accept",
+      "ok": false,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38 ",
+        "chromosome": "chr17",
+        "alternative": "A"
+      }
+    },
+    {
+      "name": "shared/chromosome with space",
+      "expect": "reject",
+      "got": "accept",
+      "ok": false,
+      "detail": "",
+      "payload": {
+        "variant_position": 43119628,
+        "genome": "hg38",
+        "chromosome": "chr 17",
+        "alternative": "A"
+      }
+    }
+  ]
+}

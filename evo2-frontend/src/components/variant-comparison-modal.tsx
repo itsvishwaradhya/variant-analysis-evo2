@@ -1,5 +1,6 @@
 import type { ClinvarVariant } from "~/utils/genome-api";
 import { inferDeletionLengthFromTitle } from "~/utils/genome-api";
+import { useEffect } from "react";
 import { Button } from "./ui/button";
 import { Check, ExternalLink, Shield, X } from "lucide-react";
 import {
@@ -14,25 +15,41 @@ export function VariantComparisonModal({
   comparisonVariant: ClinvarVariant | null;
   onClose: () => void;
 }) {
-  if (!comparisonVariant || !comparisonVariant.evo2Result) return null;
+  const isOpen = Boolean(comparisonVariant?.evo2Result);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Variant Analysis Comparison"
+      className="fixed inset-0 z-50 flex items-center justify-center overscroll-contain bg-black/50 p-4"
+    >
+      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-lg bg-white">
         {/* Modal header */}
         <div className="border-b border-[#3c4f3d]/10 p-5">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium text-[#3c4f3d]">
               Variant Analysis Comparison
             </h3>
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
+              type="button"
+              aria-label="Close comparison"
               onClick={onClose}
-              className="h-7 w-7 cursor-pointer p-0 text-[#3c4f3d]/70 hover:bg-[#9eeea]/70 hover:text-[#3c4f3d]"
+              className="h-7 w-7 cursor-pointer rounded-md p-0 text-[#3c4f3d]/70 hover:bg-[#e9eeea]/70 hover:text-[#3c4f3d] outline-none focus-visible:ring-2 focus-visible:ring-[#de8246]/50 transition-[background-color,color] duration-150 ease-[var(--ease-micro)]"
             >
-              <X className="h-5 w-5" />
-            </Button>
+              <X className="h-5 w-5" aria-hidden="true" />
+            </button>
           </div>
         </div>
 

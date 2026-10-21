@@ -1,0 +1,50 @@
+{
+  "assay_class_counts": {
+    "FUNC": 2821,
+    "INT": 249,
+    "LOF": 823
+  },
+  "assayed_span": [
+    41197722,
+    41276135
+  ],
+  "calibration_window_length": 8192,
+  "endpoint_equals_calibration_plus_one": true,
+  "endpoint_window_length": 8193,
+  "roc": {
+    "CADD": {
+      "auroc": 0.7914375,
+      "n": 500
+    },
+    "PolyPhen-2": {
+      "auroc": 0.6830429732868757,
+      "n": 268
+    },
+    "SIFT": {
+      "auroc": 0.6560975609756098,
+      "n": 268
+    },
+    "aGVD": {
+      "auroc": 0.878126209833527,
+      "n": 268
+    },
+    "phyloP": {
+      "auroc": 0.77735,
+      "n": 500
+    }
+  },
+  "sigma_func": 0.0009016589,
+  "sigma_lof": 0.0015140239,
+  "slice_class_counts": {
+    "FUNC": 400,
+    "INT": 0,
+    "LOF": 100
+  },
+  "slice_span": [
+    41267755,
+    41276135
+  ],
+  "tau": -0.0009178519,
+  "variant_offset_calibration": 4096,
+  "variant_offset_endpoint": 4096
+}

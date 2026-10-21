@@ -1,0 +1,53 @@
+{
+  "deletion": {
+    "alternative": "-",
+    "classification_confidence": 1.0,
+    "deletion_length": 3,
+    "delta_score": 0.0001511111704946,
+    "prediction": "Likely benign",
+    "provisional_prediction": true,
+    "reference": "TGG",
+    "threshold_used": -0.0009178519,
+    "variant_type": "deletion"
+  },
+  "deletion_scored_lengths": [
+    8193,
+    8190
+  ],
+  "forward_passes_per_request": 2,
+  "insertion": {
+    "alternative": "insGGC",
+    "classification_confidence": 0.89405133864882,
+    "delta_score": -0.0001117225534503774,
+    "inserted_sequence": "GGC",
+    "prediction": "Likely benign",
+    "provisional_prediction": true,
+    "reference": "T",
+    "threshold_used": -0.0009178519,
+    "variant_type": "insertion"
+  },
+  "noop": {
+    "alternative": "T",
+    "classification_confidence": 1.0,
+    "delta_score": 0.0,
+    "prediction": "Likely benign",
+    "provisional_prediction": false,
+    "reference": "T",
+    "threshold_used": -0.0009178519,
+    "variant_type": "snv"
+  },
+  "noop_confidence": 1.0,
+  "noop_delta_is_exactly_zero": true,
+  "noop_prediction": "Likely benign",
+  "snv": {
+    "alternative": "A",
+    "classification_confidence": 0.9031959452373955,
+    "delta_score": -0.0001034772375327897,
+    "prediction": "Likely benign",
+    "provisional_prediction": false,
+    "reference": "T",
+    "threshold_used": -0.0009178519,
+    "variant_type": "snv"
+  },
+  "snv_delta_magnitude": 0.0001034772375327897
+}

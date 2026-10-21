@@ -1,0 +1,586 @@
+{
+  "clinvar_records": 300,
+  "clinvar_query": "BRCA1[gene]",
+  "obj_type_counts": {
+    "Insertion": 5,
+    "single nucleotide variant": 218,
+    "Duplication": 15,
+    "copy number loss": 3,
+    "Haplotype": 1,
+    "Deletion": 44,
+    "Microsatellite": 2,
+    "Indel": 11,
+    "copy number gain": 1
+  },
+  "review_status_counts": {
+    "criteria provided, single submitter": 292,
+    "no assertion criteria provided": 1,
+    "criteria provided, multiple submitters, no conflicts": 4,
+    "": 2,
+    "criteria provided, conflicting classifications": 1
+  },
+  "position_outcomes": {
+    "numeric": 300,
+    "nan": 0,
+    "unknown": 0
+  },
+  "location_sort_is_grch38": 293,
+  "location_sort_is_grch37": 0,
+  "records_with_both_assemblies": 290,
+  "grch38_minus_grch37_offset_min": 1847983,
+  "grch38_minus_grch37_offset_median": 1847983,
+  "grch38_minus_grch37_offset_max": 1847983,
+  "grch38_minus_grch37_distinct_offsets": 1,
+  "title_parse_counts": {
+    "total": 300,
+    "single_nucleotide": 218,
+    "deletion": 42,
+    "insertion": 20,
+    "delins": 13,
+    "other": 7,
+    "analyzable": 280,
+    "analyzable_with_usable_position": 280
+  },
+  "derived_kind_counts": {
+    "insertion": 6,
+    "snv": 219,
+    "none": 20,
+    "deletion": 42,
+    "delins": 13
+  },
+  "zod_cases": 55,
+  "zod_conforming": 47,
+  "sample_details": [
+    {
+      "id": "5019327",
+      "title": "NM_007294.4(BRCA1):c.5296_5297insC (p.Ile1766fs)",
+      "obj_type": "Insertion",
+      "location_sort": "00000000000043051098",
+      "frontend_location": "4,30,51,098",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "insertion",
+        "inserted": "C"
+      }
+    },
+    {
+      "id": "5019127",
+      "title": "NM_007294.4(BRCA1):c.872T>G (p.Leu291Ter)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043094659",
+      "frontend_location": "4,30,94,659",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "G"
+      }
+    },
+    {
+      "id": "5016490",
+      "title": "Single allele",
+      "obj_type": "Duplication",
+      "location_sort": "00000000000043095510",
+      "frontend_location": "4,30,95,510",
+      "position_usable": true,
+      "analyzable": false,
+      "derived": null
+    },
+    {
+      "id": "5016489",
+      "title": "GRCh38/hg38 17q21.31(chr17:43104122-43106533)x1",
+      "obj_type": "copy number loss",
+      "location_sort": "00000000000043099881",
+      "frontend_location": "4,30,99,881",
+      "position_usable": true,
+      "analyzable": false,
+      "derived": null
+    },
+    {
+      "id": "5016488",
+      "title": "GRCh38/hg38 17q21.31(chr17:43057052-43057135)x1",
+      "obj_type": "copy number loss",
+      "location_sort": "00000000000043051118",
+      "frontend_location": "4,30,51,118",
+      "position_usable": true,
+      "analyzable": false,
+      "derived": null
+    },
+    {
+      "id": "5016487",
+      "title": "NM_007294.4(BRCA1):c.957_958dup (p.Arg320fs)",
+      "obj_type": "Duplication",
+      "location_sort": "00000000000043094572",
+      "frontend_location": "4,30,94,572",
+      "position_usable": true,
+      "analyzable": false,
+      "derived": null
+    },
+    {
+      "id": "5016453",
+      "title": "NM_007294.4(BRCA1):c.[1456T>C;1648A>C536A>G]",
+      "obj_type": "Haplotype",
+      "location_sort": "00000000000043093883",
+      "frontend_location": "4,30,93,883",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "5005761",
+      "title": "NM_007294.4(BRCA1):c.387del (p.Tyr130fs)",
+      "obj_type": "Deletion",
+      "location_sort": "00000000000043104176",
+      "frontend_location": "4,31,04,176",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "deletion",
+        "deletionLength": 1
+      }
+    },
+    {
+      "id": "4996909",
+      "title": "NM_007294.4(BRCA1):c.1658A>T (p.His553Leu)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043093873",
+      "frontend_location": "4,30,93,873",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "A",
+        "alt": "T"
+      }
+    },
+    {
+      "id": "4989749",
+      "title": "NM_007294.4(BRCA1):c.*797C>A",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043044881",
+      "frontend_location": "4,30,44,881",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "A"
+      }
+    },
+    {
+      "id": "4984641",
+      "title": "NM_007294.4(BRCA1):c.5467+355A>C",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043047288",
+      "frontend_location": "4,30,47,288",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "A",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4983798",
+      "title": "NM_007294.4(BRCA1):c.-97C>A",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043125348",
+      "frontend_location": "4,31,25,348",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "A"
+      }
+    },
+    {
+      "id": "4935336",
+      "title": "NM_007294.4(BRCA1):c.135-16T>C",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043106549",
+      "frontend_location": "4,31,06,549",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935335",
+      "title": "NM_007294.4(BRCA1):c.213-27T>G",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043104983",
+      "frontend_location": "4,31,04,983",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "G"
+      }
+    },
+    {
+      "id": "4935334",
+      "title": "NM_007294.4(BRCA1):c.367T>C (p.Ser123Pro)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043104196",
+      "frontend_location": "4,31,04,196",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935332",
+      "title": "NM_007294.4(BRCA1):c.441+1G>T",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043104121",
+      "frontend_location": "4,31,04,121",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "G",
+        "alt": "T"
+      }
+    },
+    {
+      "id": "4935331",
+      "title": "NM_007294.4(BRCA1):c.442-29G>A",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043099909",
+      "frontend_location": "4,30,99,909",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "G",
+        "alt": "A"
+      }
+    },
+    {
+      "id": "4935330",
+      "title": "NM_007294.4(BRCA1):c.664A>C (p.Lys222Gln)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043095852",
+      "frontend_location": "4,30,95,852",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "A",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935329",
+      "title": "NM_007294.4(BRCA1):c.860_862del (p.Asn287del)",
+      "obj_type": "Deletion",
+      "location_sort": "00000000000043094669",
+      "frontend_location": "4,30,94,669",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "deletion",
+        "deletionLength": 3
+      }
+    },
+    {
+      "id": "4935326",
+      "title": "NM_007294.4(BRCA1):c.1665_1674del (p.Asn555fs)",
+      "obj_type": "Deletion",
+      "location_sort": "00000000000043093857",
+      "frontend_location": "4,30,93,857",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "deletion",
+        "deletionLength": 10
+      }
+    },
+    {
+      "id": "4935325",
+      "title": "NM_007294.4(BRCA1):c.1709C>G (p.Pro570Arg)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043093822",
+      "frontend_location": "4,30,93,822",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "G"
+      }
+    },
+    {
+      "id": "4935324",
+      "title": "NM_007294.4(BRCA1):c.1984C>A (p.His662Asn)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043093547",
+      "frontend_location": "4,30,93,547",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "A"
+      }
+    },
+    {
+      "id": "4935323",
+      "title": "NM_007294.4(BRCA1):c.2128A>C (p.Thr710Pro)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043093403",
+      "frontend_location": "4,30,93,403",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "A",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935322",
+      "title": "NM_007294.4(BRCA1):c.2313G>C (p.Leu771Phe)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043093218",
+      "frontend_location": "4,30,93,218",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "G",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935321",
+      "title": "NM_007294.4(BRCA1):c.2485T>C (p.Phe829Leu)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043093046",
+      "frontend_location": "4,30,93,046",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935318",
+      "title": "NM_007294.4(BRCA1):c.3900_3904del (p.Cys1300_Glu1302delinsTer)",
+      "obj_type": "Microsatellite",
+      "location_sort": "00000000000043091627",
+      "frontend_location": "4,30,91,627",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "delins",
+        "deletionLength": 1,
+        "inserted": "T"
+      }
+    },
+    {
+      "id": "4935316",
+      "title": "NM_007294.4(BRCA1):c.4358-2753A>T",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043079367",
+      "frontend_location": "4,30,79,367",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "A",
+        "alt": "T"
+      }
+    },
+    {
+      "id": "4935315",
+      "title": "NM_007294.4(BRCA1):c.4358-2728AT[2]",
+      "obj_type": "Microsatellite",
+      "location_sort": "00000000000043079337",
+      "frontend_location": "4,30,79,337",
+      "position_usable": true,
+      "analyzable": false,
+      "derived": null
+    },
+    {
+      "id": "4935314",
+      "title": "NM_007294.4(BRCA1):c.4358-2733_4358-2720del",
+      "obj_type": "Deletion",
+      "location_sort": "00000000000043079334",
+      "frontend_location": "4,30,79,334",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "deletion",
+        "deletionLength": 1
+      }
+    },
+    {
+      "id": "4935312",
+      "title": "NM_007294.4(BRCA1):c.4623G>A (p.Glu1541=)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043074383",
+      "frontend_location": "4,30,74,383",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "G",
+        "alt": "A"
+      }
+    },
+    {
+      "id": "4935311",
+      "title": "NM_007294.4(BRCA1):c.4779A>G (p.Ile1593Met)",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043071135",
+      "frontend_location": "4,30,71,135",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "A",
+        "alt": "G"
+      }
+    },
+    {
+      "id": "4935309",
+      "title": "NM_007294.4(BRCA1):c.5075-32T>C",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043063983",
+      "frontend_location": "4,30,63,983",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935308",
+      "title": "NM_007294.4(BRCA1):c.5194-30T>C",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043057165",
+      "frontend_location": "4,30,57,165",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "T",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935307",
+      "title": "NM_007294.4(BRCA1):c.5407-32C>T",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043047735",
+      "frontend_location": "4,30,47,735",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "T"
+      }
+    },
+    {
+      "id": "4935306",
+      "title": "NM_007294.4(BRCA1):c.*88C>T",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043045590",
+      "frontend_location": "4,30,45,590",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "T"
+      }
+    },
+    {
+      "id": "4935305",
+      "title": "NM_007294.4(BRCA1):c.*517G>C",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043045161",
+      "frontend_location": "4,30,45,161",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "G",
+        "alt": "C"
+      }
+    },
+    {
+      "id": "4935304",
+      "title": "NM_007294.4(BRCA1):c.*732C>T",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043044946",
+      "frontend_location": "4,30,44,946",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "T"
+      }
+    },
+    {
+      "id": "4935303",
+      "title": "NM_007294.4(BRCA1):c.*1286C>A",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043044392",
+      "frontend_location": "4,30,44,392",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "C",
+        "alt": "A"
+      }
+    },
+    {
+      "id": "4935302",
+      "title": "NM_007294.4(BRCA1):c.*1287dup",
+      "obj_type": "Duplication",
+      "location_sort": "00000000000043044390",
+      "frontend_location": "4,30,44,390",
+      "position_usable": true,
+      "analyzable": false,
+      "derived": null
+    },
+    {
+      "id": "4935301",
+      "title": "NM_007294.4(BRCA1):c.*1323A>G",
+      "obj_type": "single nucleotide variant",
+      "location_sort": "00000000000043044355",
+      "frontend_location": "4,30,44,355",
+      "position_usable": true,
+      "analyzable": true,
+      "derived": {
+        "kind": "snv",
+        "ref": "A",
+        "alt": "G"
+      }
+    }
+  ]
+}

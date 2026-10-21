@@ -1,0 +1,142 @@
+{
+  "cross_layer_probes": [
+    {
+      "name": "whitespace-only inserted_sequence",
+      "payload": {
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "inserted_sequence": "   ",
+        "variant_position": 43119628,
+        "variant_type": "insertion"
+      },
+      "pydantic": "reject"
+    },
+    {
+      "name": "inserted_sequence of 500 bases plus spaces",
+      "payload": {
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "inserted_sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA     ",
+        "variant_position": 43119628,
+        "variant_type": "insertion"
+      },
+      "pydantic": "accept"
+    },
+    {
+      "name": "inserted_sequence with a newline",
+      "payload": {
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "inserted_sequence": "ACGT\nACGT",
+        "variant_position": 43119628,
+        "variant_type": "insertion"
+      },
+      "pydantic": "accept"
+    },
+    {
+      "name": "lowercase alternative",
+      "payload": {
+        "alternative": "g",
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "variant_position": 43119628,
+        "variant_type": "snv"
+      },
+      "pydantic": "accept"
+    },
+    {
+      "name": "alternative with surrounding whitespace",
+      "payload": {
+        "alternative": " G ",
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "variant_position": 43119628,
+        "variant_type": "snv"
+      },
+      "pydantic": "reject"
+    },
+    {
+      "name": "deletion_length 0",
+      "payload": {
+        "chromosome": "chr17",
+        "deletion_length": 0,
+        "genome": "hg38",
+        "variant_position": 43119628,
+        "variant_type": "deletion"
+      },
+      "pydantic": "reject"
+    },
+    {
+      "name": "variant_position 0",
+      "payload": {
+        "alternative": "A",
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "variant_position": 0,
+        "variant_type": "snv"
+      },
+      "pydantic": "accept"
+    },
+    {
+      "name": "variant_position negative",
+      "payload": {
+        "alternative": "A",
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "variant_position": -5,
+        "variant_type": "snv"
+      },
+      "pydantic": "accept"
+    },
+    {
+      "name": "variant_position not an integer",
+      "payload": {
+        "alternative": "A",
+        "chromosome": "chr17",
+        "genome": "hg38",
+        "variant_position": 1.5,
+        "variant_type": "snv"
+      },
+      "pydantic": "reject"
+    },
+    {
+      "name": "genome empty string",
+      "payload": {
+        "alternative": "A",
+        "chromosome": "chr17",
+        "genome": "",
+        "variant_position": 43119628,
+        "variant_type": "snv"
+      },
+      "pydantic": "accept"
+    }
+  ],
+  "pydantic_cases": 65,
+  "pydantic_conforming": 61,
+  "pydantic_nonconforming": [
+    {
+      "expected": "reject",
+      "got": "accept",
+      "name": "negative position",
+      "note": ""
+    },
+    {
+      "expected": "reject",
+      "got": "accept",
+      "name": "zero position",
+      "note": ""
+    },
+    {
+      "expected": "reject",
+      "got": "accept",
+      "name": "empty genome",
+      "note": ""
+    },
+    {
+      "expected": "reject",
+      "got": "accept",
+      "name": "empty chromosome",
+      "note": ""
+    }
+  ]
+}
