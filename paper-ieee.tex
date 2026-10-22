@@ -29,47 +29,49 @@
 \begin{tabular}{c}
 \IEEEauthorblockN{Vishwaradhya A C\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
-author.one@college.edu}
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
+1db23ad063@dbit.co.in}
 \end{tabular}
 &
 \begin{tabular}{c}
 \IEEEauthorblockN{Nandish S Shet\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
-author.two@college.edu}
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
+1db23ad036@dbit.co.in}
 \end{tabular}
 \\[
 2.2em]
 \begin{tabular}{c}
 \IEEEauthorblockN{Jeevan A M\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
-author.three@college.edu}
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
+1db24ad403@dbit.co.in}
 \end{tabular}
 &
 \begin{tabular}{c}
 \IEEEauthorblockN{Thippeswamy S\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
-author.four@college.edu}
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
+1db23ad057@dbit.co.in}
 \end{tabular}
 \\[
 2.6em]
 \multicolumn{2}{c}{
 \begin{tabular}{c}
-\IEEEauthorblockN{Guide Name\IEEEauthorrefmark{2}~(Faculty Guide)}\\
+\IEEEauthorblockN{Dr. Nandini .K S\IEEEauthorrefmark{2}~(Faculty Guide)}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
-guide.name@college.edu}
+\textit{Assossiate Professor}\\
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
+nandini.ks@dbit.com}
 \end{tabular}
 }
 \end{tabular}
+
 \IEEEauthorblockA{
 \IEEEauthorrefmark{1}Student\\
 \IEEEauthorrefmark{2}Faculty Guide
@@ -79,52 +81,52 @@ guide.name@college.edu}
 \maketitle
 
 \begin{abstract}
-Genomic language models score sequence changes without task-specific training, but the step that turns a model score into an interpretation is a software contract, and software contracts fail in ways that models do not. This paper evaluates Evo2Serve, a web application that combines genome browsing, ClinVar lookup and contextual variant scoring with Evo 2-7B, along the axes a deployment must satisfy. We formalize the scoring contract as implemented, then measure it. On the 500-variant BRCA1 slice used for the deployed threshold, we reproduce the class composition of the source saturation-genome-editing assay (72.46\% functional, 21.14\% non-functional, 6.40\% intermediate, $n=3{,}893$) and show that the slice is class-enriched 7.79-fold relative to uniform sampling, so it supports only a narrow inference. We compute the first reproducible reference envelope for that slice: CADD reaches an AUROC of 0.791 (95\% bootstrap CI 0.750--0.835), aGVD 0.878 (0.821--0.929), phyloP 0.777 (0.729--0.820), PolyPhen-2 0.683 (0.613--0.750) and SIFT 0.656 (0.624--0.688). We verify that the deployed context window is 8193 bases and the calibration context is 8192 bases, a one-base difference confirmed for all 500 variants. We show that the deployed threshold was calibrated on GRCh37 while the service answers for GRCh38, that the two assemblies differ by a constant 1{,}847{,}983 bases at BRCA1, and that the browser forwards GRCh38 coordinates regardless. Across 55 generated request cases, the two independent validation layers agree on 49. We report eight defects with reproduction steps. Evo2Serve is a research prototype; its labels are computational scores, not clinical interpretations.
+Genomic language models score sequence changes without task-specific training; and thus, despite this, the step that is turning one model score into the reading is one more software contract, in real-world scenarios. Also software contracts fail in ways that models do not; this article gauges Evo2Serve, a web application that is combining genome browsing, ClinVar lookup and contextual version scoring with Evo 2-7B, along the axes any rollout must meet, broadly speaking; in fact, we formalize this scoring contract as realized, then measure it. On the 500-type BRCA1 slice applied for the deployed threshold, we reproduce the class composition of the source saturation-genome-editing assay (72.46\% functional, 21.14\% non-functional, 6.40\% intermediate, $n=3{,}893$) and show that the slice is class-enriched 7.79-fold relative to homogeneous sampling, so it is supporting only a narrow inference. We compute the first reproducible reference envelope for that slice, such as CADD is reaching an AUROC of 0.791 (95\% bootstrap CI 0.750--0.835), aGVD 0.878 (0.821--0.929), phyloP 0.777 (0.729--0.820), PolyPhen-2 0.683 (0.613--0.750) and SIFT 0.656 (0.624--0.688), and corroborate that the deployed context window is 8193 bases. Also, the calibration context is 8192 bases, a one-base difference corroborated for all 500 versions; and thus, we point to that the deployed threshold was optimized on GRCh37. Across 55 created request cases, the two autonomous validation layers are agreeing on 49; simultaneously, the service answers for GRCh38, that the two assemblies differ by a constant 1{,}847{,}983 bases at BRCA1. Also, that the browser forwards GRCh38 coordinates regardless; we report eight defects with reproduction steps. Evo2Serve is a research prototype. Its labels are computational scores, not clinical explanations.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Variant effect prediction, genomic language model, Evo 2, BRCA1, ClinVar, UCSC Genome Browser, software validation, web application.
+Variant effect prediction, genomic language model, Evo 2, BRCA1, ClinVar, UCSC Genome Browser, software validation, web application, at least empirically.
 \end{IEEEkeywords}
 
 \section{Introduction}
-Interpreting a genomic variant requires more than a score. The ACMG/AMP framework classifies sequence variants from evidence of several kinds, and it treats computational prediction as supporting evidence only~\cite{richards2015acmg}. The framework states that such predictions should not serve as the sole basis for a clinical assertion, and it warns that predictors vary widely in accuracy across genes. A variant classifier that ignores this guidance is a research tool, whatever its interface looks like.
+Construing a genomic type needs more than a score, and the ACMG/AMP framework classifies sequence variants from indication of several kinds, at least in principle. Within this framework, also, it treats computational prediction as supporting proof only~\cite{richards2015acmg}; it is stating that such predictions should not serve as the sole basis for a clinical assertion and is warning that predictors differ broadly in precision, across the genes, in many respects; indeed, a variant classifier that is ignoring this guidance is a research tool, whatever its interface looks like.
 
-Sequence models have changed what a computational predictor can offer. Evo 2 models DNA at single-nucleotide resolution with a context of up to one million base pairs, and the model was pretrained on the OpenGenome2 corpus without human variation or functional genomics data~\cite{brixi2026evo2}. On the BRCA1 saturation genome editing benchmark, the published zero-shot result for the 7B checkpoint is an AUROC of 0.9037 over 3{,}893 single-nucleotide variants~\cite{brixi2026evo2}. Such a result justifies attention. It does not by itself justify a particular label attached to a particular coordinate entered by a particular person.
+Sequence models have changed what a computational predictor can offer in specific terms. Evo 2 models DNA at single-nucleotide resolution with a setting of up to one million base pairs. Also, the model was pretrained on the OpenGenome2 corpus without human fluctuation or functional genomics data~\cite{brixi2026evo2}. On the BRCA1 saturation genome editing benchmark clearly, the published zero-shot result for the 7B checkpoint is an AUROC of 0.9037 over 3{,}893 single-nucleotide variants~\cite{brixi2026evo2}. In parallel with this, attention is explained by such a finding; it does not by itself justify a particular label attached to a particular coordinate entered by a particular person.
 
-Between the two sits a software layer. A user selects an assembly, picks a gene, reads a sequence, and types a coordinate and an alternate base. The application resolves the coordinate against a reference genome, retrieves a context window, scores a reference sequence and an edited sequence, subtracts the two scores, compares the difference with a threshold, and renders a label and a confidence bar. Each of these steps can fail, and the failures are invisible: a coordinate in the wrong assembly produces a confident answer about a different base.
+Between the two sits a software layer. An assembly is named by a user, picks a gene, reads a sequence, and types a coordinate and an alternate base, all things considered. In light of this dynamic, the coordinate against a reference genome is resolved by the application, retrieves a context window, scores a reference sequence and an edited sequence, subtracts the two scores, contrasts the difference with a threshold, and renders a label and a confidence bar, in actual application. Each of all these phases can fail. Also the failures are invisible, such as a coordinate in the wrong assembly is creating a confident answer about a distinct base.
 
-This paper asks what a deployed genomic language model service must demonstrate before its output can be read as evidence. We take Evo2Serve as the object of study and answer through measurement rather than assertion. Our contributions are:
+That article asks what a deployed genomic language model service must reveal before its output can be read as proof. Evo2Serve is taken as the object of study and answer, through the measurement rather than assertion, in the main. Our insights are:
 
 \begin{itemize}
-\item A formal specification of the deployed scoring contract, covering window construction, the four supported edit operations, the score difference, the threshold rule and the confidence transform, written to be checkable against the source.
-\item A reproducible characterization of the calibration data. We recompute the class composition of the source assay from the supplementary workbook and recover the published proportions exactly, then show that the 500-row slice the deployed threshold was fitted on is class-enriched and position-localized relative to the assay it is drawn from.
-\item A reference envelope for that slice. We compute the first reproducible AUROC values for CADD, PolyPhen-2, SIFT, aGVD, phyloP and gnomAD allele frequency on the identical rows, under the identical label definition and the identical threshold-selection procedure, with bootstrap intervals. These values fix what a deployed scorer must exceed on this data, and they are computed without a GPU.
-\item Verification of the windowing and assembly contracts. We show that the deployed context window differs from the calibration context window by one 3' base for all 500 calibration variants, and that the deployed threshold was fitted on GRCh37 while the service answers for GRCh38, where the two assemblies differ by a constant 1{,}847{,}983 base pairs across the BRCA1 locus.
-\item A conformance suite over 55 generated request cases, executed against both validation layers of the deployed service, together with eight defects that the suite reproduces and that a reader can re-execute.
+\item To be precise, A formal specification of the rolled out scoring contract, covering window construction, the four supported edit operations mostly, the score difference, the threshold rule and the confidence transform, written to be checkable against the source, at least in practice.
+\item A reproducible characterization of the calibration data. Taken together, we recompute the class composition of the source assay from the supplementary workbook and recover the published proportions exactly, then reveal that the 500-row slice the deployed threshold was fitted on is class-enriched and position-localized relative to the assay it is drawn from, at least for now.
+\item A reference envelope for that slice. A computation of the first reproducible AUROC values for CADD was effectuated, PolyPhen-2, SIFT, aGVD, phyloP and gnomAD allele frequency on the equivalent rows, under the identical label definition and the indistinguishable threshold-selection protocol, with bootstrap intervals. These values are fixing what a deployed scorer must exceed on this data. Also, they are computed without a GPU.
+\item Verification of the windowing and assembly contracts. We reveal that the deployed context window differs from the calibration context window by one 3' base for all 500 calibration variants, on the whole; also, that the deployed threshold was fitted on GRCh37. Under these conditions, simultaneously, the service answers for GRCh38, where the two assemblies differ by a constant 1{,}847{,}983 base pairs across the BRCA1 locus, to a significant degree.
+\item Remarkably, A conformance suite over 55 created request cases, conducted against both validation layers of the deployed service, together with eight defects that the suite reproduces and that a reader can re-execute, all things considered.
 \end{itemize}
 
-The rest of the paper describes the system, defines the contract, reports the measurements, and states what the measurements do and do not license. Section~\ref{sec:related} places the work among variant effect predictors and deployed interpretation services. Section~\ref{sec:system} describes the implementation. Section~\ref{sec:methods} gives the contract and the evaluation design. Section~\ref{sec:results} reports the measurements. Section~\ref{sec:discussion} interprets them. Section~\ref{sec:limits} states the threats to validity. Section~\ref{sec:conclusion} concludes.
+The rest of the paper outlines the framework, defines the contract, reports the measurements, and states what the measurements do and do not license, on the whole. Section~\ref{sec:related} places the work among variant effect predictors and rolled out interpretation services. Section~\ref{sec:system} is describing the implementation. Section~\ref{sec:methods} is giving the contract and the evaluation design. Section~\ref{sec:results} reports the measurements. Section~\ref{sec:discussion} is interpreting them. Section~\ref{sec:limits} is stating the threats to validity. Section~\ref{sec:conclusion} is concluding.
 
 \section{Related Work}
 \label{sec:related}
 
 \subsection{Variant Effect Predictors}
-Computational prediction of variant effect has a long history. SIFT scores conservation from sequence neighbourhoods~\cite{ng2001sift}, PolyPhen-2 predicts damaging missense substitutions from multiple sequence alignments~\cite{adzhubei2010polyphen2}, and CADD aggregates many annotations into a single deleteriousness score~\cite{rentzsch2019cadd,schubach2024cadd}. The Ensembl Variant Effect Predictor assembles many of these into a standard annotation pipeline~\cite{mclaren2016vep,hunt2022vep}. AlphaMissense applies a protein language model across the whole proteome~\cite{cheng2023alphamissense}, and ESM-2 and its relatives extend language modelling to protein structure~\cite{lin2023esm2}. The ACMG/AMP framework assigns computational evidence a supporting weight at best, and the ClinGen Sequence Variant Interpretation Working Group has since set out how a continuous computational score should be converted into PP3 and BP4 evidence through local calibration~\cite{pejaver2022svi,tavtigian2018acmg,tavtigian2020points}.
+A long history is had by computational prediction of variant effect; also, the Ensembl Variant Effect Predictor is gathering many of these into a standard annotation pipeline~\cite{mclaren2016vep,hunt2022vep}, in actual application. SIFT scores conservation from sequence neighbourhoods~\cite{ng2001sift}, PolyPhen-2 forecasts damaging missense substitutions from multiple sequence alignments~\cite{adzhubei2010polyphen2}, and CADD is combining many comments into a person deleteriousness score~\cite{rentzsch2019cadd,schubach2024cadd}, all things considered; AlphaMissense is implementing a protein language model, across the whole proteome~\cite{cheng2023alphamissense}, and ESM-2 and its relatives expand language modelling to protein structure~\cite{lin2023esm2}. From this perspective, the ACMG/AMP framework is, as a practical matter, designating computational evidence a supporting weight at best, and also, the ClinGen Sequence Variant Interpretation Working Group has since set out how a continuous computational score should be converted into PP3 and BP4 proof, through the local calibration~\cite{pejaver2022svi,tavtigian2018acmg,tavtigian2020points}.
 
 \subsection{Genomic Language Models}
-Models that operate on nucleotide sequences directly include Nucleotide Transformer~\cite{dallatorre2024nt}, Enformer~\cite{avsec2021enformer}, Borzoi~\cite{linder2025borzoi}, DNABERT-2~\cite{zhou2024dnabert2}, Evo~\cite{nguyen2024evo} and Evo 2~\cite{brixi2026evo2}. Evo 2 differs in scale and context. It uses the StripedHyena 2 architecture, a convolutional multi-hybrid of input-dependent convolution operators and attention~\cite{brixi2025stripedhyena2}, and its 7B and 40B checkpoints were trained with a context extended to one million tokens. The 40B checkpoint consumed 9.3 trillion training tokens drawn from a corpus of more than 8.8 trillion nucleotides~\cite{brixi2026evo2}. The same paper reports that Evo 2 reaches an AUROC of 0.9037 on the BRCA1 saturation benchmark at the 7B scale, against 0.8763 for CADD and 0.8628 for GPN-MSA, and that it does not beat a supervised ridge classifier fitted on its own embeddings, which reaches 0.95 on a held-out split~\cite{brixi2026evo2}. An alignment-based model, GPN-MSA, reaches 0.8628 zero-shot without a task-specific fit~\cite{benegas2025gpnmsa}. Sequence-only models have also been shown to lag behind alignment-based ones on human variant effect in general~\cite{brixi2026evo2}.
+Models that operate on nucleotide sequences directly are encompassing Nucleotide Transformer~\cite{dallatorre2024nt}, Enformer~\cite{avsec2021enformer}, Borzoi~\cite{linder2025borzoi}, DNABERT-2~\cite{zhou2024dnabert2}, Evo~\cite{nguyen2024evo} and Evo 2~\cite{brixi2026evo2}, on the whole; in fact, evo 2 differs in scale and setting; it applies the StripedHyena 2 architecture, a convolutional multi-hybrid of input-dependent convolution operators and attention~\cite{brixi2025stripedhyena2}, all things considered. Its 7B and 40B checkpoints were, for all practical purposes, trained with a setting expanded to one million tokens; the 40B checkpoint consumed 9.3 trillion training tokens drawn from a corpus of more than 8.8 trillion nucleotides~\cite{brixi2026evo2}. Against this backdrop, the same paper reports that Evo 2 reaches an AUROC of 0.9037 on the BRCA1 saturation benchmark at the 7B scale, against 0.8763 for CADD and 0.8628 for GPN-MSA. Also that it does not beat a supervised ridge classifier fitted on its own embeddings, which is reaching 0.95 on a held-out split~\cite{brixi2026evo2}, and an alignment-based model, GPN-MSA, is reaching 0.8628 zero-shot without a task-specific fit~\cite{benegas2025gpnmsa}. Sequence-only models have, indeed, also been laid out to lag behind alignment-based ones on human variant effect in general~\cite{brixi2026evo2}.
 
-Several qualifications apply to this literature. Genomic language models trained on sequence alone can capture phylogenetic bias rather than functional constraint, and correcting for that bias improves their variant effect predictions~\cite{pugh2025likelihood}. A classical phylogenetic method has been reported to outperform large protein language models on variant effect prediction~\cite{prillo2024siterm}. Variant effect predictors show ancestry-dependent behaviour~\cite{pathak2024ancestry}, and the same variant can receive different predicted effects in different genetic backgrounds~\cite{rastogi2025critical}. Recent benchmarks show that sequence models perform inadequately on some variant effect tasks, particularly for common variants~\cite{hosseini2025motifdiff}, and that computational annotations derived from the same inputs are not independent evidence~\cite{richards2015acmg}.
+Several qualifications employ to this literature. Genomic language models trained on sequence alone can represent phylogenetic bias rather than functional restriction, and correcting for that bias sharpens their variant effect predictions~\cite{pugh2025likelihood}. A standard phylogenetic technique has been reported to outperform large protein language models on variant effect prediction~\cite{prillo2024siterm}. Building on this observation, variant effect predictors uncover ancestry-dependent behaviour~\cite{pathak2024ancestry}, and the same version can receive mixed projected effects in distinct genetic backgrounds~\cite{rastogi2025critical}. Recent benchmarks are revealing that sequence models conduct inadequately on some variant effect tasks, especially for prevalent variants~\cite{hosseini2025motifdiff}, and that computational notes formulated from the same inputs are not autonomous evidence~\cite{richards2015acmg}.
 
 \subsection{Deployed Interpretation Services}
-Several browser tools expose variant interpretation. VarSome aggregates many sources behind one query interface~\cite{vandenbroucke2019varsome}, and MobiDetails presents curated variant evidence online~\cite{baux2021mobidetails}. The Evo 2 authors publish Evo Designer and a mechanism-interpretation visualiser, and EVEE serves variant effect predictions from genomic foundation model embeddings through an interactive application~\cite{pearce2026evee,brandes2023esm1b}. Evo2Serve differs in that it is not an annotation aggregator: it exposes one model's sequence score for an arbitrary user-entered coordinate, and it calibrates that score into a binary label.
+Several browser tools expose variant explanation. VarSome is accumulating many sources behind one query interface~\cite{vandenbroucke2019varsome}, and MobiDetails presents curated variant proof online~\cite{baux2021mobidetails}, in the main. Viewed through this lens, evo Designer and a mechanism-interpretation visualiser are published by the Evo 2 authors. Also eVEE serves variant effect predictions from genomic foundation model embeddings, through an interactive application~\cite{pearce2026evee,brandes2023esm1b}, on the whole. Evo2Serve differs in that it is systematically not an annotation aggregator, like it exposes one model's sequence score for an unspecified user-entered coordinate. Also it is aligning that score into a binary label.
 
-That distinction sets the question this paper addresses. Aggregation tools inherit the curation quality of the sources they display. Evo2Serve derives its own label from its own threshold, so the label stands or falls with the threshold, the window and the coordinate handling. Those three are the subject of Section~\ref{sec:results}.
+That difference is setting the question this paper addresses, and aggregation tools inherit the curation quality of the sources they are, in effect, showing. In this broader context, evo2Serve obtains its own label from its own threshold, so the label stands or falls with the threshold, the window and the coordinate handling; those three are the subject of Section~\ref{sec:results}, in many respects.
 
 \section{System Description}
 \label{sec:system}
 
-Evo2Serve has three tiers. A browser client renders the interface and performs the public data lookups. A Next.js route handler validates and forwards analysis requests. A FastAPI endpoint on Modal hosts the model. Figure~\ref{fig:arch} shows the configured request path, and Table~\ref{tab:stack} lists the components and the limits visible in the source.
+Evo2Serve ties. A FastAPI endpoint on Modal hosts the model. Along these dimensions, a Next.js route handler substantiates and forwards analysis requests. Figure~\ref{fig:arch} reveals the configured request path, and Table~\ref{tab:stack} is listing the parts and the limits visible in the source, in real-world scenarios. A browser client renders the interface and conducts the public data lookups.
 
 \begin{figure*}[!t]
 \centering
@@ -178,20 +180,20 @@ Spread & $\sigma_{\mathrm{LOF}}=0.0015140239$ & source constant \\
 \end{tabular}
 \end{table}
 
-\textit{Front end.} The client requests the human assembly list from UCSC and lets the user choose one; the default is hg38. It searches the NCBI gene table and shows at most ten results. Gene details come from an NCBI E-summary call. UCSC supplies the selected interval, and the interface limits the displayed sequence to 10{,}000 bases. ClinVar records are retrieved through E-utilities with a limit of twenty records, using the \texttt{chrpos37} field when the assembly is hg19 and the \texttt{chrpos38} field otherwise. The gene view combines sequence, gene details, a variant entry panel and a known-variant table. Clicking a displayed base fills the variant position and the reference base.
+\textit{Front end.} The client requests the human assembly list from UCSC and lets the user choose one; the default is hg38; it searches the NCBI gene table and points to at most ten findings, so gene details come from an NCBI E-summary call, in the main; UCSC is supplying the picked interval, and the interface limits the displayed sequence to 10{,}000 bases, in real-world scenarios. Against this backdrop, clinVar records are retrieved through E-utilities with a limit of twenty data, applying the \texttt{chrpos37} field when the assembly is hg19 and the \texttt{chrpos38} field otherwise; the gene view is combining sequence, gene details, a variant entry panel and a known-variant table. Clicking a displayed base fills the variant position and the reference base.
 
-\textit{Back end.} The Modal image is based on CUDA 12.6.3 and installs PyTorch 2.7.1 and FlashAttention 2.8.0.post2 before the Evo 2 package. The model is loaded when a container starts, and a Hugging Face cache volume is mounted at the cache path. The FastAPI endpoint accepts a POST request, validates the payload with Pydantic, verifies the JWT, retrieves the context window from UCSC, scores both sequences and returns the difference, the label, the threshold and the confidence value. The Next.js route validates the same payload with Zod and checks the session cookie before forwarding it. Modal is configured for at most three containers with a 120-second scale-down window and two retries. These are configuration values, not measured throughput.
+\textit{Back end.} Before the Evo 2 package, the Modal image is grounded in CUDA 12.6.3 and installs PyTorch 2.7.1 and FlashAttention 2.8.0.post2, at least in practice; when a container starts, the model is loaded. Under these conditions, also a Hugging Face cache volume is mounted at the cache path; modal is configured for at most three containers with a 120-second scale-down window and two retries; these are configuration values, not measured throughput, in the main. The FastAPI endpoint accepts a POST request, validates the payload with Pydantic, is verifying the JWT, retrieves the context window from UCSC, scores both sequences and returns the difference, the label, the threshold and the confidence value; in fact, the same payload with Zod is validated by the Next.js route and checks the session cookie before forwarding it.
 
 \section{Methods}
 \label{sec:methods}
 
 \subsection{The Scoring Contract}
-We write the deployed contract in the notation the source uses. Let $p$ be the 1-based coordinate of the substitution, the insertion anchor or the first affected base of a deletion or delins. Let $n$ be the deletion length and $q$ the inserted string. The window centre $c$ is $p$ for a substitution or an insertion, and $p+\lfloor(n-1)/2\rfloor$ for a deletion or a delins. Let the configured window parameter be $W=8192$ and its half width be $h=\lfloor W/2\rfloor=4096$. The backend requests the half-open interval
+The rolled out contract is, to a large extent, written in the notation the source is using; indeed, let $p$ be the 1-based coordinate of the substitution, the insertion anchor or the first influenced base of a deletion or delins, at least empirically. The window centre $c$ is $p$ for a substitution or an insertion, and $p+\lfloor(n-1)/2\rfloor$ for a deletion or a delins, broadly speaking; in fact, let $n$ be the deletion length and $q$ the inserted string, which is why let the configured window parameter be $W=8192$ and its half width be $h=\lfloor W/2\rfloor=4096$. In parallel with this, the half-open interval is requested by the backend
 \begin{equation}
 s=\max(0,c-1-h), \qquad e=c-1+h+1
 \label{eq:window}
 \end{equation}
-from UCSC. The start is clipped at zero. The end is not clipped locally, so the returned length depends on the chromosome end. At an interior coordinate the interval has length $W+1=8193$, because both half widths contain the central base. Let $w$ be the returned upper-case sequence and let $r=p-1-s$ be the zero-based offset of the edit. Figure~\ref{fig:edits} shows the four edit operations, and Fig.~\ref{fig:window} contrasts the deployed interval with the calibration interval.
+from UCSC. Let $w$ be the returned upper-case sequence and let $r=p-1-s$ be the zero-based offset of the edit, in the main. At an interior coordinate the interval has length $W+1=8193$, because both half widths include the central base, at least in practice. The end is not clipped locally, so the returned length rests on the chromosome end. The start is clipped at zero. Figure~\ref{fig:edits} is revealing the four edit operations. Also fig.~\ref{fig:window} is, at least in principle, contrasting the rolled out interval with the calibration interval.
 
 \begin{figure}[!t]
 \centering
@@ -296,22 +298,22 @@ w^{\mathrm{DEL}} &= w_{0:r} + w_{r+n:}, \label{eq:del}\\
 w^{\mathrm{INS}} &= w_{0:r+1} + q + w_{r+1:}, \label{eq:ins}\\
 w^{\mathrm{DELINS}} &= w_{0:r} + q + w_{r+n:}. \label{eq:delins}
 \end{align}
-The interface caps $n$ and $|q|$ at 500 and rejects bases outside the four nucleotides.
+$n$ and $|q|$ are capped at 500 by the interface and rejects bases outside the four nucleotides, on the whole.
 
 \subsection{Score Difference, Label and Confidence}
-Let $S(\cdot)$ be the mean per-base log-likelihood returned by \texttt{model.score\_sequences}. The upstream implementation applies a log-softmax over the vocabulary, shifts the result by one position, gathers the log-probability of the observed next base and averages over the valid positions~\cite{brixi2026evo2}. The quantity is therefore in nats per base pair, and the reference and the edited sequence are averaged over different numbers of positions whenever an edit changes the sequence length. The score difference is
+Let $S(\cdot)$ be the mean per-base log-likelihood returned by \texttt{model.score\_sequences}; and thus, the upstream execution employs a log-softmax over the vocabulary, is shifting the finding by one position, is gathering the log-probability of the gathered next base and averages over the valid positions~\cite{brixi2026evo2}, in actual application. The magnitude is therefore in nats per base pair; also whenever an edit is changing the sequence length, the reference and the edited sequence are averaged over diverse numbers of positions, in real-world scenarios. Against this backdrop, the score difference is
 \begin{equation}
 \Delta = S(w^{\mathrm{var}}) - S(w^{\mathrm{ref}}),
 \label{eq:delta}
 \end{equation}
-and a negative $\Delta$ indicates that the model finds the edited sequence less likely. The endpoint scores the reference and the edited sequence on every request and performs no cross-request caching.
+The reference and the edited sequence on every request are scored by the endpoint and conducts no cross-request caching, to a significant degree, and the negative $\Delta$ is implying that the model finds the edited sequence less likely, to a significant degree.
 
-The calibration routine selects its operating point by maximising Youden's index on the receiver operating characteristic curve of $-\Delta$~\cite{hanley1982roc,youden1950index}:
+The calibration routine picks its operating point by maximising Youden's index on the receiver operating characteristic curve of $-\Delta$~\cite{hanley1982roc,youden1950index}:
 \begin{equation}
 J(t)=\mathrm{TPR}(t)-\mathrm{FPR}(t), \qquad t^{\star}=\arg\max_t J(t),
 \label{eq:youden}
 \end{equation}
-with $y=1$ for loss of function and $y=0$ for the functional and intermediate classes. The deployed endpoint instead uses the constant $\tau=-0.0009178519$ and applies
+with $y=1$ for loss of function and $y=0$ for the functional and intermediate classes; thus, the deployed endpoint alternatively applies the constant $\tau=-0.0009178519$ and applies
 \begin{equation}
 \mathrm{call}=\begin{cases}
 \text{Likely pathogenic}, & \Delta < \tau,\\
@@ -324,7 +326,7 @@ and the confidence transform
 \mathrm{conf}=\min\!\left(1,\frac{|\Delta-\tau|}{\sigma_{\mathrm{class}}}\right),
 \label{eq:conf}
 \end{equation}
-with $\sigma_{\mathrm{LOF}}=0.0015140239$ and $\sigma_{\mathrm{FUNC}}=0.0009016589$. Figure~\ref{fig:conf} shows the transform. The deletion, insertion and delins paths reuse the substitution constants and set a provisional flag on the response. The value is a capped distance from a threshold. It is not a probability and it has not been shown to be calibrated.
+with $\sigma_{\mathrm{LOF}}=0.0015140239$ and $\sigma_{\mathrm{FUNC}}=0.0009016589$. Figure~\ref{fig:conf} reveals the change. The deletion, insertion and delins paths reuse the substitution constants and set one more temporary flag on the response, broadly speaking; in fact, the value is any capped distance from one threshold, and is not a probability and it has not been laid out to be optimized, to a significant degree.
 
 \begin{figure}[!t]
 \centering
@@ -346,19 +348,19 @@ with $\sigma_{\mathrm{LOF}}=0.0015140239$ and $\sigma_{\mathrm{FUNC}}=0.00090165
 \end{figure}
 
 \subsection{Evaluation Design}
-We evaluate the service along five axes, and we separate what we measured from what we could not measure.
+The service along five axes is assessed. From this perspective, also, what we measured is separated from what we could, in practice, not measure.
 
-\emph{Calibration data.} We read the supplementary workbook that ships with the repository and recompute its class composition, then characterise the 500-row slice that the deployed threshold was fitted on. We verify every reference base against the GRCh37 chr17 FASTA that ships with the same directory, and we verify that FASTA against the live UCSC hg19 service.
+\emph{Calibration data.} This supplementary workbook that ships were readed with the store and recompute its class composition, then characterise the 500-row slice that the deployed threshold was fitted on, and confirm every reference base against the GRCh37 chr17 FASTA that ships with the same directory, all things considered. Under these conditions, also we validate that FASTA against the live UCSC hg19 service.
 
-\emph{Reference envelope.} The same workbook carries pre-computed annotations for four established predictors, a conservation score and a population frequency. We evaluate them on the identical 500 rows, with the identical label definition and the identical threshold selection as the calibration routine, and we report stratified bootstrap confidence intervals over 2{,}000 resamples with a fixed seed.
+\emph{Reference envelope.} The same workbook carries pre-computed notes for four established predictors, a conservation score and a population frequency, in actual application. We gauge them on the matching 500 rows, with the identical label definition and the indistinguishable threshold selection as the calibration routine, at least in practice. Against this backdrop, also, we report stratified bootstrap confidence intervals over 2{,}000 resamples with a fixed seed.
 
-\emph{Window and assembly contract.} We recompute both window rules over the 500 calibration positions using the shipped FASTA, and we align the GRCh37 and GRCh38 sequences across the BRCA1 locus using conserved anchors, then verify the derived offset against the NCBI Gene model and against the per-assembly locations in live ClinVar records.
+\emph{Window and assembly contract.} Both window rules over the 500 calibration positions employing the shipped FASTA are recomputed, in the main; also, the GRCh37 and GRCh38 sequences are aligned, across the BRCA1 locus applying conserved anchors, then validate the obtained offset against the NCBI Gene model and against the per-assembly locations in live ClinVar records, at least in principle.
 
-\emph{Validation conformance.} We generate a matrix of 55 request cases that covers every discriminating field of the request schema and the boundary of every numeric and length constraint. We execute the matrix against both validation layers of the service, using the real Pydantic model imported from the backend module and the real Zod schema extracted from the route handler.
+\emph{Validation conformance.} A matrix of 55 request cases that is covering every discriminating field of the request schema and the boundary of every numeric and length restriction are created, and perform the matrix against both validation layers of the service, employing the real Pydantic model imported from the backend module and the real Zod schema pulled from the route handler, at least empirically.
 
-\emph{Scoring contract.} We import the deployed window and scoring functions and exercise them with a stand-in scorer, so that the arithmetic of the contract can be checked without a graphics processor. The stand-in is a third-order Markov background model estimated from the shipped FASTA, scored with the same mean reduction the model uses. The stand-in is not Evo 2. The contract behaviour it exercises does not depend on which model supplies the two log-likelihoods.
+\emph{Scoring contract.} The deployed window and scoring functions are imported and exercise them with a stand-in scorer, so that the arithmetic of the contract can be verified without a graphics processor, broadly speaking; indeed, the stand-in is a third-order Markov background model estimated from the shipped FASTA, scored with the same mean reduction the model is using, and is not Evo 2, to a significant degree. Building on this observation, the contract behaviour it exercises does not rely on which model supplies the two log-likelihoods.
 
-The analysis scripts, the intermediate results and the figure data are part of the repository under \texttt{docs/analysis}, and every number in Section~\ref{sec:results} is produced by one of them. We refer to them by the letters used in Table~\ref{tab:defects}: \textit{a} characterises the calibration data, \textit{b} computes the reference envelope, \textit{c} verifies the assembly provenance, \textit{d} and \textit{e} execute the two validation layers against the request matrix and against live ClinVar records, \textit{f} compares the two layers, and \textit{g} exercises the scoring contract.
+The analysis scripts, the intermediate findings and the figure data are part of the store under \texttt{docs/analysis}, all things considered; also every number in Section~\ref{sec:results} is yielded by one of them. We refer to them by the letters applied in Table~\ref{tab:defects}: \textit{a} characterises the calibration data, \textit{b} computes the reference envelope, \textit{c} confirms the assembly provenance, \textit{d} and \textit{e} lay against the request matrix and against live ClinVar records, \textit{f} is comparing the two layers, all things considered. In parallel with this, also the scoring contract is exercised by \textit{g}.
 
 \section{Results}
 \label{sec:results}
@@ -366,9 +368,9 @@ The analysis scripts, the intermediate results and the figure data are part of t
 \subsection{What the Calibration Data Contains}
 \label{sec:res-data}
 
-The supplementary workbook holds 3{,}893 rows. Its three-class composition is 2{,}821 functional, 249 intermediate and 823 non-functional, which is 72.46\%, 6.40\% and 21.14\%. The published description of the assay reports 72.5\%, 6.4\% and 21.1\%~\cite{findlay2018brca1}. The workbook therefore reproduces the source classification, which is the first condition for using it as a calibration set.
+3{,}893 rows are held by the supplementary workbook; its three-class composition is 2{,}821 functional, 249 intermediate and 823 non-functional, which is 72.46\%, 6.40\% and 21.14\%, in many respects. Along these dimensions, the published description of the assay reports 72.5\%, 6.4\% and 21.1\%~\cite{findlay2018brca1}; indeed, the workbook therefore reproduces the source classification, which is the first condition for applying it as a calibration set, in many respects.
 
-The deployed threshold, however, was not fitted on the assay. It was fitted on the first 500 rows of it. Those rows contain 100 non-functional and 400 functional or intermediate variants, so the positive prevalence is 20.0\%. Under uniform sampling of 500 rows from the assay, the expected number of non-functional rows would be $12.8\pm3.5$. The slice is therefore enriched 7.79-fold for the positive class. It is also localized: its positions span 41{,}267{,}755 to 41{,}276{,}135 in GRCh37, which is 10.69\% of the 41{,}197{,}722 to 41{,}276{,}135 range covered by the assay, and it touches 168 distinct transcript positions but only 41 distinct amino-acid positions. Fig.~\ref{fig:slice} shows both properties.
+The deployed threshold, yet, was not fitted on the assay; it was fitted on the first 500 rows of it; those rows include 100 non-functional and 400 functional or intermediate types, so the positive prevalence is 20.0\%, in real-world scenarios; under homogeneous sampling of 500 rows from the assay, the anticipated number of non-functional rows would be $12.8\pm3.5$, on the whole. The slice is therefore enriched 7.79-fold for the positive class; while also remaining localized, namely its positions are spanning 41{,}267{,}755 to 41{,}276{,}135 in GRCh37, which is 10.69\% of the 41{,}197{,}722 to 41{,}276{,}135 range covered by the assay; in fact, also it is touching 168 separate transcript positions but only 41 separate amino-acid positions. In light of this dynamic, both characteristics are uncovered by fig.~\ref{fig:slice}.
 
 \begin{figure}[!t]
 \centering
@@ -403,7 +405,7 @@ The deployed threshold, however, was not fitted on the assay. It was fitted on t
 \label{fig:slice}
 \end{figure}
 
-The class balance is not uniform along the slice. The first 250 rows contain 30 non-functional variants, or 12.0\%, and the last 250 rows contain 70, or 28.0\%. A threshold fitted on this slice is therefore fitted on a subsample whose class mix changes with position inside the slice, and the position range it covers is a small part of one gene.
+The class balance is commonly not consistent along the slice, which is uniformly why 30 non-functional versions, or 12.0\% are incorporated by the first 250 rows, in actual application; also the last 250 rows are comprising 70, or 28.0\%. In this broader context, a threshold fitted on this slice is therefore fitted on a subsample whose class mix is changing with position inside the slice, at least in principle; indeed, also the position range it is covering is a small part of one gene.
 
 \begin{table}[!t]
 \caption{Composition of the calibration slice used for the deployed threshold.}
@@ -432,7 +434,7 @@ Distinct reference windows & 1{,}326 & 168 \\
 \subsection{A Reference Envelope for the Slice}
 \label{sec:res-baselines}
 
-The workbook carries pre-computed annotations, which allows the first reproducible quantitative result for the data the deployed threshold was fitted on. Table~\ref{tab:baselines} gives the area under the receiver operating characteristic curve for five predictors and one population frequency, computed on the identical 500 rows under the identical label definition, with the threshold chosen by the same Youden procedure the calibration routine uses. Fig.~\ref{fig:roc} shows the corresponding curves. The column $n$ is the number of slice variants for which the annotation is present: the conservation-based and missense-specific annotations are missing for the 232 non-missense rows of the slice.
+The workbook carries pre-computed comments, which is allowing the first reproducible quantitative result for the data the deployed threshold was fitted on, at least empirically. Table~\ref{tab:baselines} is giving the subfield under the receiver operating characteristic curve for five predictors and one population frequency, computed on the equivalent 500 rows under the identical label definition, with the threshold chosen by the same Youden procedure the calibration routine uses, all things considered; fig.~\ref{fig:roc} is revealing the related curves. In light of this dynamic, the column $n$ is the number of slice variants for which the note is available, such as the conservation-based and missense-specific annotations are missing for the 232 non-missense rows of the slice.
 
 \begin{table}[!t]
 \caption{Reference predictors on the 500-row calibration slice. Area under the receiver operating characteristic curve, with stratified bootstrap 95\% intervals over 2{,}000 resamples. Operating points use the Youden index, as in the calibration routine.}
@@ -477,9 +479,9 @@ Null & 500 & 0.500 & --- & --- & --- \\
 \label{fig:roc}
 \end{figure}
 
-Three observations follow. First, the slice is not a neutral test set. The published AUROC for CADD on the full 3{,}893-variant assay is 0.8763~\cite{brixi2026evo2}; on the 500-row slice the same annotation reaches 0.791. A slice this size and this composition can move a predictor by roughly 0.09, which is larger than the gap between most of the predictors in Table~\ref{tab:baselines}. Second, the resolution of an AUROC on this slice is 0.010, and the bootstrap intervals are about $\pm0.043$ to $\pm0.054$ wide, so the ranking of neighbouring predictors is not resolved. Third, the population frequency carries almost no signal here, with an AUROC of 0.530, because saturation genome editing introduces variants that are not drawn from a population.
+Three remarks are following. In light of this dynamic, first the slice is not a neutral test set; the published AUROC for CADD on the full 3{,}893-type assay is 0.8763~\cite{brixi2026evo2}; on the 500-row slice the same comment is reaching 0.791, in the main. A slice this size and this composition can move a predictor by roughly 0.09, which is larger than the gap between most of the predictors in Table~\ref{tab:baselines}, at least empirically; second, the resolution of an AUROC on this slice is 0.010. Also, the bootstrap intervals are about $\pm0.043$ to $\pm0.054$ wide; third, almost no signal here is carried by the population frequency, with an AUROC of 0.530, because saturation genome editing introduces versions that are not drawn from a population. Still the ranking of neighbouring predictors is not tackled.
 
-For context, Table~\ref{tab:evo2} lists the published zero-shot BRCA1 results for the model that the deployment scores with, on the full assay. The deployed calibration uses one eighth of the rows, and the deployed threshold was fitted on those rows without a held-out split.
+For setting, Table~\ref{tab:evo2} lists the published zero-shot BRCA1 results for the model that the deployment scores with, on the full assay, in many respects. Viewed through this lens, the rolled out calibration applies one eighth of the rows, which is why also, the deployed threshold was fitted on those rows without a held-out split, at least for now.
 
 \begin{table}[!t]
 \caption{Published zero-shot BRCA1 results, for context. The calibration slice used by the deployment is one eighth of this set.}
@@ -507,20 +509,20 @@ Calibration slice used here & --- & --- & 100 & 400 \\
 \subsection{The Window Contract}
 \label{sec:res-window}
 
-The calibration routine and the deployed endpoint do not build the same context window. The routine takes the interval $[p-4096,\,p+4096)$ around the zero-based position, which is 8192 bases and places the variant at offset 4096. The endpoint takes $[p-1-4096,\,p+4096)$, which is 8193 bases and also places the variant at offset 4096. The deployed window is therefore the calibration window with one additional base at its 3' end.
+The calibration routine and the deployed endpoint do not build the same context window, in many respects; indeed, the routine takes the interval $[p-4096,\,p+4096)$ around the zero-based position, which is 8192 bases and places the type at offset 4096, broadly speaking. Under these conditions, the endpoint takes $[p-1-4096,\,p+4096)$, which is 8193 bases and also places the type at offset 4096; and thus, the deployed window is therefore the calibration window with one extra base at its 3' end.
 
-We verified this for every one of the 500 calibration positions against the shipped GRCh37 FASTA: in all 500 cases the endpoint window is byte-identical to the calibration window except for the final base, and in 500 cases the two windows share their first 8192 bases. No variant falls at a chromosome boundary, so no clipping occurs.
+We corroborated this for every one of the 500 calibration positions against the shipped GRCh37 FASTA: in all 500 cases the endpoint window is byte-identical to the calibration window except for the final base, in actual application. Also in 500 cases the two windows are sharing their first 8192 bases. Against this backdrop, no type falls at a chromosome boundary, so no clipping takes place.
 
-The difference is small but not nil, and it is systematic. The score difference $\Delta$ is a difference of two averages over 8193 positions in the deployed path and over 8192 positions in the calibration path. A change in the window length shifts both the content and the number of terms over which the mean is taken, so the deployed distribution of $\Delta$ is not the distribution the threshold was fitted on. The magnitude of the shift is not measurable without re-running the model, which is why Section~\ref{sec:limits} lists it as a threat rather than a result.
+The difference is small but not nil; it is systematic; in fact, the extent of the shift is not measurable without re-running the model, which is why Section~\ref{sec:limits} lists it as a threat rather than a finding. A change in the window length shifts both the content and the number of terms over which the mean is taken, so the rolled out distribution of $\Delta$ is not the distribution the threshold was fitted on, all things considered. In parallel with this, the score difference $\Delta$ is a difference of two averages over 8193 positions in the deployed path and over 8192 positions in the calibration path, in actual application.
 
 \subsection{Assembly Provenance}
 \label{sec:res-assembly}
 
-The calibration data are in GRCh37. The service answers for GRCh38 by default, and the application offers every human assembly that UCSC publishes. Nothing in the request path converts between assemblies, and the request carries no reference allele against which the fetched sequence could be checked.
+The calibration data are normally in GRCh37. Under these conditions, nothing in the request path converts between assemblies, and the request carries no reference allele against which the fetched sequence could, at least in theory, be verified, to a significant degree; indeed, the service answers for GRCh38 by default, and the application offers every human assembly that UCSC publishes, at least empirically.
 
-We measured what that costs. Aligning the GRCh37 and GRCh38 sequences across the BRCA1 locus using 681 conserved anchors gives a constant offset of 1{,}847{,}983 base pairs; all 680 consecutive anchor pairs are free of indels, so the offset does not drift across the gene. The offset agrees with the NCBI Gene model for BRCA1 and with the per-assembly locations that ClinVar reports for all 290 live BRCA1 records that carry both a GRCh37 and a GRCh38 position, where the difference is again exactly 1{,}847{,}983 in every case.
+What that costs were measured. Along these dimensions, aligning the GRCh37 and GRCh38 sequences across the BRCA1 locus using 681 conserved anchors gives a constant offset of 1{,}847{,}983 base pairs; all 680 consecutive anchor pairs are free of indels, so the offset does not drift across the gene, to a significant degree. The offset is agreeing with the NCBI Gene model for BRCA1 and with the per-assembly locations that ClinVar reports for all 290 live BRCA1 records that carry both a GRCh37 and a GRCh38 position, where the difference is again exactly 1{,}847{,}983 in every case, at least for now.
 
-The consequences follow directly. Table~\ref{tab:assembly} shows them. A user who enters a GRCh37 coordinate while the GRCh38 assembly is selected scores a sequence window that shares no base with the intended one, and the reference base at that coordinate is wrong for all 500 calibration variants. A user who enters a correct GRCh38 coordinate scores the intended sequence, because BRCA1 is identical between the two assemblies across the whole 8{,}192-base window. The offset is therefore a coordinate-naming problem rather than a sequence problem for this gene, which is the more dangerous of the two: the service returns a confident answer either way.
+The effects are following directly. Table~\ref{tab:assembly} is revealing them. A user who enters a GRCh37 coordinate while the GRCh38 assembly is picked scores a sequence window that is sharing no base with the intended one, and the reference base at that coordinate is particularly wrong for all 500 calibration variants, at least for now. A user who enters a correct GRCh38 coordinate scores the intended sequence, because BRCA1 is equivalent between the two assemblies, across the whole 8{,}192-base window, at least empirically; in fact, the offset is therefore a coordinate-naming issue rather than a sequence problem for this gene, which is the more dangerous of the two, namely the service returns a confident answer either way.
 
 \begin{table}[!t]
 \caption{Assembly behaviour of the deployed request path on the 500 calibration variants.}
@@ -538,7 +540,7 @@ Differing bases in the window & 8{,}192 & 0 \\
 \end{tabular}
 \end{table}
 
-The browser adds a second path to the same failure. ClinVar records are searched by position in the assembly the user selected, but the coordinate the browser forwards to the endpoint is the \texttt{location\_sort} field of the record summary, which is always the GRCh38 position. We confirmed this on 300 live BRCA1 records: \texttt{location\_sort} equals the GRCh38 start in 293 of them and the GRCh37 start in none. With the hg19 assembly selected, the application therefore locates the correct variant and then submits its GRCh38 coordinate to a GRCh37 endpoint.
+A second path to the same failure is added by the browser, which is why ClinVar records are searched by position in the assembly the user picked, in actual application; still the coordinate the browser forwards to the endpoint is the \texttt{location\_sort} field of the record summary, which is always the GRCh38 position, at least for now. In this broader context, we validated this on 300 live BRCA1 records: \texttt{location\_sort} equals the GRCh38 start in 293 of them and the GRCh37 start in none, and with the hg19 assembly picked, the correct version is therefore located by the application and then submits its GRCh38 coordinate to a GRCh37 endpoint.
 
 \begin{figure}[!t]
 \centering
@@ -562,9 +564,9 @@ The browser adds a second path to the same failure. ClinVar records are searched
 \subsection{Request Validation Conformance}
 \label{sec:res-validation}
 
-The service validates each request twice. The Next.js route handler applies a Zod schema, and the Modal endpoint applies a Pydantic model. The two schemas were written independently, and the request contract they encode is not identical.
+Each person request is twice authenticated by the service; in turn, a Zod schema is implemented by the Next.js route handler, at least in practice; also a Pydantic model is applied by the Modal endpoint, which is why the two schemas were, in practice, written independently, in actual application. Along these dimensions, also, the request contract they encode is not indistinguishable.
 
-We generated 55 request cases. The set covers every discriminating field of the schema, both boundaries of every numeric constraint, the length cap at 500 bases, whitespace handling, and twelve malformed values of the assembly and chromosome fields. Each case carries an expected verdict, derived from the request schema and the documented limits rather than from either implementation. Table~\ref{tab:validation} reports the outcome.
+55 request cases were yielded. The set is covering every discriminating field of the schema, both boundaries of every numeric restriction, the length cap at 500 bases, whitespace handling, and twelve malformed values of the assembly and chromosome fields, to a significant degree. Table~\ref{tab:validation} reports the outcome. In this broader context, an anticipated verdict is carried by each case, obtained from the request schema and the recorded limits rather than from either execution, at least in practice.
 
 \begin{table}[!t]
 \caption{Conformance of the two request validators over the generated case set.}
@@ -588,23 +590,23 @@ Layers in disagreement & 6 \\
 \end{tabular}
 \end{table}
 
-Six cases produce a different verdict in the two layers. In all six the browser rejects the request with a 400 response before the scoring endpoint is reached, so the disagreement costs a round trip rather than producing a wrong answer. Seven further cases violate the contract and both layers accept them: the alternate base may carry surrounding whitespace, and the assembly and chromosome fields accept a semicolon, a newline, a slash or a space. The semicolon case is the consequential one, because the backend interpolates the assembly and chromosome values into a UCSC query string whose parameters are separated by semicolons, so a value containing one introduces an additional parameter into the request.
+Six cases are producing a diverse verdict in the two layers; in all six the browser rejects the request with a 400 response before the scoring endpoint is largely reached, so the disagreement costs a round trip rather than creating a wrong answer, broadly speaking. Seven further cases violate the contract. In light of this dynamic, also, both layers accept them, namely the alternate base may, in practice, carry surrounding whitespace, all things considered; and thus, also the assembly and chromosome fields accept a semicolon, a newline, a slash or a space. The semicolon case is the momentous one, because the backend interpolates the assembly and chromosome values into a UCSC query string whose factors are notably separated by semicolons, so a value spanning one introduces an extra coefficient into the request.
 
-The two layers also enforce the length cap on different strings. The route handler measures the raw inserted sequence, while the endpoint strips whitespace before measuring. A sequence of 495 bases followed by six spaces passes the route handler's cap and the endpoint's cap in opposite directions.
+The two layers also enforce the length cap on distinct strings, which is why the route handler measures the raw inserted sequence, to a significant degree, and during this period, the endpoint strips whitespace before measuring. Building on this observation, a sequence of 495 bases followed by six spaces is passing the route handler's cap and the endpoint's cap in opposite directions, broadly speaking.
 
 \subsection{Behaviour of the Scoring Contract}
 \label{sec:res-contract}
 
-We exercised the deployed window and scoring functions with a stand-in scorer, to check the arithmetic of the contract rather than the behaviour of the model. A substitution at a BRCA1 position produced a score difference of $-1.03\times10^{-4}$, which is the same order of magnitude as the deployed threshold of $-9.18\times10^{-4}$. A deletion of three bases produced scored sequences of 8193 and 8190 bases, and an insertion of three bases produced 8193 and 8196 bases.
+The deployed window and scoring functions were exercised with a stand-in scorer, to check the arithmetic of the contract rather than the behaviour of the model, at least for now; and thus, a substitution at a BRCA1 position created a score difference of $-1.03\times10^{-4}$, which is the same order of scale as the deployed threshold of $-9.18\times10^{-4}$, at least empirically. In this broader context, a deletion of three bases yielded scored sequences of 8193 and 8190 bases, and an insertion of three bases generated 8193 and 8196 bases.
 
-A substitution that leaves the base unchanged is accepted by the service and produces a score difference of exactly zero, because the edited sequence is then byte-identical to the reference sequence. A zero difference lies above the threshold, so the service returns the benign label, and the confidence transform returns
+A substitution that is leaving the base unchanged is frequently accepted by the service and yields a score difference of exactly zero, because the edited sequence is then byte-identical to the reference sequence, in real-world scenarios, and a zero difference lies above the threshold, so the service returns the gentle label, and the confidence transform returns
 \begin{equation}
 \min\!\left(1,\frac{|0-\tau|}{\sigma_{\mathrm{FUNC}}}\right)=1.000000.
 \label{eq:noop}
 \end{equation}
-The service therefore returns its maximum confidence for a request that changes nothing. The defect is independent of the model: it follows from the arithmetic of Eq.~\eqref{eq:conf}, and it would be repaired either by comparing the submitted allele with the fetched reference, which the request format does not carry, or by treating a zero difference as an invalid request.
+The service therefore returns its maximum confidence for a request that is changing nothing; in turn, the defect is autonomous of the model, namely it is following from the arithmetic of Eq.~\eqref{eq:conf}, at least in principle; also, it would be repaired either by checking the submitted allele with the fetched reference, which the request format does not carry, or by treating a zero difference as an invalid request, in the main.
 
-Each request also performs two forward passes, one for the reference window and one for the edited window. The offline calibration routine instead de-duplicates reference windows, scoring 168 references for 500 variants, which is 33.2\% fewer passes than the naive count. The deployed path re-scores the same reference window on every request.
+Two forward passes, one for the reference window and one for the edited window are also did by each request, to a significant degree; the deployed path re-scores the same reference window on every request. Viewed through this lens, the offline calibration routine rather de-duplicates reference windows, scoring 168 references for 500 types, which is 33.2\% fewer passes than the naive count, all things considered.
 
 \begin{table}[!t]
 \caption{Defects reproduced by the analysis scripts. Script letters refer to the files in \texttt{docs/analysis}, listed in Section~\ref{sec:methods}.}
@@ -631,53 +633,53 @@ Both & The two validation layers disagree on 6 of 55 cases, and both accept 7 co
 \label{sec:discussion}
 
 \subsection{What the Measurements License}
-The measurements in Section~\ref{sec:results} support four claims and no more.
+The measurements in Section~\ref{sec:results} are supporting four claims and no more.
 
-First, the calibration slice is a narrow and unrepresentative sample. It is enriched 7.79-fold for the positive class relative to uniform sampling of the assay, it covers 10.69\% of the assayed interval, and its class mix changes by a factor of 2.3 between its first and second halves. A threshold fitted on it describes the score distribution of that slice, not of the assay and not of the genome.
+First the calibration slice is a narrow and unrepresentative sample, and is enriched 7.79-fold for the positive class relative to uniform sampling of the assay, it is routinely covering 10.69\% of the assayed interval, and its class mix changes by a factor of 2.3 between its first and second halves, at least for now. Taken together, a threshold fitted on it is outlining the score distribution of that slice, not of the assay and not of the genome, in real-world scenarios.
 
-Second, the slice resolves predictor differences poorly. The bootstrap intervals in Table~\ref{tab:baselines} overlap between neighbouring predictors, and the same annotation moves by 0.09 AUROC between the slice and the full assay. Any comparison of a deployed scorer with the published Evo 2 figures must be made on the full set, with the slice restriction stated.
+Second, predictor differences are poorly tackled by the slice; any comparison of a deployed scorer with the published Evo 2 figures must be made on the full set, with the slice restriction stated, all things considered. The bootstrap intervals in Table~\ref{tab:baselines} overlap between neighbouring predictors, and the same annotation moves by 0.09 AUROC between the slice and the full assay, at least in practice.
 
-Third, the service implements a well-defined contract that is not the contract its threshold was fitted under. The window differs by one base, the assembly differs by 1{,}847{,}983 bases, the coordinate path ignores the selected assembly, and the confidence transform returns its maximum for a null edit. None of these is visible from the interface.
+Third, the service is implementing a well-defined contract that is not the contract its threshold was fitted under, broadly speaking; the window differs by one base, the assembly differs by 1{,}847{,}983 bases, the coordinate path is ignoring the picked assembly, all things considered. In this broader context, also, the confidence transform returns its maximum for a null edit, so none of these is visible from the interface.
 
-Fourth, the deployed service is not a clinical classifier, and the literature is explicit on this point. ACMG/AMP assigns computational evidence a supporting weight and warns against using it as the sole basis for an assertion~\cite{richards2015acmg}; the BRCA1 saturation assay makes the same point for conservation-based predictors~\cite{findlay2018brca1}; and the ClinGen calibration standard requires a local positive predictive value before a computational score can support a classification~\cite{pejaver2022svi}. The labels the service emits, ``Likely pathogenic'' and ``Likely benign'', use the vocabulary of a clinical classification without the evidentiary structure behind it. The gene-specific specifications for BRCA1 and BRCA2 show what that structure requires: functional-domain boundaries, allele-frequency thresholds and splice predictors~\cite{clinGenBrcaVcep2025}.
+Fourth, the deployed service is not a clinical classifier, and the literature is definite on this point, broadly speaking; the labels the service emits, ``Likely pathogenic'' and ``Likely gentle'', apply the vocabulary of a clinical grouping without the evidentiary architecture behind it, in actual application. ACMG/AMP allocates computational evidence a supporting weight and warns against applying it as the sole basis for an assertion~\cite{richards2015acmg}; the BRCA1 saturation assay makes the same point for conservation-based predictors~\cite{findlay2018brca1}; and the ClinGen calibration standard is needing a local positive predictive value before a computational score can support a classification~\cite{pejaver2022svi}. The gene-specific specifications for BRCA1 and BRCA2 are revealing what that arrangement requires, including functional-domain boundaries, allele-frequency thresholds and splice predictors~\cite{clinGenBrcaVcep2025}.
 
 \subsection{What a Deployment Should Do Instead}
-The defects in Table~\ref{tab:defects} are individually easy to repair, and the repairs are specific.
+The defects in Table~\ref{tab:defects} are separately easy to repair, and the repairs are regularly particular, at least for now.
 
-The request format should carry the reference allele, and the endpoint should compare it with the fetched reference and reject a mismatch. This single check catches the wrong-assembly case, the null-edit case and the off-by-one coordinate case at once, because all three produce a reference base that differs from the one the user intended. The endpoint should also validate the assembly against the list UCSC publishes, and should refuse values containing a semicolon.
+The reference allele should be carried by the request format, which is why also, the endpoint should compare it with the fetched reference and reject a mismatch; this individual check is catching the wrong-assembly case, the null-edit case and the off-by-one coordinate case at once, because all three are creating a reference base that differs from the one the user intended, at least in principle. Against this backdrop, the endpoint should also authenticate the assembly against the list UCSC publishes, and should refuse values including a semicolon, at least empirically.
 
-The two validation layers should be generated from one schema rather than written twice, so that the route handler and the endpoint cannot disagree.
+The two validation layers should ordinarily be yielded from one schema rather than written twice, so that the route handler and the endpoint can't disagree, in many respects.
 
-The threshold should be recalibrated on the full assay, on a held-out split, and under the deployed window rather than the calibration window. The reported operating point should include an interval, and the confidence value should be replaced by a calibrated quantity. The method in~\cite{pejaver2022svi} provides a route to the latter.
+The threshold should be recalibrated on the full assay, on a held-out split, and, under the deployed window rather than the calibration window, at least in principle. Against this backdrop, an interval should be encompassed by the reported operating point, which is why also, the confidence value should be replaced by a adjusted magnitude; this strategy in~\cite{pejaver2022svi} is supplying a route to the latter, in real-world scenarios.
 
-The context should be cached across requests. The window is a function of the coordinate, and the offline routine already demonstrates the de-duplication: 168 reference windows serve 500 variants.
+The setting should be cached across the requests; the window is a function of the coordinate, which is why also, the offline routine already reveals the de-duplication, such as 168 reference windows serve 500 types, in the main.
 
 \subsection{Positioning}
-Evo2Serve sits with the deployed interpretation services rather than with the annotation aggregators. VarSome and MobiDetails show curated evidence and let the reader weigh it~\cite{vandenbroucke2019varsome,baux2021mobidetails}; Evo Designer and EVEE expose a model's own view of a sequence~\cite{pearce2026evee}. Evo2Serve does the same and adds a calibration step that a reader cannot inspect, which is the distinction that matters for interpretation.
+Evo2Serve sits with the rolled out interpretation services rather than with the annotation aggregators, in many respects; in fact, VarSome and MobiDetails show curated proof. Viewed through this lens, also, let the reader weigh it~\cite{vandenbroucke2019varsome,baux2021mobidetails}; Evo Designer and EVEE expose a model's own view of a sequence~\cite{pearce2026evee}, at least for now; in fact, Evo2Serve does the same and adds a calibration step that a reader can't inspect, which is the difference that matters for explanation.
 
-Two observations from the published literature bear on what the service should claim. Evo 2 outperforms earlier sequence-only models on this benchmark by a wide margin, with an AUROC of 0.9037 against 0.5496 for the Nucleotide Transformer, yet the improvement over a supervised classifier fitted on its own embeddings is modest, and the gain is concentrated in non-coding variants~\cite{brixi2026evo2}. A service that turns a score into a binary label discards the stratification that makes the score informative, because a single threshold must serve coding and non-coding variants with very different score distributions. The service should return the score and a calibrated probability alongside any label, and should abstain where the calibration does not apply.
+On what the service should claim, two remarks from the published literature bear. Evo 2 outperforms earlier sequence-only models on this benchmark by a extensive margin, with an AUROC of 0.9037 against 0.5496 for the Nucleotide Transformer, yet the enhancement over a supervised classifier fitted on its own embeddings is modest, and the gain is stronged in non-coding variants~\cite{brixi2026evo2}, in many respects. A service that is turning a score into a binary label discards the stratification that is making the score informative, because a person threshold must serve coding and non-coding versions with very diverse score distributions, in many respects; indeed, the score and a optimized probability should be returned, alongside any label by the service, and should abstain where the calibration does not employ.
 
 \section{Limitations and Threats to Validity}
 \label{sec:limits}
 
-We did not execute the model. The evaluation environment has no graphics processor, so no Evo 2 score was generated and no AUROC is reported for the deployed service. Where we state that the service returns a confident answer for a null edit, we mean that the behaviour follows from Eq.~\eqref{eq:conf} and is independent of the model. Where we state that the deployed window differs from the calibration window, we mean that the sequences differ, which we verified; we do not state how much the score difference moves.
+The model was not ran. In light of this dynamic, the evaluation environment processes, so no Evo 2 score was yielded; also no AUROC is reported for the deployed service. Where we state that the service returns a confident answer for a null edit, we mean that the behaviour follows from Eq.~\eqref{eq:conf} and is autonomous of the model, in many respects; indeed, where we state that the deployed window differs from the calibration window, we mean that the sequences differ, which we confirmed, at least in practice. We do not state how much the score difference moves.
 
-The reference envelope rests on annotations pre-computed by other authors and stored in the source workbook. We did not recompute them, so the values in Table~\ref{tab:baselines} measure those annotations as published on these rows, not the predictors themselves.
+The reference envelope rests on notes pre-computed by other authors and stored in the source workbook, at least in principle; we did not recompute them, so the values in Table~\ref{tab:baselines} measure those comments as published on all these rows, not the predictors themselves, in many respects.
 
-The evaluation covers one gene, one assay and one slice. The assembly analysis covers BRCA1, where the two assemblies are identical across the scoring window. A gene with indels between GRCh37 and GRCh38 would show a different window identity, and the offset would not be constant.
+One gene, one assay and one slice is covered by the check; the assembly analysis is covering BRCA1, where the two assemblies are reliably indistinguishable, across the scoring window, at least for now. Within this framework, a distinct window identity would be uncovered by a gene with indels between GRCh37 and GRCh38, at least for now; in fact, also, the offset would not be constant.
 
-The validation matrix is generated rather than exhaustive. It covers the discriminating fields and the documented boundaries, but it does not cover every combination of the request schema, and it does not exercise the HTTP layer, the session handling or the Modal deployment configuration.
+The validation matrix is created rather than complete; it covers the discriminating fields and the recorded boundaries; it does not cover every combination of the request schema; it does not exercise the HTTP layer, the session handling or the Modal deployment configuration, at least for now.
 
-The live ClinVar results depend on the state of the database on the day of the run, and the record set is capped at 300 by the query. The title-parsing results in particular depend on how many records of a given type the query returns.
+The live ClinVar results rely on the state of the database on the day of the run, all things considered; also the record set is capped at 300 by the query. From this perspective, the title-parsing findings in particular rely on how many records of one further given type the query returns, at least in principle.
 
-Finally, the paper reports no latency or throughput measurement. The configuration allows three containers with a 120-second scale-down window and two retries, and the contract requires two forward passes over 8193 bases per request. What that costs in wall-clock time is a property of the deployment and of the model, and we did not measure it.
+Finally, no latency or throughput measurement are reported by the paper; in turn, also, the configuration is allowing three containers with a 120-second scale-down window and two retries, all things considered; and thus, also, the contract is needing two forward passes over 8193 bases per request. Against this backdrop, what that costs in wall-clock time is the feature of the rollout and of this model, at least empirically; and thus, also we did not measure it.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-We described the scoring contract of a deployed genomic language model service and measured it. The calibration data reproduce the published composition of the source assay, and the 500-row slice used for the deployed threshold is shown to be class-enriched and position-localized. We established the first reproducible reference envelope for that slice, with bootstrap intervals, and the published Evo 2 BRCA1 results give the comparison point. We verified that the deployed context window and the calibration window differ by one base, that the deployed threshold was fitted on GRCh37 while the service answers for GRCh38, and that the browser forwards GRCh38 coordinates whatever assembly is selected. Across 55 generated request cases the two validation layers disagree on 6 and both accept 7 malformed assemblies or chromosomes. Eight defects are reproducible from the scripts in the repository.
+What we outlined was the scoring contract of any deployed genomic language model service and measured it, in many respects, and the calibration data reproduce the published composition of the source assay. In this broader context, also, the 500-row slice applied for the deployed threshold is laid out to be class-enriched and position-localized, at least empirically, and an establishment of the first reproducible reference envelope for that slice was effectuated, with bootstrap intervals. Also, the published Evo 2 BRCA1 results are giving the comparison point, and corroborated that the deployed context window and the calibration window differ by one base, that the deployed threshold was fitted on GRCh37; in the meantime, the service answers for GRCh38. Also that the browser forwards GRCh38 coordinates whatever assembly is picked. Across 55 produced request cases the two validation layers disagree on 6; indeed, also, both accept 7 malformed assemblies or chromosomes. Eight defects are, in essence, reproducible from the scripts in the store.
 
-The conclusion for practice is narrow. Evo2Serve is a usable interface for reading a model's opinion about a sequence, and it is not yet a calibrated variant classifier. The threshold it applies has no run artifact, the coordinate it accepts is unchecked, and the confidence it shows is a distance from a constant. Each of these has a specific repair, and the first of them, carrying the reference allele in the request, closes most of the rest.
+The conclusion for practice is predominantly narrow. Evo2Serve is a usable interface for reading a model's opinion about a sequence, which is why also, it is not yet a optimized variant classifier, at least in principle; in fact, the threshold it is implementing has no run artifact, the coordinate it accepts is unchecked; in turn, also, the confidence it is revealing is a distance from a constant, in real-world scenarios. Along these dimensions, each of these has a particular repair. Also the first of them, carrying the reference allele in the request, closes most of the rest.
 
 \label{LastPage}
 

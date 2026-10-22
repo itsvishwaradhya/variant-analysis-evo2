@@ -145,10 +145,24 @@ print(f"anchor pairs with no indel between them: {consistent}/{len(steps)}")
 # independent check against the NCBI Gene model for BRCA1 (Gene ID 672)
 import requests
 
-r = requests.get(
-    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
-    params={"db": "gene", "id": "672", "retmode": "json"}, timeout=60)
-gi = r.json()["result"]["672"]["genomicinfo"][0]
+
+def ncbi_esummary(gene_id: str, attempts: int = 5) -> dict:
+    """Fetch the NCBI Gene summary, retrying on transient network errors."""
+    url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+    last = None
+    for i in range(attempts):
+        try:
+            r = requests.get(url, params={"db": "gene", "id": gene_id,
+                                          "retmode": "json"}, timeout=60)
+            r.raise_for_status()
+            return r.json()["result"][gene_id]
+        except Exception as exc:               # noqa: BLE001
+            last = exc
+            time.sleep(2 + 3 * i)
+    raise RuntimeError(f"NCBI esummary failed after {attempts} attempts: {last}")
+
+
+gi = ncbi_esummary("672")["genomicinfo"][0]
 print(f"NCBI Gene BRCA1 on {gi['chraccver']}: "
       f"{gi['chrstart']:,}..{gi['chrstop']:,}")
 out["ncbi_brca1_grch38"] = [gi["chrstart"], gi["chrstop"]]
