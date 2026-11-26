@@ -1,0 +1,220 @@
+\chap{4}{SYSTEM ANALYSIS AND DESIGN}{0pt}
+\vspace{-8pt}
+\sect{4.1}{SYSTEM ARCHITECTURE}
+\vspace{-2pt}
+\begin{center}\diagArch\end{center}\label{fig:4.1}
+\vspace{-8pt}
+\figcap{4.1}{System Architecture of Evo2Serve}
+\vspace{-2pt}
+\sub{1. Data Sources Layer}
+This layer supplies the public data on which the system depends:
+\begin{itemize}
+\item \textbf{UCSC Genome Browser REST API:} Provides the list of human assemblies, the chromosomes of an assembly and the reference DNA sequence of any interval \cite{lee2022ucsc}.
+\item \textbf{NCBI Gene, clinicaltables and E-utilities:} Provide gene search, gene coordinates and gene details.
+\item \textbf{ClinVar:} Supplies the known variants of a gene with their clinical classification \cite{landrum2024clinvar}.
+\item \textbf{Calibration data:} The \textit{BRCA1} saturation genome editing workbook and the GRCh37 chromosome 17 sequence shipped with the Evo~2 repository.
+\end{itemize}
+\vspace{-2pt}
+\sectend{4.1a}
+
+\sub{2. Web Application Layer}
+The web tier performs the user-facing work and protects the GPU:
+\begin{itemize}
+\item \textbf{Browser Client:} A Next.js 15 / React 19 application styled with Tailwind CSS and shadcn/ui that renders the interface and performs the public data lookups directly from the browser.
+\item \textbf{Next.js API Routes:} The routes \texttt{/api/auth/*} handle sign-up, sign-in, sign-out and session lookup, and \texttt{/api/analyze} receives analysis requests.
+\item \textbf{Zod Validation and JWT Check:} The analysis route verifies the session cookie, validates the request with a Zod schema, and forwards it with the token as a bearer header.
+\item \textbf{MongoDB:} Stores user accounts with bcrypt-hashed passwords.
+\end{itemize}
+
+\sub{3. GPU Inference Layer (Modal)}
+The model is hosted on a serverless GPU container:
+\begin{itemize}
+\item \textbf{FastAPI Endpoint:} Re-validates the request with a Pydantic model and verifies the bearer token before using the GPU.
+\item \textbf{Window Fetch and Sequence Builder:} Retrieves the 8\,kb reference window from UCSC and builds the mutated sequence for a substitution, deletion, insertion or deletion--insertion.
+\item \textbf{Evo~2-7B on H100:} Loaded once when a container starts; scores the reference and mutated sequences with \texttt{score\_sequences}.
+\item \textbf{Hugging Face Cache Volume:} Persistent volume that holds the model weights between runs.
+\end{itemize}
+
+\sub{4. Decision Layer}
+The score difference $\Delta=S(w^{var})-S(w^{ref})$ is compared with the calibrated threshold $\tau$ to give a ``Likely pathogenic'' or ``Likely benign'' label. A confidence value is computed as the distance from the threshold divided by the spread of the predicted class, and indel predictions carry a provisional flag because the threshold was calibrated on substitutions.
+
+\sub{5. Presentation Layer}
+\begin{itemize}
+\item \textbf{Gene Viewer and Sequence:} Shows the gene details and up to 10,000 bases of reference sequence; clicking a base fills the variant form.
+\item \textbf{Known-Variants Table:} Lists up to 20 ClinVar variants with their classification and a one-click analysis button.
+\item \textbf{Variant Analysis Panel and Comparison Modal:} Display the label, confidence bar and score difference, and place the Evo~2 prediction next to the ClinVar classification.
+\end{itemize}
+
+\sub{6. Offline Calibration and Verification}
+A separate Modal job scores the first 500 \textit{BRCA1} variants, computes the ROC curve and the Youden threshold, and produces the constants used by the endpoint. A set of analysis scripts recomputes the data composition, the reference predictors, the assembly offset and the validator conformance and writes machine-readable results.
+
+\sub{Workflow Summary:}
+\begin{enumerate}
+\item The user interacts with the web interface to select an assembly, search a gene, read its sequence and choose or enter a mutation.
+\item The Next.js route checks the session, validates the request and forwards it with a bearer token to the Modal endpoint.
+\item The FastAPI service verifies the token, re-validates the request and fetches the 8\,kb reference window from UCSC.
+\item Evo~2-7B scores the reference and mutated sequences and the decision layer computes the label, confidence and provisional flag.
+\item Known variants and gene details are loaded from NCBI and ClinVar by the browser when needed.
+\item The result is returned through the web tier and displayed beside the ClinVar classification.
+\end{enumerate}
+\sectend{4.1}
+
+\sect{4.2}{DATAFLOW DIAGRAM}
+\vspace{-2pt}
+\begin{center}\diagDFDzero\end{center}\label{fig:4.2}
+\vspace{-6pt}
+\figcap{4.2}{Data Flow Diagram, Level 0 (Context Diagram)}
+\vspace{-2pt}
+The context diagram shows Evo2Serve as one process surrounded by the entities it exchanges data with. Below is the explanation of how data moves between the system and its environment:
+
+\sub{1. User}
+The user, a student or researcher, supplies credentials, the genome assembly, a gene name and the mutation to analyse. In return the user receives the reference sequence, the known variants of the gene and the prediction with its label and confidence.
+
+\sub{2. UCSC Genome Browser}
+\begin{itemize}
+\item The system requests the list of assemblies, the chromosomes of an assembly and the reference sequence of a gene or of an 8\,kb window around a variant.
+\item UCSC returns the sequence as upper-case nucleotides, which the system validates against the expected length.
+\end{itemize}
+
+\sub{3. NCBI Gene, E-utilities and ClinVar}
+\begin{itemize}
+\item The system sends gene-name and position queries to the NCBI services.
+\item The services return gene details and the ClinVar records of the gene, including the classification of each variant.
+\end{itemize}
+
+\sub{4. Modal GPU Platform}
+The system sends the validated request as JSON with a bearer token to the model endpoint hosted on Modal. The platform runs Evo~2-7B on an H100 GPU and returns the score difference $\Delta$, the label, the confidence and the threshold used.
+
+\sub{5. MongoDB}
+Account data are stored when a user signs up, and the user record is retrieved when a user signs in. No genomic data and no prediction results are stored by the system.
+\sectend{4.2a}
+
+\sub{Level 1 Data Flow Diagram: Processes}
+The level 1 diagram decomposes the system into six processes and two data stores. The flows between them are explained below:
+
+\sub{1.0 Authenticate User}
+Receives the e-mail and password of the user, checks them against the user store D1 and issues a signed session token in an HTTP-only cookie. Browsing does not require a session; analysis does.
+
+\sub{2.0 Browse Genome and Enter Mutation}
+Lists the assemblies and chromosomes, searches genes, fetches the gene details and the sequence (at most 10,000 bases) from UCSC and NCBI, and lets the user click a base or type a position and an alternate sequence.
+
+\sub{3.0 Retrieve Known Variants}
+Queries ClinVar for the variants of the selected gene using the position field of the selected assembly, parses the variant type and the classification, and passes a clicked variant to the validation process.
+
+\sub{4.0 Validate and Forward Request}
+Checks the session cookie, validates the request against the Zod schema (types, ranges, 500-base limit) and forwards it with the bearer token to the GPU service. Requests that fail validation are rejected with HTTP 400 and requests without a valid session with HTTP 401.
+
+\sub{5.0 Score Variant with Evo 2}
+Verifies the token, re-validates the request, fetches the 8\,kb window from UCSC, builds the mutated sequence, scores both sequences with the model whose weights are held on the cache volume D2, and applies the decision rule.
+
+\sub{6.0 Present and Compare}
+Displays the label, confidence bar and score difference, and compares the prediction with the ClinVar classification of the same variant to state whether they agree.
+\sectend{4.2b}
+
+\begin{center}\diagDFDone\end{center}\label{fig:4.3}
+\vspace{-6pt}
+\figcap{4.3}{Data Flow Diagram, Level 1}
+\vspace{4pt}
+\sub{Summary of Evo2Serve Flow:}
+\begin{enumerate}
+\item User $\rightarrow$ Browser: provides credentials, assembly, gene and mutation.
+\item Browser $\rightarrow$ Public services: gene, sequence and ClinVar queries go to UCSC and NCBI.
+\item Browser $\rightarrow$ Next.js route $\rightarrow$ Modal: the validated request travels with the session token to the GPU service.
+\item GPU service $\leftrightarrow$ UCSC and cache volume: the window is fetched and the model weights are read.
+\item GPU service $\rightarrow$ Browser: $\Delta$, label, confidence and threshold are returned as JSON.
+\item Browser $\rightarrow$ User: the prediction is shown next to the ClinVar classification.
+\end{enumerate}
+\sectend{4.2}
+
+\newpage
+\sect{4.3}{SEQUENCE DIAGRAM}
+\vspace{-2pt}
+\begin{center}\diagSeq\end{center}\label{fig:4.4}
+\vspace{-6pt}
+\figcap{4.4}{Sequence Diagram of Evo2Serve}
+\vspace{-2pt}
+The sequence diagram illustrates the dynamic execution flow and message passing between the system layers during one analysis request. The process begins when the signed-in user enters a position and an alternate base, or clicks a known ClinVar variant, in the browser interface. The browser sends an HTTP POST request with the session cookie to the Next.js API route, which verifies the signed token and validates the request body with a Zod schema.
+
+Once the route accepts the request, it forwards the JSON payload to the Modal endpoint with the token as a bearer header. The FastAPI service verifies the token with the shared secret and validates the payload again with a Pydantic model. It then issues a GET request to the UCSC REST API for the 8\,kb window around the variant. UCSC returns the reference sequence, and the service checks the position against the window and extracts the reference base.
+\sectend{4.3}
+
+\par\noindent The service next builds the mutated sequence according to the variant type and calls the model twice, once with the reference window and once with the mutated window. Evo~2 returns the mean per-base log-likelihood of each sequence. The service subtracts the two values to obtain the score difference $\Delta$, compares it with the threshold $\tau$ to choose the label, computes the confidence as the distance from the threshold divided by the class spread, and sets the provisional flag for indel types.
+
+The structured result is returned to the Next.js route, which forwards it unchanged to the browser. The client-side components then update the interface: the variant analysis panel shows the label and the confidence bar, and the comparison modal places the prediction next to the ClinVar classification and states whether the two agree.
+
+\sect{4.4}{CLASS DIAGRAM}
+\vspace{-2pt}
+\begin{center}\diagClass\end{center}\label{fig:4.5}
+\vspace{-6pt}
+\figcap{4.5}{Class Diagram of Evo2Serve}
+\sectend{4.4a}
+
+\sub{Detailed Description of Each Class}
+Let us understand the purpose and role of each class and module in the system:
+
+\sub{HomePage, GeneViewer and GenomeApi}
+\begin{itemize}
+\item \textbf{HomePage:} The entry component. It holds the list of assemblies, the selected assembly (hg38 by default), the selected gene and the browse or search mode, and offers a ``Try BRCA1 example'' shortcut.
+\item \textbf{GeneViewer:} Displays the selected gene and renders the sequence, the gene information, the known-variants table and the variant entry panel.
+\item \textbf{GenomeApi:} A utility module that wraps the public services. It lists assemblies and chromosomes, searches genes, fetches gene details and the reference sequence, retrieves ClinVar variants and calls the analysis route.
+\end{itemize}
+\textbf{Relationship:}
+\begin{itemize}
+\item HomePage renders GeneViewer, which renders KnownVariants and VariantAnalysis; both use GenomeApi to reach the public services and the analysis route.
+\end{itemize}
+
+\sub{VariantAnalysis, KnownVariants and VariantComparisonModal}
+\begin{itemize}
+\item \textbf{VariantAnalysis:} The variant entry panel. It holds the variant type, position and alternate bases, sends the request and displays the label, the confidence bar and the provisional note.
+\item \textbf{KnownVariants:} Lists the ClinVar variants of the gene and lets the user analyse one with a single click; unauthenticated users see a ``Sign in to analyze'' prompt.
+\item \textbf{VariantComparisonModal:} Shows the Evo~2 result and the ClinVar classification side by side and states whether the prediction agrees with ClinVar.
+\end{itemize}
+\textbf{Relationships:}
+\begin{itemize}
+\item KnownVariants opens VariantComparisonModal with the result returned by the analysis route.
+\end{itemize}
+\sectend{4.4b}
+
+\sub{AuthLib and User}
+\begin{itemize}
+\item \textbf{AuthLib:} Provides password hashing (bcrypt, 10 rounds), password verification, and the creation and verification of HS256 session tokens that expire after seven days.
+\item \textbf{User:} The Mongoose model that stores the e-mail address and the password hash of an account.
+\end{itemize}
+\textbf{Relationships:}
+\begin{itemize}
+\item The authentication routes use AuthLib to issue the cookie and store accounts in User; the analysis route uses AuthLib to verify the cookie.
+\end{itemize}
+
+\sub{AnalyzeRoute and VariantRequest}
+\begin{itemize}
+\item \textbf{AnalyzeRoute:} The Next.js route that checks the session, validates the body with a Zod schema, forwards the request to Modal and maps upstream failures to error responses.
+\item \textbf{VariantRequest:} The Pydantic model of the GPU tier. It holds the position, the variant type, the alternate base, the deletion length, the inserted sequence, the genome and the chromosome, and its validator enforces the rules of each variant type.
+\end{itemize}
+
+\sub{Evo2Model and ScoringFunctions}
+\begin{itemize}
+\item \textbf{Evo2Model:} The Modal class that loads Evo~2-7B once per container, verifies the bearer token and exposes the \texttt{analyze\_single\_variant} endpoint.
+\item \textbf{ScoringFunctions:} The functions \texttt{get\_genome\_sequence} and \texttt{analyze\_variant} together with the table \texttt{VARIANT\_THRESHOLDS}, which holds $\tau$, $\sigma_{LOF}$, $\sigma_{FUNC}$ and the provisional flag of each variant type.
+\end{itemize}
+
+\sub{CalibrationJob}
+\begin{itemize}
+\item The Modal function \texttt{run\_brca1\_analysis} scores 500 \textit{BRCA1} variants on an H100, computes the AUROC and the Youden threshold, and returns the per-variant scores and a distribution plot. Its output defines the constants used by ScoringFunctions.
+\end{itemize}
+\textbf{Relationships:}
+\begin{itemize}
+\item Evo2Model uses ScoringFunctions; CalibrationJob supplies the thresholds that ScoringFunctions applies.
+\end{itemize}
+\sectend{4.4}
+
+\newpage
+\sect{4.5}{SUMMARY}
+\vspace{4pt}
+This chapter analysed the architectural and design aspects of Evo2Serve and established the blueprint for its implementation. The system is built on a multi-layered modular architecture: a data layer of public genome services, a web layer of Next.js routes and a React client, a serverless GPU layer that hosts Evo~2-7B, a decision layer that turns scores into labels, and a presentation layer that places predictions beside curated evidence.
+
+Through the context and level 1 data flow diagrams, the sequence diagram and the class diagram, the chapter described how data flow between the user, the web tier, the public services and the GPU service, how the components interact during one analysis request, and how the classes of the front end, the web API and the GPU service relate to each other. These artefacts show how a coordinate typed by the user becomes an 8\,kb window, two forward passes of the model and a label with a confidence value.
+
+The design also incorporates the security and verification concerns of the project: token-based protection of the GPU, two independent validation layers, a persistent model cache, and an offline calibration and verification track whose outputs are reported in Chapter~6. Because the web tier is stateless and the GPU tier scales automatically between zero and three containers, the architecture can grow with demand without structural changes.
+
+Ultimately, these design principles keep Evo2Serve scalable, secure and maintainable. The layered structure allows a better model, a different gene calibration or an additional data source to be integrated without overhauling the system.
+\sectend{4.5}

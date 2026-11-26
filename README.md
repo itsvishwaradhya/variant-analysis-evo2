@@ -92,3 +92,8 @@ Run:
 ```bash
 npm run dev
 ```
+## License
+
+The code written for this project (`evo2-frontend/`, `evo2-backend/main.py`, `docs/analysis/`, and the report and paper sources) is released under the MIT License; see `LICENSE`. The `evo2-backend/evo2` submodule is the Arc Institute's Evo 2 code and keeps its own licence, and the Evo 2 model weights are subject to the terms published by the Arc Institute. The UCSC, NCBI and ClinVar data are used under their own terms.
+
+> This is a research and teaching tool. Its labels are computational evidence, not a clinical diagnosis.

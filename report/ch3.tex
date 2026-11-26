@@ -1,0 +1,210 @@
+\chap{3}{SYSTEM REQUIREMENTS SPECIFICATION}{3pt}
+\vspace{-8pt}
+\sect{3.1}{FUNCTIONAL REQUIREMENTS}
+\vspace{2pt}
+The functional requirements identify what the Evo2Serve system must do in order to operate as an AI-driven genetic variant analysis platform. They reflect real usage scenarios such as account access, genome browsing, gene and variant lookup, mutation entry, GPU-based scoring, comparison with ClinVar, calibration and verification.
+
+\vspace{6pt}
+\tsub{1. User Registration and Authentication}
+\begin{subitemize}
+\item The system shall allow a user to create an account with an e-mail address and a password, and to sign in and sign out.
+\item Passwords shall be stored only as hashes, and a signed session token shall be issued in an HTTP-only cookie on sign-in.
+\end{subitemize}
+
+\vspace{4pt}
+\tsub{2. Genome Browsing and Gene Search}
+\begin{subitemize}
+\item The system shall list the human genome assemblies published by UCSC (hg38 by default) and the chromosomes of the selected assembly.
+\item Users shall be able to search genes by name (for example BRCA1) or browse the genes of a chromosome, and to open the gene details and the reference sequence.
+\end{subitemize}
+
+\vspace{4pt}
+\tsub{3. Known Variant Retrieval from ClinVar}
+\begin{subitemize}
+\item The system shall retrieve the known variants of the selected gene from ClinVar using the position field of the selected assembly.
+\item Each variant shall be shown with its type, position and clinical classification, and a single click shall run the model on it.
+\end{subitemize}
+
+\vspace{4pt}
+\tsub{4. Variant Entry and Validation}
+\begin{subitemize}
+\item The user shall be able to enter a substitution, deletion, insertion or deletion--insertion by clicking a base or typing a position.
+\item Every request shall be validated in the web tier and again in the GPU tier, with lengths limited to 500 bases.
+\end{subitemize}
+\sectend{3.1}
+
+\tsub{5. Evo 2 Scoring Service}
+\begin{subitemize}
+\item The service shall fetch an 8\,kb context window from UCSC, build the mutated sequence, and score both sequences with Evo~2-7B.
+\item It shall return the score difference $\Delta$, the label, the confidence, the threshold used and a provisional flag.
+\end{subitemize}
+
+\vspace{4pt}
+\tsub{6. Comparison with ClinVar}
+\begin{subitemize}
+\item The interface shall show the Evo~2 prediction and its confidence bar next to the ClinVar classification of the same variant.
+\item It shall state whether the two agree and mark indel predictions as provisional.
+\end{subitemize}
+
+\vspace{4pt}
+\tsub{7. Calibration Routine}
+\begin{subitemize}
+\item An offline GPU job shall score the first 500 \textit{BRCA1} variants of the saturation workbook, compute the ROC curve of $-\Delta$ and the AUROC.
+\item The job shall derive the Youden-optimal threshold and the class spreads used for the confidence value.
+\end{subitemize}
+
+\vspace{4pt}
+\tsub{8. Verification and Reporting}
+\begin{subitemize}
+\item Scripts shall recompute the calibration data composition, the reference predictors, the assembly offset and the validator conformance.
+\item Each script shall write a machine-readable output so that every reported number can be re-checked without a GPU.
+\end{subitemize}
+
+\sect{3.2}{NON- FUNCTIONAL REQUIREMENTS}
+Non-functional requirements are those that define the qualities of the system that are necessary to make it resilient, performant, and satisfactory for the users.
+
+\tsub{1. Performance Requirements}
+\begin{subitemize}
+\item Web requests other than model inference shall complete within a second under typical loads.
+\item A prediction requires two forward passes over about 8,200 bases; the interface shall stay responsive and show a loading state while it runs.
+\end{subitemize}
+
+\tsub{2. Reliability}
+\begin{subitemize}
+\item The GPU function shall retry failed calls twice, and errors from UCSC, NCBI or the model service shall be reported to the user with a clear message and no crash.
+\end{subitemize}
+\sectend{3.2}
+
+\tsub{3. Scalability}
+\begin{subitemize}
+\item The GPU tier shall scale automatically from zero to three containers and scale down after 120 seconds of inactivity.
+\item Model weights shall be cached on a persistent volume so that new containers do not download them again.
+\end{subitemize}
+
+\vspace{4pt}
+\tsub{4. Usability and Interface Quality}
+\begin{subitemize}
+\item The interface shall be responsive, with a clear layout for assembly, gene, sequence, variants and results.
+\item Browsing shall remain public, and analysis shall ask the user to sign in.
+\end{subitemize}
+
+\tsub{5. Security and Data Integrity}
+\begin{subitemize}
+\item All external communication shall use HTTPS; secrets such as the signing key shall be held in environment variables and Modal secrets.
+\item The GPU endpoint shall reject requests without a valid bearer token with HTTP 401.
+\end{subitemize}
+
+\tsub{6. Validity of Predictions}
+\begin{subitemize}
+\item Labels shall be worded as ``likely'' and indel predictions shall be flagged as provisional.
+\item The confidence value shall be documented as a distance heuristic and not as a probability.
+\end{subitemize}
+
+\tsub{7. Maintainability and Modularity}
+\begin{subitemize}
+\item The front end shall be organised in typed components and the back end in separate functions for windowing, editing and scoring.
+\item The request schema shall be defined once per tier and tested against a shared case list.
+\end{subitemize}
+
+\sect{3.3}{HARDWARE REQUIREMENTS}
+\vspace{2pt}
+The system runs on three kinds of hardware: the developer machine, the cloud GPU that hosts the model, and the user's device. The specifications below are recommended for stable execution.
+
+\vspace{4pt}
+\sub{Minimum Requirements (For Development \& Testing):}
+\begin{itemize}
+\item \textbf{Processor:} Intel Core i3 or AMD equivalent (2.0 GHz or above)
+\item \textbf{RAM:} 8 GB
+\item \textbf{Storage:} 20 GB free SSD or HDD space
+\item \textbf{Display:} 1366 x 768 resolution monitor or higher
+\item \textbf{Network:} Reliable broadband connectivity
+\end{itemize}
+\sectend{3.3a}
+
+\sub{Recommended Requirements (For Optimal Performance \& Deployment):}
+\begin{itemize}
+\item \textbf{Processor:} Intel Core i5/i7 or AMD Ryzen 5/7 (3.0 GHz or above)
+\item \textbf{RAM:} 16 GB or higher
+\item \textbf{Storage:} 100 GB SSD or higher
+\item \textbf{Display:} Full HD (1920 x 1080)
+\item \textbf{Network:} Speedy broadband (UCSC, NCBI and GPU endpoint calls)
+\item \textbf{GPU Server (Cloud):} NVIDIA H100 GPU provided by Modal for Evo~2-7B inference
+\end{itemize}
+
+\vspace{4pt}
+\sub{Optional / Advanced Hardware}
+\begin{itemize}
+\item Additional H100-class GPUs for the Evo~2-40B model, which requires several GPUs
+\item Persistent cloud storage volume for the Hugging Face model cache
+\item Redundant storage for backups of the user database
+\end{itemize}
+\sectend{3.3}
+
+\sect{3.4}{SOFTWARE REQUIREMENTS}
+The software environment plays a crucial role in the design, development, and execution of the genetic variant analysis system. The following software components are required:
+
+\vspace{4pt}
+\sub{Operating System:}
+\begin{itemize}
+\item Windows 10/11
+\item Linux (Ubuntu 22.04 or later; the GPU container image is based on Ubuntu 22.04)
+\item macOS (for cross-platform development)
+\end{itemize}
+
+\vspace{4pt}
+\sub{Programming Languages \& Frameworks:}
+\begin{itemize}
+\item \textbf{Python 3.12} -- GPU service, calibration job and analysis scripts
+\item \textbf{FastAPI and Pydantic} -- REST endpoint and request validation
+\item \textbf{TypeScript and Node.js 22} -- front end, API routes and the Zod validation script
+\item \textbf{Next.js 15 and React 19} -- web application framework (T3 stack)
+\end{itemize}
+\sectend{3.4a}
+
+\sub{Machine Learning \& Data Science Libraries:}
+\begin{itemize}
+\item \textbf{Evo 2 package:} Official implementation of the model; loads the \texttt{evo2\_7b} checkpoint and provides \texttt{score\_sequences}.
+\item \textbf{PyTorch 2.7.1 and FlashAttention 2.8.0:} Deep learning runtime built for CUDA 12.6.
+\item \textbf{pandas, scikit-learn and Biopython:} Workbook handling, ROC analysis and FASTA parsing.
+\item \textbf{matplotlib and seaborn:} Plots produced by the calibration job.
+\end{itemize}
+
+\vspace{4pt}
+\sub{Frontend \& Interface Components:}
+\begin{itemize}
+\item \textbf{Tailwind CSS 4 and shadcn/ui:} Styling and accessible interface components.
+\item \textbf{Zod:} Schema validation of the analysis request in the web tier.
+\item \textbf{jose and bcryptjs:} Signed session tokens and password hashing.
+\item \textbf{Mongoose and MongoDB:} User account storage.
+\end{itemize}
+
+\vspace{4pt}
+\sub{Platforms, Data \& External APIs:}
+\begin{itemize}
+\item \textbf{Modal:} Serverless GPU platform that hosts the FastAPI endpoint and the calibration job.
+\item \textbf{UCSC Genome Browser REST API:} Assemblies, chromosomes and reference sequence.
+\item \textbf{NCBI Gene, E-utilities and ClinVar:} Gene search, gene details and known variants.
+\item \textbf{BRCA1 saturation genome editing workbook:} Experimental labels for 3,893 variants.
+\end{itemize}
+
+\vspace{4pt}
+\sub{Developer Tools:}
+\begin{itemize}
+\item \textbf{Visual Studio Code:} Primary development environment.
+\item \textbf{Git \& GitHub:} Version control and repository hosting.
+\item \textbf{Modal CLI and npm:} Deployment of the GPU service and management of web dependencies.
+\item \textbf{Excalidraw and \LaTeX:} Architecture sketches and report preparation.
+\end{itemize}
+\sectend{3.4}
+
+\newpage
+\sect{3.5}{SUMMARY}
+\vspace{4pt}
+\textbf{Evo2Serve} is an AI-driven genetic variant analysis platform that integrates genome browsing, ClinVar lookup, GPU-based zero-shot scoring with Evo~2-7B, comparison with expert classifications, authenticated access and a verification suite within a unified system. The platform supports four mutation types, an 8\,kb context window, a calibrated decision threshold and a flagged confidence value. Its non-functional requirements prioritise response behaviour, reliability, architectural scalability, security, interface usability, validity of predictions and maintainability.
+
+The functional requirements outline the capabilities of the system: account access, assembly and gene browsing, retrieval of known variants, validated variant entry, scoring on a serverless GPU, a comparison view, an offline calibration job and reproducible verification scripts. These modules ensure that users can obtain a model-based opinion on a mutation without any installation and can see it next to curated evidence.
+
+The non-functional requirements focus on a responsive interface, retries and clear error reporting, automatic scaling between zero and three GPU containers, token-based security on both tiers, honest wording of predictions and a modular, typed code base.
+
+Built on a software stack of Python, FastAPI, Next.js, React, PyTorch and Modal, with public genome and variant services as data sources, \textbf{Evo2Serve} is designed to run on a standard development machine while the model runs on a cloud H100 GPU. By establishing clear functional boundaries, quality attributes and operating environments, this requirements specification provides a foundation for the system architecture, the implementation and the verification described in the following chapters.
+\sectend{3.5}

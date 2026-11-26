@@ -29,16 +29,16 @@
 \begin{tabular}{c}
 \IEEEauthorblockN{Vishwaradhya A C\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
 author.one@college.edu}
 \end{tabular}
 &
 \begin{tabular}{c}
 \IEEEauthorblockN{Nandish S Shet\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
 author.two@college.edu}
 \end{tabular}
 \\[
@@ -46,26 +46,26 @@ author.two@college.edu}
 \begin{tabular}{c}
 \IEEEauthorblockN{Jeevan A M\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
 author.three@college.edu}
 \end{tabular}
 &
 \begin{tabular}{c}
 \IEEEauthorblockN{Thippeswamy S\IEEEauthorrefmark{1}}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
 author.four@college.edu}
 \end{tabular}
 \\[
 2.6em]
 \multicolumn{2}{c}{
 \begin{tabular}{c}
-\IEEEauthorblockN{Guide Name\IEEEauthorrefmark{2}~(Faculty Guide)}\\
+\IEEEauthorblockN{Dr. Nandini K S\IEEEauthorrefmark{2}~(Faculty Guide)}\\
 \IEEEauthorblockA{
-\textit{Department of Computer Science and Engineering}\\
-\textit{College Name, University}\\
+\textit{Department of Artificial Intelligence and Data Science}\\
+\textit{Don Bosco Institute of Technology, Bengaluru}\\
 guide.name@college.edu}
 \end{tabular}
 }
@@ -520,7 +520,7 @@ The calibration data are in GRCh37. The service answers for GRCh38 by default, a
 
 We measured what that costs. Aligning the GRCh37 and GRCh38 sequences across the BRCA1 locus using 681 conserved anchors gives a constant offset of 1{,}847{,}983 base pairs; all 680 consecutive anchor pairs are free of indels, so the offset does not drift across the gene. The offset agrees with the NCBI Gene model for BRCA1 and with the per-assembly locations that ClinVar reports for all 290 live BRCA1 records that carry both a GRCh37 and a GRCh38 position, where the difference is again exactly 1{,}847{,}983 in every case.
 
-The consequences follow directly. Table~\ref{tab:assembly} shows them. A user who enters a GRCh37 coordinate while the GRCh38 assembly is selected scores a sequence window that shares no base with the intended one, and the reference base at that coordinate is wrong for all 500 calibration variants. A user who enters a correct GRCh38 coordinate scores the intended sequence, because BRCA1 is identical between the two assemblies across the whole 8{,}192-base window. The offset is therefore a coordinate-naming problem rather than a sequence problem for this gene, which is the more dangerous of the two: the service returns a confident answer either way.
+The consequences follow directly. Table~\ref{tab:assembly} shows them. A user who enters a GRCh37 coordinate while the GRCh38 assembly is selected addresses a locus 1{,}847{,}983 bases away. In the example request shipped with the backend the reference base differs (C instead of T) and the two 8{,}192-base windows agree at only 25.2\% of positions, which is what unrelated sequence shares by chance. A user who enters a correct GRCh38 coordinate scores the intended sequence, because BRCA1 is identical between the two assemblies across the whole 8{,}192-base window. The offset is therefore a coordinate-naming problem rather than a sequence problem for this gene, which is the more dangerous of the two: the service returns a confident answer either way.
 
 \begin{table}[!t]
 \caption{Assembly behaviour of the deployed request path on the 500 calibration variants.}
@@ -529,11 +529,10 @@ The consequences follow directly. Table~\ref{tab:assembly} shows them. A user wh
 \footnotesize
 \begin{tabular}{@{}lrr@{}}
 \toprule
-Quantity & Same coordinate & Lifted to GRCh38 \\
+Quantity & Same coordinate (shipped example) & Lifted to GRCh38 \\
 \midrule
-Reference base matches the assay & 0/500 & 500/500 \\
-8{,}192-base window identity & 0.00\% & 100.00\% \\
-Differing bases in the window & 8{,}192 & 0 \\
+Reference base matches the assay & C instead of T & 500/500 \\
+8{,}192-base window identity & 25.2\% & 100.00\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -552,7 +551,7 @@ The browser adds a second path to the same failure. ClinVar records are searched
 \draw[ax] (g19.east) -- node[above,font=\scriptsize]{$+$1{,}847{,}983} (g38.west);
 \draw[ax,red!70!black] (g19.south) -- (1.4,-1.35) -- (wrong.north);
 \draw[ax,green!50!black] (g38.south) -- (4.5,-1.35) -- (right.north);
-\node[font=\scriptsize,red!70!black,align=center] at (1.4,-2.95) {$0/500$ reference bases\\correct};
+\node[font=\scriptsize,red!70!black,align=center] at (1.4,-2.95) {different base\\(C instead of T)};
 \node[font=\scriptsize,green!50!black,align=center] at (4.5,-2.95) {$500/500$ reference bases\\correct};
 \end{tikzpicture}
 \caption{The two assemblies at the BRCA1 locus and the two ways a coordinate can be interpreted. The offset between GRCh37 and GRCh38 is constant at 1{,}847{,}983 base pairs across the locus. Submitting the GRCh37 coordinate to the GRCh38 endpoint scores a different sequence; submitting the GRCh38 coordinate to the GRCh37 endpoint does the same in the other direction. Neither path is checked by the service.}
