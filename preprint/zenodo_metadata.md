@@ -2,7 +2,7 @@
 
 Upload the file `paper-preprint.pdf` and fill the form as below. All text is plain, so it can be pasted directly.
 
-**Resource type:** Publication / Preprint
+**Resource type:** Preprint (in Zenodo's resource-type list, the item titled "Preprint" under Publication)
 
 **Title:**
 Evo2Serve: A Web-Deployed Genomic Language Model Service for Zero-Shot Variant Scoring and a Verification Study of Its Scoring Pipeline
@@ -21,7 +21,7 @@ Evo2Serve: A Web-Deployed Genomic Language Model Service for Zero-Shot Variant S
 
 Note on names: some authors have initials in place of a surname. Check how each person wants to be written and keep that spelling identical to the PDF. Do not add an e-mail address; Zenodo does not need one on the record.
 
-> All four student authors and the faculty guide must agree to be listed and must agree to this upload before it is published. A Zenodo record with a DOI is public and permanent: authors can be corrected in a new version, but the first version cannot be deleted once published.
+> All four student authors and the faculty guide must agree to be listed and must agree to this upload before it is published. A Zenodo record with a DOI is public and permanent: author names and other metadata can be edited later without changing the DOI, and the owner can delete a record only within 30 days after publication (after that only in justified cases).
 
 **Description (paste the abstract):**
 
@@ -34,9 +34,9 @@ variant effect prediction, genomic language model, Evo 2, BRCA1, ClinVar, web ap
 
 **License:** Creative Commons Attribution 4.0 International (CC BY 4.0) (recommended: it lets others reuse and cite the paper with credit)
 
-**Version:** 1 (first public version; use 1.1, 2, ... for later corrected uploads)
+**Version:** 1 (first public version; use 1.1, 2, ... for later corrected uploads; each new version is a separate record with its own DOI, linked to the other versions)
 
-**Publisher:** leave blank (Zenodo is the repository; this is not a journal publication)
+**Publisher:** leave the default "Zenodo" (the field is required; Zenodo is the repository and this is not a journal publication)
 
 **Related identifiers** (add one row):
 
