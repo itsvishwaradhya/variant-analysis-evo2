@@ -69,3 +69,17 @@ No Evo 2 score is generated, because the evaluation environment has no
 graphics processor. The paper therefore reports no AUROC for the deployed
 service, and states which claims follow from the contract alone and which
 would require a run on a graphics processor.
+
+## Known limitation of `c_assembly_provenance.py`
+
+The "same numeric coordinate" quantities in `c_assembly_provenance.json`
+(`same_coord_ref_match` = 0, `same_coord_ref_mismatch` = 500 and
+`window_identity_same_coord_*`) are **artefacts of the script, not
+measurements**. The script reads the hg38 block only for positions inside it
+(about 43.03-43.19 Mb); the hg19 calibration positions (about 41.2 Mb) lie
+outside that block, so every one of them is recorded as a mismatch by
+construction. The lifted-coordinate results (500 of 500 reference bases match),
+the constant offset of 1,847,983 bases and the shipped-example comparison
+(hg38 43,119,628 = T, same number in hg19 = C, window identity 25.2%) are
+valid. To measure the same-coordinate case properly, fetch an hg38 block that
+covers the hg19 positions before comparing.

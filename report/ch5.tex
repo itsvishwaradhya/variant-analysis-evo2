@@ -1,0 +1,204 @@
+\newcommand{\ps}[2]{\par\noindent\hspace*{#1pt}#2\par\vspace{-3pt}}
+\chap{5}{IMPLEMENTATION \& TESTING}{0pt}
+\vspace{-6pt}
+\sect{5.1}{SOFTWARE IMPLEMENTATION}
+\sub{1. System Overview}
+The implementation of Evo2Serve is designed around a modular, scalable and user-centric architecture. The system integrates several components, namely a genome browser interface, ClinVar lookup, a serverless GPU service running Evo~2-7B, a calibrated decision rule, token-based authentication and a comparison view, into a single cohesive platform. It leverages Python, FastAPI and Modal for the model service, Next.js, React and TypeScript for the web application, and MongoDB for user accounts, ensuring an interactive and secure experience.
+
+The system is organised into three main layers:
+\begin{enumerate}
+\item \textbf{Frontend Layer:} Responsible for user interaction, public data lookups and presentation of results.
+\item \textbf{Web Back-End Layer:} Handles authentication, session checks, request validation and forwarding of analysis requests.
+\item \textbf{Model Service Layer:} Hosts Evo~2-7B on an H100 GPU, retrieves the sequence window, builds the mutated sequence and computes the prediction.
+\end{enumerate}
+
+\sub{2. Model Service Implementation}
+The model service is written in Python and deployed on Modal. It is the core of the system:
+
+\tsub{a. Container Image and Deployment}
+The Modal image is based on \texttt{nvidia/cuda:12.6.3-devel-ubuntu22.04} with Python~3.12. It installs the build tools, PyTorch~2.7.1 for CUDA~12.6 and FlashAttention~2.8.0.post2, clones the official Evo~2 repository and installs it, and then installs the remaining requirements (FastAPI, pandas, scikit-learn, Biopython, PyJWT and others). A persistent Modal volume named \texttt{hf\_cache} is mounted at the Hugging Face cache path so that the weights are downloaded only once. The service class is declared with \texttt{gpu="H100"}, \texttt{max\_containers=3}, \texttt{retries=2}, \texttt{scaledown\_window=120} and a secret that provides the signing key. The model is loaded once per container in a method decorated with \texttt{@modal.enter}.
+
+\tsub{b. Request Validation}
+A Pydantic model, \texttt{VariantRequest}, defines the request: position, variant type (\texttt{snv}, \texttt{deletion}, \texttt{insertion} or \texttt{delins}), alternate base, deletion length, inserted sequence, genome and chromosome. A model validator enforces the rules of each type. A substitution requires one of A, C, G, T and forbids a deletion length and an inserted sequence; a deletion requires a length between 1 and 500; an insertion requires an inserted sequence of 1 to 500 bases; a deletion--insertion requires both.
+
+\tsub{c. Window Retrieval}
+The function \texttt{get\_genome\_sequence} computes the half-open interval of Equation~(1) of the design, requests it from the UCSC \texttt{getData/sequence} endpoint, upper-cases the returned bases and checks the length. For deletions and deletion--insertions the window is centred on the middle of the affected bases so that flanking context stays balanced. The function returns the sequence and its start coordinate, from which the offset of the variant in the window is computed.
+
+\tsub{d. Mutation, Scoring and Decision}
+The function \texttt{analyze\_variant} builds the mutated sequence by slicing the window at the offset of the variant: it replaces one base for a substitution, removes $n$ bases for a deletion, inserts the new bases after the anchor base for an insertion, and replaces $n$ bases by the new bases for a deletion--insertion. It scores the reference and the mutated sequence with \texttt{model.score\_sequences}, subtracts the two mean log-likelihoods to obtain $\Delta$, and applies the threshold table \texttt{VARIANT\_THRESHOLDS}. If $\Delta<\tau$ the label is ``Likely pathogenic'' and the confidence is $\min(1,|\Delta-\tau|/\sigma_{LOF})$; otherwise the label is ``Likely benign'' and $\sigma_{FUNC}$ is used. The constants are $\tau=-0.0009178519$, $\sigma_{LOF}=0.0015140239$ and $\sigma_{FUNC}=0.0009016589$. Indel types reuse the substitution constants and set a provisional flag in the response.
+
+\tsub{e. Calibration Routine}
+The function \texttt{run\_brca1\_analysis} runs as a separate Modal job on an H100 with a 1,000-second timeout. It reads the saturation genome editing workbook, merges the functional and intermediate classes, builds 8,192-base windows from the shipped GRCh37 chromosome 17 sequence, scores 168 unique reference windows and 500 mutated windows, computes $\Delta$ for each variant, and then the AUROC and the Youden-optimal threshold on the ROC curve of $-\Delta$ \cite{hanley1982roc,youden1950index}. It also returns the class standard deviations and a strip plot of the two score distributions.
+
+\sub{3. Web Back-End Implementation}
+The Next.js route handlers implement authentication and protect the GPU:
+\begin{itemize}
+\item \textbf{Registration and Sign-in:} The routes \texttt{/api/auth/signup} and \texttt{/api/auth/login} validate the e-mail and password, store or check a bcrypt hash (10 rounds) in MongoDB through a Mongoose \texttt{User} model, and set an HTTP-only cookie named \texttt{token} that holds an HS256 token signed with the \texttt{jose} library and valid for seven days.
+\item \textbf{Session Handling:} \texttt{/api/auth/me} returns the current user, and \texttt{/api/auth/logout} clears the cookie. The cookie uses \texttt{sameSite=lax} and the \texttt{secure} flag in production.
+\item \textbf{Analysis Route:} \texttt{/api/analyze} reads the cookie, rejects missing or invalid sessions with HTTP~401, validates the body with a Zod schema, rejects invalid payloads with HTTP~400, forwards valid payloads to the Modal URL with the token as a bearer header, and maps upstream errors to responses.
+\end{itemize}
+
+\sub{4. Frontend Implementation}
+The frontend is a Next.js~15 application written in TypeScript with React~19, Tailwind CSS~4 and shadcn/ui components. The main page offers two modes. In \textit{Search} mode the user types a gene name, with a one-click BRCA1 example; in \textit{Browse} mode the user selects a chromosome and the genes on it are listed. The assembly list is read from UCSC and defaults to hg38. Gene search uses the NCBI clinical tables service and shows at most ten results.
+
+Selecting a gene opens the gene viewer. The gene details come from an NCBI E-summary call, and the sequence from the UCSC API, limited to 10,000 bases for display. The known-variants table retrieves at most twenty ClinVar records through E-search and E-summary, using the \texttt{chrpos37} field for hg19 and \texttt{chrpos38} otherwise, and derives the variant type of each record from its title. The variant analysis panel lets the user choose the mutation type and enter the position, the alternate base or the deleted and inserted sequences; clicking a base in the sequence fills the position and the reference base. The comparison modal shows the Evo~2 label and confidence bar next to the ClinVar classification and states whether they agree.
+
+\sub{5. Verification Scripts}
+Every number reported in Chapter~6 is produced by a script in the repository folder \texttt{docs/analysis}, which reads only files that are already in the repository except where noted. Script \textit{a} characterises the calibration data and the two window rules; \textit{b} computes the AUROC, bootstrap intervals and Youden points of the reference predictors; \textit{c} verifies the assembly offset against UCSC and NCBI; \textit{d} executes the Pydantic model over the request matrix; \textit{e} executes the real Zod schema over the same matrix and the live ClinVar checks; \textit{f} compares the two validators; \textit{g} exercises the scoring contract with a stand-in scorer; and \textit{h} writes the figure data. Each script writes a JSON file next to itself.
+
+\sub{6. Security and Error Handling}
+Security was prioritised throughout the implementation. Passwords are stored only as bcrypt hashes, the session cookie is HTTP-only, and the GPU endpoint rejects requests without a valid bearer token before any computation. The signing key is held in environment variables and a Modal secret, not in the code. Requests are validated in both tiers. Failures of the public services, of the model service and of the validators are caught and returned as messages with suitable status codes instead of crashing the interface.
+
+\sub{7. Deployment}
+The GPU service is deployed with \texttt{modal deploy main.py}, which returns the URL of the endpoint; the web application reads this URL from the environment variable \texttt{NEXT\_PUBLIC\_ANALYZE\_SINGLE\_VARIANT\_BASE\_URL} and is started with \texttt{npm run dev} during development. Because the web tier is stateless, it can be hosted on any platform that runs Next.js.
+
+\sub{8. Configuration and Reproducibility}
+The web application is configured through three environment variables validated at start-up by a typed schema: \texttt{MONGODB\_URI}, the address of the account database; \texttt{JWT\_SECRET}, a signing key of at least 32 characters that must be identical in the web tier and in the Modal secret; and \texttt{NEXT\_PUBLIC\_ANALYZE\_SINGLE\_VARIANT\_BASE\_URL}, the address of the deployed GPU endpoint. A template file lists the variables without secrets. The project is installed by cloning the repository with its submodule, installing the Python requirements, running \texttt{modal setup} once, and then deploying the service with \texttt{modal deploy main.py}; the web application is installed with \texttt{npm i} and started with \texttt{npm run dev}. A local entry point, run with \texttt{modal run main.py}, posts an example request for the substitution at chr17:43119628 on hg38, minting a short-lived development token when no token is supplied, which allows the deployed service to be checked end to end.
+\sectend{5.1}
+
+\sect{5.2}{TESTING}
+Testing is a critical phase of the project to ensure that the system functions correctly, reliably and securely under different conditions. Because no GPU is available in the verification environment, the tests concentrate on the parts of the system whose behaviour does not depend on the model, and each is executable by a script.
+
+\sub{Unit Testing:}
+Individual units such as the window construction, the mutation functions, the decision rule and the confidence function were tested independently. The deployed window and scoring functions were imported from the service module and exercised with a stand-in scorer, a third-order Markov background model estimated from the shipped sequence, so that the arithmetic of the contract could be checked without a GPU.
+
+\sub{Integration Testing:}
+The two validation layers were tested together by generating 55 request cases that cover every field of the schema, every numeric boundary and the 500-base limit, and running them against the real Pydantic model and the real Zod schema. The ClinVar integration was tested against 300 live \textit{BRCA1} records, checking the position field, the variant types and the coordinates of both assemblies.
+
+\sub{User Interface Testing:}
+The interface was exercised manually in the browser: assembly selection, chromosome browsing, gene search, base clicking, the variant form for all four mutation types, the sign-in and sign-up page, and the comparison view. Responsive behaviour was checked on different window sizes.
+
+\sub{Error and Exception Testing:}
+Scenarios such as requests without a session, malformed payloads, out-of-range lengths, invalid bases and unreachable public services were tested to confirm that the system returns clear error messages and does not crash.
+
+
+\sub{Regression and Reproducibility Testing:}
+Because every analysis script writes a machine-readable result file, the tests can be repeated after any change to the code. A change to the window rule, the request schema or the thresholds shows up as a change in the corresponding output file, which makes regressions visible. The scripts read only files that are already in the repository, except for the two that query live UCSC and NCBI services, so the remaining tests give the same results on any machine.
+
+\tsub{5.2.1 Testing Objectives}
+The primary objectives of testing the Evo2Serve system are as follows:
+\begin{itemize}
+\item To verify that all functional requirements are correctly implemented.
+\item To ensure that the mutated sequence has the correct length and content for every mutation type.
+\item To validate secure authentication and rejection of unauthenticated requests.
+\item To confirm that the two request validators accept and reject the same inputs.
+\item To confirm that the calibration data are read correctly and match the published composition.
+\item To confirm that the window and assembly used at prediction time match those used at calibration time.
+\item To ensure system stability under normal and edge-case conditions.
+\item To verify that known ClinVar variants are parsed and that the correct position field is used for the selected assembly.
+\end{itemize}
+
+\sectend{5.2}
+
+\sect{5.3}{Flowchart with Explanation}
+\begin{center}\diagFlow\end{center}\label{fig:5.1}
+\vspace{-6pt}
+\figcap{5.1}{Flowchart of Evo2Serve}
+The flow of the Evo2Serve system follows a logical sequence of steps from user interaction to final output generation:
+\begin{enumerate}
+\item The process begins when the user opens the web application; browsing is public.
+\item The user selects a genome assembly and searches for a gene or browses a chromosome.
+\item The application loads the gene details, the reference sequence and the known ClinVar variants.
+\item The user clicks a known variant or enters a custom mutation; analysis requires a signed-in session.
+\item If the user is not signed in, the sign-in page is shown and the request is retried after login.
+\item The Next.js route validates the request; an invalid request is rejected with an error message.
+\item A valid request is forwarded to the Modal endpoint, which fetches the 8\,kb window from UCSC.
+\item The service builds the mutated sequence and scores the reference and mutated sequences with Evo~2.
+\item The score difference is compared with the threshold to obtain the label, the confidence and the provisional flag.
+\item The result is returned and displayed with the label, the confidence bar and the ClinVar comparison, completing the workflow.
+\end{enumerate}
+\sectend{5.3}
+
+\sect{5.4}{Pseudocode of the Project}
+\ps{0}{START}
+\ps{8}{User opens application}
+\ps{8}{Load list of human assemblies from UCSC; select hg38}
+\ps{8}{WHILE user session is active}
+\ps{22}{User selects an action}
+\ps{22}{IF action == ``Search gene'' OR ``Browse chromosome''}
+\ps{36}{Query NCBI gene service; show up to 10 genes}
+\ps{22}{ELSE IF action == ``Open gene''}
+\ps{36}{Fetch gene details and reference sequence (at most 10,000 bases)}
+\ps{36}{Fetch up to 20 ClinVar variants using chrpos37 or chrpos38}
+\ps{22}{ELSE IF action == ``Analyze variant''}
+\ps{36}{IF user not signed in THEN show sign-in prompt; CONTINUE}
+\ps{36}{Read position, type, alternate bases and lengths}
+\ps{36}{Validate request with Zod schema; IF invalid THEN show error; CONTINUE}
+\ps{36}{Forward request with bearer token to Modal endpoint}
+\ps{36}{Verify token; validate request with Pydantic model}
+\ps{36}{Fetch 8\,kb window around the variant from UCSC}
+\ps{36}{Build mutated sequence for SNV, DEL, INS or DELINS}
+\ps{36}{ref\_score = Evo2.score(window); var\_score = Evo2.score(mutated)}
+\ps{36}{delta = var\_score - ref\_score}
+\ps{36}{IF delta $<$ tau THEN label = ``Likely pathogenic'' ELSE label = ``Likely benign''}
+\ps{36}{confidence = min(1, |delta - tau| / sigma of predicted class)}
+\ps{36}{IF type is not SNV THEN mark prediction as provisional}
+\ps{36}{Display label, confidence and ClinVar comparison}
+\ps{22}{ELSE IF action == ``Sign in'' OR ``Sign up''}
+\ps{36}{Verify or create account; issue signed cookie valid for 7 days}
+\ps{22}{ELSE IF action == ``Sign out''}
+\ps{36}{Clear cookie}
+\ps{8}{END WHILE}
+\ps{0}{END}
+\sectend{5.4}
+
+\sect{5.5}{ADVANTAGES, DISADVANTAGES, APPLICATIONS AND APPROACHES}
+\textbf{ADVANTAGES}
+\begin{itemize}
+\item Zero-shot scoring with a state-of-the-art genomic language model, with no task-specific training and no installation for the user.
+\item Support for substitutions, deletions, insertions and deletion--insertions, whereas many classical predictors handle only missense changes.
+\item Side-by-side comparison of the model prediction with the expert ClinVar classification of the same variant.
+\item Serverless GPU hosting that scales to zero when idle and caches the model weights on a persistent volume.
+\item Token-based protection of the GPU endpoint and two independent validation layers.
+\item A reproducible verification suite whose every number can be re-checked without a GPU.
+\end{itemize}
+
+\textbf{DISADVANTAGES}
+\begin{itemize}
+\item Requires a stable internet connection to reach UCSC, NCBI and the model endpoint.
+\item The threshold was calibrated on 500 \textit{BRCA1} substitutions in one region of one gene and may not transfer to other genes or to indels.
+\item The confidence value is a distance heuristic and not a calibrated probability.
+\item Each request needs two forward passes of a 7-billion-parameter model on a data-centre GPU, and a cold start must load the weights.
+\end{itemize}
+
+\textbf{APPLICATIONS}\\
+Evo2Serve can be used across several settings because it makes a large genomic model accessible in a browser. Key applications include:
+
+\tsub{1. Education and Training}
+\begin{itemize}
+\item Students of biotechnology, medicine and computer science can explore real genes, ClinVar records and a state-of-the-art model without programming.
+\item Teaching how computational evidence fits into the ACMG/AMP framework.
+\end{itemize}
+
+\tsub{2. Research Triage}
+\begin{itemize}
+\item Quick, model-based second opinion on rare or novel variants to prioritise them for laboratory follow-up.
+\item Exploration of insertions and deletions that classical predictors do not score.
+\end{itemize}
+
+\tsub{3. Support for Genetic Counselling}
+\begin{itemize}
+\item Explaining the difference between a model score and a curated classification by showing both side by side.
+\item Communicating clearly that computational evidence is supporting evidence only.
+\end{itemize}
+
+\tsub{4. Method Development and Benchmarking}
+\begin{itemize}
+\item A reproducible reference for the calibration data and for five established predictors on the same rows.
+\item A tested template for deploying other genomic models as web services.
+\end{itemize}
+
+\tsub{5. Low-Cost Deployment for Colleges and Laboratories}
+\begin{itemize}
+\item Pay-per-use GPU billing allows a small institution to host the service without buying hardware.
+\end{itemize}
+
+\textbf{APPROACHES:}\\
+The system follows a hybrid approach that combines zero-shot scoring with a genomic language model, a threshold calibrated on experimental data and real-time integration of public genome services. A layered architecture, two-tier validation and a serverless GPU are used to ensure computational efficiency, scalability and maintainability.
+\sectend{5.5}
+
+\sect{5.6}{SUMMARY}
+This chapter described the implementation and testing of the Evo2Serve system. It detailed the model service, the web back end, the frontend, the verification scripts, the security measures and the deployment, followed by the testing strategy and objectives, the system flow, the flowchart, the pseudocode, the advantages, disadvantages, applications and the approach. Through systematic testing of the window construction, the mutation functions, the decision rule, the two request validators and the live ClinVar integration, the system demonstrates a well-defined contract and a working interface. The modular and scalable design allows the system to be extended with recalibrated thresholds and additional genes.
+
+Furthermore, the successful integration of public genome services with a serverless GPU endpoint shows the adaptability of the framework. By connecting a genomic language model to interactive web technologies, the platform transforms a research notebook into a tool that a student or researcher can use in a browser. Ultimately, the project bridges theoretical variant effect prediction with practical, deployable software engineering.
+\sectend{5.6}

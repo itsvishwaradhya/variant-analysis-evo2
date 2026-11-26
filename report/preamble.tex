@@ -1,0 +1,110 @@
+%% =====================================================================
+%%  Layout of the DBIT / VTU major project report (A4, Times New Roman 12pt,
+%%  1.5 line spacing, brown double-rule header and footer, framed front matter)
+%% =====================================================================
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}          % Times (Times New Roman look-alike)
+\usepackage{courier}
+\usepackage[papersize={597pt,843pt},left=63.7pt,textwidth=483.6pt,
+            top=62pt,textheight=702pt,
+            headheight=0pt,headsep=0pt,footskip=0pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{refcount}
+\usepackage{eso-pic}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes,shapes.geometric,shapes.multipart,calc,fit,backgrounds,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{rulebrown}{RGB}{132,57,9}
+\definecolor{titlered}{RGB}{255,0,0}
+\definecolor{namered}{RGB}{235,0,0}
+
+\renewcommand{\baselinestretch}{1.4241}   % 12pt text -> 20.65pt line pitch
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 1pt}
+\setlength{\topskip}{12pt}
+\widowpenalty=10000 \clubpenalty=10000
+\raggedbottom
+\sloppy
+\hyphenpenalty=10000 \exhyphenpenalty=10000
+\pagestyle{empty}
+
+%% ---------- lists -----------------------------------------------------
+\setlist[itemize]{label=\textbullet,leftmargin=14.3pt,labelsep=4pt,itemsep=4pt,parsep=0pt,topsep=2pt,partopsep=0pt}
+\setlist[enumerate]{leftmargin=18pt,labelsep=4pt,itemsep=5pt,parsep=0pt,topsep=3pt,partopsep=0pt}
+\newlist{subitemize}{itemize}{1}
+\setlist[subitemize]{label=\textbullet,leftmargin=43pt,labelsep=0pt,itemsep=4pt,parsep=0pt,topsep=2pt,partopsep=0pt}
+
+%% ---------- headings --------------------------------------------------
+\newcommand{\ProjectTitle}{AI-Based Web Application to Analyse Genetic Mutations and Disease Impact}
+\newcommand{\RunTitle}{AI-Based Web Application to Analyse Genetic Mutations and Disease Impact}
+\newcommand{\CourseCode}{BAD786}
+\newcommand{\SysName}{Evo2Serve}
+
+%% chapter: label start, big heading, optional end label is set by \chapend
+\newcommand{\chap}[3]{%  #1 number, #2 TITLE
+  \clearpage\label{ch:#1:start}%
+  \par\noindent\hspace*{#3}{\fontsize{14}{20.65}\selectfont\bfseries CHAPTER #1}\par
+  \vspace{4pt}%
+  \begin{center}{\fontsize{16}{20.65}\selectfont\bfseries #2}\end{center}\par\vspace{2pt}}
+\newcommand{\chapend}[1]{\label{ch:#1:end}}
+\newcommand{\sect}[2]{\par\noindent\hspace*{3pt}\textbf{#1\ \ #2}\label{s:#1:start}\par\vspace{5pt}}
+\newcommand{\sectend}[1]{\label{s:#1:end}}
+\newcommand{\sub}[1]{\par\noindent\textbf{#1}\par}
+\newcommand{\tsub}[1]{\par\noindent\textbf{#1}\par\vspace{-3pt}}
+
+%% ---------- figures ---------------------------------------------------
+\newcommand{\figcap}[2]{\par\begin{center}{\fontsize{12}{20.65}\selectfont Figure #1: #2}\end{center}}
+\newcommand{\figimg}[3]{% #1 label #2 width #3 file
+  \begin{center}\includegraphics[width=#2]{#3}\end{center}\label{#1}}
+
+%% ---------- page furniture (drawn on every page) -----------------------
+\newif\iffm \fmtrue
+\newif\iffirstfm \firstfmtrue
+\newcommand{\pgput}[3]{\put(#1,-#2){#3}}   % x, y measured from top-left of the page
+\AddToShipoutPictureBG{%
+  \AtPageUpperLeft{%
+    % black double-line page frame on EVERY page: thick outer line, thin inner line
+    \put(24,-27){\color{black}\rule{549pt}{3pt}}%
+    \put(24,-818){\rule{3pt}{794pt}}%
+    \put(570,-818){\rule{3pt}{794pt}}%
+    \put(24,-818){\rule{549pt}{3pt}}%
+    \put(28.5,-30){\rule{540pt}{1.5pt}}%
+    \put(28.5,-814){\rule{1.5pt}{785.5pt}}%
+    \put(567,-814){\rule{1.5pt}{785.5pt}}%
+    \put(28.5,-814){\rule{540pt}{1.5pt}}%
+    \iffm
+      \iffirstfm\else
+        \put(0,-805){\makebox(597,0)[c]{\fontsize{11}{12}\selectfont\bfseries\roman{page}}}%
+      \fi
+      \iffirstfm
+        \put(0,-805){\makebox(597,0)[c]{\fontsize{11}{12}\selectfont\roman{page}}}%
+      \fi
+    \else
+      % running header (outside the black page frame)
+      \put(55,-17){\fontsize{10}{12}\selectfont\RunTitle}%
+      \put(468,-17){\makebox(68,0)[r]{\fontsize{10}{12}\selectfont\CourseCode}}%
+      % running footer
+      \put(55,-830){\fontsize{10}{12}\selectfont Department of AI\&DS}%
+      \put(274.7,-830){\fontsize{10}{12}\selectfont 2026-27}%
+      \put(513.5,-830){\makebox(22.5,0)[r]{\fontsize{10}{12}\selectfont\arabic{page}}}%
+    \fi
+  }%
+}
+
+%% ---------- table-of-contents helpers ----------------------------------
+\newcommand{\pr}[2]{%  page or page range between two labels
+  \ifnum\getpagerefnumber{#1}=\getpagerefnumber{#2}\relax\getpagerefnumber{#1}\else
+  \getpagerefnumber{#1}--\getpagerefnumber{#2}\fi}
+\newcommand{\pg}[1]{\getpagerefnumber{#1}}
