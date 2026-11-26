@@ -8,7 +8,9 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usepgfplotslibrary{statistics}
+\usepackage{graphicx}
 \usepackage{hyperref}
+\input{docs/analysis/figure_data.tex}
 
 \definecolor{evogreen}{HTML}{3C4F3D}
 \definecolor{evoorange}{HTML}{DE8246}
@@ -22,9 +24,10 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}[frame number]
 
-\title[AI-Based Variant Analysis]{AI-Based Web Application to Analyse Genetic Mutations and Disease Impact}
+\title[Evo2Serve]{Evo2Serve: Methodology, Implementation and Results}
+\subtitle{AI-Based Analysis of Genetic Mutations and Disease Impact}
 \author[Vishwaradhya \and Nandish \and Jeevan \and Thippeswamy]{Vishwaradhya A C \and Nandish S Shet \and Jeevan A M \and Thippeswamy S \\[0.3em] {\small Guide: Dr.\ Nandini K S, Associate Professor, Dept.\ of AI \& DS}}
-\institute[DBIT]{Department of Artificial Intelligence and Data Science \\ Don Bosco Institute of Technology, Bengaluru}
+\institute[Don Bosco Institute of Technology]{Department of Artificial Intelligence and Data Science \\ Don Bosco Institute of Technology, Bengaluru}
 \date{\today}
 
 \begin{document}
@@ -39,16 +42,14 @@
 \begin{enumerate}
 \item Problem statement
 \item Objectives
-\item Literature survey
 \item Methodology
 \end{enumerate}
 \end{column}
 \begin{column}{0.5\textwidth}
-\begin{enumerate}\setcounter{enumi}{4}
+\begin{enumerate}\setcounter{enumi}{3}
 \item Implementation progress
-\item Results + live demo
-\item Limits and next steps
-\item References
+\item Results
+\item Conclusion
 \end{enumerate}
 \end{column}
 \end{columns}
@@ -62,136 +63,164 @@ A single base change in \textit{BRCA1} (e.g.\ \texttt{chr17:43119628 G}) can be 
 \begin{itemize}
 \item Curated rules are reliable but slow for rare/unseen variants.
 \item Classical scores (SIFT, PolyPhen-2, CADD) use hand-built features.
-\item DNA language models learn constraint directly from sequence --- but live in notebooks, not clinics.
+\item DNA language models learn constraint from sequence --- but live in notebooks, not clinics.
 \end{itemize}
-\textbf{What we built:} browser $\rightarrow$ genome APIs $\rightarrow$ serverless GPU (Evo2-7B) $\rightarrow$ readable call with confidence.
+\begin{block}{Validation question}
+What must a deployed genomic model service reveal before its output can be read as proof?
+\end{block}
+\begin{itemize}
+\item A model score is not a clinical label: the move from score to reading is a software contract.
+\item Contracts fail in ways models do not: a wrong assembly yields a confident answer about a different base.
+\end{itemize}
 \end{frame}
 
 % ---------- OBJECTIVES ----------
 \begin{frame}{Objectives}
 \begin{enumerate}
-\item Let users pick a human assembly (hg38), browse chromosomes or search genes (e.g.\ BRCA1), inspect reference sequence and known ClinVar entries.
-\item Serve Evo2-7B on a serverless H100 (Modal + FastAPI) with one POST: \texttt{\{pos, alt, genome, chr\}}.
-\item Score with an 8192-bp window: $\Delta = S(var)-S(ref)$, map to \textit{Likely pathogenic / benign} with confidence from a BRCA1 calibration.
-\item Evaluate on 500 BRCA1 SNVs (AUROC, distributions) and document limits honestly (SNV-only, hg19-derived thresholds).
+\item Specify the scoring contract: window construction, the four supported edit operations, the score difference, the threshold rule and the confidence transform.
+\item Characterize the calibration data: reproduce the assay composition and reveal that the 500-row slice used for the deployed threshold is class-enriched and position-localized.
+\item Compute the first reproducible reference envelope for that slice, with bootstrap confidence intervals.
+\item Verify the windowing and assembly contracts: deployed window is calibration window +1 base at the 3' end; deployed threshold was fitted on GRCh37 while the service answers for GRCh38.
+\item Execute the request conformance suite and report the reproduced defects.
 \end{enumerate}
-\end{frame}
-
-% ---------- LITERATURE 1 ----------
-\begin{frame}{Literature Survey (1): From Alignment to Predictors}
-\begin{table}\small
-\begin{tabular}{@{}lll@{}}
-\toprule
-Year & Milestone & Why it matters to us \\
-\midrule
-1970--1990 & Needleman--Wunsch, Smith--Waterman, BLAST & Alignment/search foundations \\
-1977 & Sanger sequencing & Reference genomes exist \\
-2002 & UCSC Genome Browser & Our live sequence source \\
-2003/2010/2014 & SIFT / PolyPhen-2 / CADD & Baselines we compare against \\
-2015 & ACMG guidelines, 1000 Genomes & Rules + frequency context \\
-\bottomrule
-\end{tabular}
-\end{table}
-\end{frame}
-
-\begin{frame}{Literature Survey (2): Foundation Models to Evo2}
-\begin{table}\small
-\begin{tabular}{@{}lll@{}}
-\toprule
-Year & Model & Takeaway \\
-\midrule
-2017 & Transformer & Attention backbone \\
-2021/2023 & Enformer / Borzoi & Long-range regulation is learnable \\
-2023 & ESM-2, AlphaMissense, Nucleotide Transformer & Zero-shot effect prediction works \\
-2023 & Hyena / StripedHyena2, FlashAttention-2, RoPE & Long-context machinery \\
-2024 & Evo (7kb$\rightarrow$131kb) & Genome-scale generation + scoring \\
-2025 & \alert{Evo2 (OpenGenome2 8.8T, to 1M ctx)} & Our scorer: 40B/7B/1B, BRCA1 zero-shot \\
-\bottomrule
-\end{tabular}
-\end{table}
-\vspace{0.2em}
-\small Gap we fill: Evo2 is notebook-only --- we deploy it with calibration, confidence and a usable interface.
 \end{frame}
 
 % ---------- METHODOLOGY ARCH ----------
 \begin{frame}{Methodology: System Architecture}
 \centering
-\begin{tikzpicture}[node distance=1.7cm,>=Stealth,
- box/.style={rectangle,draw,rounded corners,minimum width=2.5cm,minimum height=0.95cm,align=center,font=\footnotesize},
- small/.style={font=\scriptsize}]
-\node[box,fill=evobg] (fe) {Next.js 15 / React 19\\Tailwind + shadcn};
-\node[box,right=of fe,fill=evobg] (api) {Public APIs\\UCSC $\cdot$ NCBI\\ClinVar};
-\node[box,right=of api,fill=orange!15] (mo) {Modal H100\\Evo2-7B\\FastAPI};
-\node[box,right=of mo,fill=green!10] (cal) {Calibrate\\threshold +\\confidence};
-\draw[->,thick,out=20,in=160] (fe.east) to node[small,above]{assembly/gene} (api.west);
-\draw[->,thick,out=-160,in=-20] (api.west) to node[small,below]{sequence+bounds} (fe.east);
-\draw[->,thick] ([yshift=0.55cm]fe.north) -- node[small,above]{POST pos/alt/genome/chr} ([yshift=0.55cm]mo.north);
-\draw[->,thick] (mo.east) -- node[small,above]{delta, call} (cal.west);
-\draw[->,thick] ([yshift=-0.6cm]cal.south) -- node[small,below]{JSON} ([yshift=-0.6cm]fe.south);
-\end{tikzpicture}
+\resizebox{\textwidth}{!}{\begin{tikzpicture}[>=Stealth,font=\footnotesize,
+  box/.style={rectangle,draw,rounded corners=2pt,minimum width=2.4cm,minimum height=1.2cm,align=center,inner sep=2pt},
+  store/.style={cylinder,draw,shape border rotate=90,aspect=0.22,minimum width=2.4cm,minimum height=1.0cm,align=center,inner sep=2pt},
+  lbl/.style={font=\scriptsize,align=center,inner sep=1.5pt,fill=white},
+  edge/.style={-{Stealth[length=2.4mm]},line width=0.5pt},
+  back/.style={-{Stealth[length=2.4mm]},line width=0.5pt,densely dotted}]
+\node[box,fill=evobg] (ui) at (0,0) {Browser client\\Next.js 15, React 19\\Tailwind, shadcn/ui};
+\node[box,fill=gray!12] (route) at (4.8,0) {Next.js route\\Zod validation\\JWT cookie check};
+\node[box,fill=orange!16] (api) at (9.6,0) {Modal FastAPI\\Pydantic validation\\second JWT check};
+\node[box,fill=orange!26] (gpu) at (14.3,0) {Evo 2-7B\\StripedHyena 2\\NVIDIA H100};
+\node[store,fill=green!10] (cache) at (12.6,-3.2) {Hugging Face\\cache volume};
+\node[box,fill=gray!8,minimum width=4.6cm] (pub) at (2.2,-3.2) {Public data services\\UCSC Genome Browser REST API\\NCBI E-utilities and ClinVar};
+\draw[edge] (ui.east) -- node[lbl,above,pos=0.5]{POST variant\\and cookie} (route.west);
+\draw[edge] (route.east) -- node[lbl,above,pos=0.5]{forwarded JSON\\and bearer token} (api.west);
+\draw[edge] (api.east) -- node[lbl,above,pos=0.5]{score request} (gpu.west);
+\draw[back] (gpu.south) -- node[lbl,right,pos=0.40]{weights cached\\across runs} (cache.north);
+\draw[back] (api.north east) to[out=58,in=122] node[lbl,above,pos=0.5]{JSON result} (route.north east);
+\draw[back] (route.north) to[out=100,in=80] node[lbl,above,pos=0.42]{JSON response} (ui.north);
+\draw[edge] (ui.south) -- node[lbl,left,pos=0.45]{assembly, gene,\\sequence, ClinVar} (pub.north);
+\draw[edge] (api.south) -- node[lbl,below,pos=0.30]{context window} (pub.north east);
+\end{tikzpicture}}
 \begin{itemize}\small
-\item Browser never touches GPU. Weights stay warm on \texttt{hf\_cache} volume; \texttt{@enter} loads once, \texttt{scaledown\_window=120s}.
+\item Browser never touches GPU. Weights stay warm on the \texttt{hf\_cache} volume; \texttt{@modal.enter} loads once, \texttt{scaledown\_window=120s}.
 \end{itemize}
 \end{frame}
 
 % ---------- METHODOLOGY SCORING ----------
-\begin{frame}{Methodology: Windowing and Scoring}
+\begin{frame}{Methodology: Windowing and Scoring Contract}
 \begin{columns}[T]
 \begin{column}{0.52\textwidth}
-\small For 1-indexed position $p$, window $W{=}8192$:
+\small Let $p$ be the 1-based coordinate of the substituted, inserted or first deleted base; $n$ the deletion length and $q$ the inserted string.
 \begin{equation*}
-s{=}\max(0,p{-}1{-}W/2),\; e{=}\min(L,p{-}1{+}W/2{+}1)
+s{=}\max(0,c-1-h),\; e{=}c-1+h+1
 \end{equation*}
-Offset $r{=}p{-}1{-}s$, splice:
-\begin{equation*}
-w^{var}{=}w_{0:r}{+}\text{ALT}{+}w_{r+1:}
-\end{equation*}
-Score both, delta:
-\begin{equation*}
-\boxed{\Delta = S(w^{var})-S(w^{ref})}
-\end{equation*}
-\small Negative $\Delta$ = alternate less plausible. Ref windows deduplicated ($\sim$1/3 fewer calls).
+with window $W{=}8192$, half width $h{=}4096$; $c{=}p$ for SNV/insertion, $c{=}p+\lfloor(n-1)/2\rfloor$ for deletion/delins. Interior windows are $8193$ bases; the variant sits at offset $r{=}p-1-s{=}4096$.
+\begin{align*}
+w^{\mathrm{SNV}} &= w_{0:r} + a + w_{r+1:},\\
+w^{\mathrm{DEL}} &= w_{0:r} + w_{r+n:},\\
+w^{\mathrm{INS}} &= w_{0:r+1} + q + w_{r+1:},\\
+w^{\mathrm{DELINS}} &= w_{0:r} + q + w_{r+n:}.
+\end{align*}
+\textit{Edits} that change length shift the downstream context.
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
-\begin{tikzpicture}[>=Stealth,font=\scriptsize,
- base/.style={rectangle,draw,minimum width=0.42cm,minimum height=0.5cm,align=center}]
-\foreach \i/\b in {1/C,2/T,3/A,4/G,5/C,6/G,7/A,8/C,9/G,10/T,11/A} {\node[base,fill=evobg] at (\i*0.5,0) {\b};}
-\node[base,fill=red!20] at (6*0.5,-0.85) {A};
-\foreach \i/\b in {1/C,2/T,3/A,4/G,5/C,7/A,8/C,9/G,10/T,11/A} {\node[base,fill=gray!10] at (\i*0.5,-0.85) {\b};}
-\node[anchor=east] at (1*0.5-0.35,0) {Ref};
-\node[anchor=east] at (1*0.5-0.35,-0.85) {Var};
-\draw[decorate,decoration={brace,amplitude=4pt}] (1*0.5-0.25,0.4) -- (11*0.5+0.25,0.4) node[midway,above=3pt]{8192-bp (11 shown)};
-\draw[->,thick,red] (6*0.5,-0.28) -- (6*0.5,-0.55) node[midway,right]{G$\rightarrow$A};
+\resizebox{\linewidth}{!}{\begin{tikzpicture}[>=Stealth,font=\scriptsize,
+ cell/.style={rectangle,draw,minimum width=0.40cm,minimum height=0.44cm,align=center,inner sep=0pt,line width=0.35pt},
+ ctx/.style={cell,fill=gray!12},
+ altc/.style={cell,fill=red!22},
+ nar/.style={rectangle,draw,minimum width=0.24cm,minimum height=0.44cm,align=center,inner sep=0pt,line width=0.35pt},
+ insc/.style={nar,fill=green!25},
+ gapc/.style={nar,dashed,fill=white},
+ rowlbl/.style={font=\scriptsize,anchor=east,inner sep=1.5pt},
+ note/.style={font=\scriptsize,anchor=west,inner sep=1pt}]
+\node[rowlbl] at (-0.20,0) {Reference};
+\node[ctx] at (0,0) {C};  \node[ctx] at (0.42,0) {T};
+\node[ctx] at (0.84,0) {A}; \node[ctx] at (1.26,0) {G};
+\node[ctx] at (1.68,0) {C}; \node[ctx] at (2.10,0) {G};
+\node[ctx] at (2.52,0) {A}; \node[ctx] at (2.94,0) {C};
+\node[rowlbl] at (-0.20,-0.78) {SNV};
+\node[ctx] at (0,-0.78) {C};  \node[ctx] at (0.42,-0.78) {T};
+\node[ctx] at (0.84,-0.78) {A}; \node[ctx] at (1.26,-0.78) {G};
+\node[ctx] at (1.68,-0.78) {C}; \node[altc] at (2.10,-0.78) {A};
+\node[ctx] at (2.52,-0.78) {A}; \node[ctx] at (2.94,-0.78) {C};
+\draw[-{Stealth[length=1.6mm]},red!70!black,line width=0.5pt] (2.10,-0.28) -- (2.10,-0.50);
+\node[rowlbl] at (-0.20,-1.60) {Deletion};
+\node[ctx] at (0,-1.60) {C};  \node[ctx] at (0.42,-1.60) {T};
+\node[ctx] at (0.84,-1.60) {A}; \node[ctx] at (1.26,-1.60) {G};
+\node[ctx] at (1.68,-1.60) {C}; \node[gapc] at (2.10,-1.60) {\tiny$\times$};
+\node[ctx] at (2.52,-1.60) {A}; \node[ctx] at (2.94,-1.60) {C};
+\node[note] at (3.60,-1.60) {\,$n=1$ removed};
+\node[rowlbl] at (-0.20,-2.42) {Insertion};
+\node[ctx] at (0,-2.42) {C};  \node[ctx] at (0.42,-2.42) {T};
+\node[ctx] at (0.84,-2.42) {A}; \node[ctx] at (1.26,-2.42) {G};
+\node[ctx] at (1.68,-2.42) {C}; \node[ctx] at (2.10,-2.42) {G};
+\node[insc] at (2.44,-2.42) {T}; \node[insc] at (2.72,-2.42) {T};
+\node[ctx] at (3.04,-2.42) {A}; \node[ctx] at (3.48,-2.42) {C};
+\node[note] at (4.02,-2.42) {\,$q=2$ added};
+\node[rowlbl] at (-0.20,-3.24) {Delins};
+\node[ctx] at (0,-3.24) {C};  \node[ctx] at (0.42,-3.24) {T};
+\node[ctx] at (0.84,-3.24) {A}; \node[ctx] at (1.26,-3.24) {G};
+\node[ctx] at (1.68,-3.24) {C};
+\node[gapc] at (2.00,-3.24) {\tiny$\times$}; \node[gapc] at (2.28,-3.24) {\tiny$\times$};
+\node[insc] at (2.56,-3.24) {T}; \node[insc] at (2.84,-3.24) {T};
+\node[ctx] at (3.16,-3.24) {A}; \node[ctx] at (3.58,-3.24) {C};
+\node[note] at (4.16,-3.24) {\,$n=2$ replaced by $q=2$};
+\end{tikzpicture}}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Methodology: Score Difference, Threshold and Confidence}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\small $S(\cdot)$ is the mean per-base log-likelihood returned by \texttt{model.score\_sequences} (nats per base pair).
+\begin{equation*}
+\boxed{\Delta = S(w^{var}) - S(w^{ref})}
+\end{equation*}
+\small Negative $\Delta$ = the alternate sequence is less plausible.
+Youden's index on $-\Delta$: $J(t)=\mathrm{TPR}(t)-\mathrm{FPR}(t)$, $t^{\star}=\arg\max_t J(t)$;
+\begin{equation*}
+\mathrm{call} = \begin{cases}\text{Likely pathogenic}, & \Delta < \tau\\ \text{Likely benign}, & \text{otherwise}\end{cases}
+\end{equation*}
+\begin{equation*}
+\boxed{\mathrm{conf}=\min\left(1,\frac{|\Delta-\tau|}{\sigma_{\mathrm{class}}}\right)}
+\end{equation*}
+\small $\sigma_{\mathrm{LOF}}\approx0.00151$, $\sigma_{\mathrm{FUNC}}\approx0.00090$; confidence is a distance from the threshold, capped at 1; not a calibrated probability. Indel paths reuse the SNV constants and flag \texttt{provisional}.
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=6.8cm,height=4.0cm,grid=major,xlabel={$\Delta$},ylabel={distance heuristic},xmin=-0.004,xmax=0.002,ymin=0,ymax=1.05,legend pos=south east,legend style={font=\scriptsize},tick label style={font=\tiny},label style={font=\scriptsize}]
+\addplot[thick,red!75!black,domain=-0.004:\confTau,samples=80] {min(1,abs(x-\confTau)/\confSigLOF)};
+\addplot[thick,teal!70!black,domain=\confTau:0.002,samples=80] {min(1,abs(x-\confTau)/\confSigFUNC)};
+\addplot[dashed,black,line width=0.4pt] coordinates {(\confTau,0) (\confTau,1.05)};
+\node[font=\scriptsize,anchor=south] at (axis cs:\confTau,0.80) {$\tau$};
+\legend{Loss-of-function side,Functional side}
+\end{axis}
 \end{tikzpicture}
 \end{column}
 \end{columns}
 \end{frame}
 
-% ---------- CALIBRATION ----------
-\begin{frame}{Methodology: Threshold, Confidence, Position}
-\begin{columns}[T]
-\begin{column}{0.5\textwidth}
-\small ROC on $-\Delta$: $J{=}\max(\text{TPR}{-}\text{FPR})$, $\tau{=}-t^{\star}\approx -0.00092$.
-\begin{equation*}
-\text{call}=\begin{cases}\text{Pathogenic},&\Delta<\tau\\\text{Benign},&\text{else}\end{cases}
-\end{equation*}
-\begin{equation*}
-\boxed{\text{conf}=\min\left(1,\frac{|\Delta-\tau|}{\sigma_{class}}\right)}
-\end{equation*}
-\small $\sigma_{LOF}{\approx}0.00151$, $\sigma_{FUNC}{\approx}0.00090$. RoPE: positions are angles, attention sees relative offset --- enables 8k$\rightarrow$1M.
-\end{column}
-\begin{column}{0.5\textwidth}
-\centering
-\begin{tikzpicture}
-\begin{axis}[width=5.6cm,height=4.2cm,grid=major,xlabel={FPR},ylabel={TPR},xmin=0,xmax=1,ymin=0,ymax=1,tick label style={font=\tiny},label style={font=\scriptsize}]
-\addplot[dashed,gray] coordinates {(0,0) (1,1)};
-\addplot[thick,evogreen,smooth] coordinates {(0,0) (0.1,0.35) (0.25,0.6) (0.45,0.78) (0.7,0.9) (1,1)};
-\addplot[only marks,evoorange,mark=*] coordinates {(0.32,0.68)};
-\end{axis}
-\end{tikzpicture}
-\end{column}
-\end{columns}
+\begin{frame}{Methodology: Evaluation Design}
+The deployed service was assessed along five axes.
+\begin{enumerate}
+\item \textbf{Calibration data:} re-read the workbook, recompute the class composition, confirm the reference bases against the shipped GRCh37 chr17 FASTA (itself validated against the live UCSC hg19 service).
+\item \textbf{Reference envelope:} score the published predictors on the same 500 rows, under the same label definition and Youden procedure; stratified bootstrap over 2,000 resamples with a fixed seed.
+\item \textbf{Window and assembly contract:} recompute both window rules over the 500 calibration positions; align GRCh37 and GRCh38 across BRCA1 with 681 conserved anchors.
+\item \textbf{Validation conformance:} generate a 55-case matrix and run it against the real Pydantic model and the real Zod schema.
+\item \textbf{Scoring contract:} exercise the deployed window/scoring functions with a stand-in scorer, so the arithmetic is checked without a graphics processor.
+\end{enumerate}
+Every number in this deck is reproducible from the evaluation scripts or is a source constant.
 \end{frame}
 
 % ---------- IMPLEMENTATION ----------
@@ -201,12 +230,12 @@ Score both, delta:
 \small Entirely client fetches:
 \begin{enumerate}\small
 \item UCSC assemblies $\rightarrow$ chromosomes
-\item clinicaltables gene search / chromosome filter (10 max)
+\item Clinical tables: gene search / chromosome filter (10 max)
 \item E-summary bounds + UCSC sequence (10k view cap)
 \item ClinVar E-search + E-summary (20 max)
 \item Modal POST $\rightarrow$ comparison modal
 \end{enumerate}
-\small Clicking a base prefills pos/ref.
+\small Clicking a base prefills position/ref.
 \end{column}
 \begin{column}{0.55\textwidth}
 \centering
@@ -226,16 +255,15 @@ Score both, delta:
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
 \begin{itemize}\small
-\item Image: \texttt{cuda:12.6.3} + py3.12, torch 2.7 cu126, flash-attn 2.8, Evo2 pkg
+\item Image: \texttt{cuda:12.6.3} + py3.12, torch 2.7.1 cu126, flash-attn 2.8.0.post2, Evo2 pkg
 \item Volume \texttt{hf\_cache} $\rightarrow$ \texttt{/root/.cache/huggingface}
 \item \texttt{@modal.enter}: load \texttt{Evo2('evo2\_7b')} once
 \item \texttt{@fastapi\_endpoint POST}: validate \texttt{VariantRequest}, fetch UCSC window, check bounds, score ref+var
-\item \texttt{max\_containers=3, retries=2}
+\item \texttt{max\_containers=3, retries=2}, \texttt{scaledown\_window=120s}
 \end{itemize}
 \end{column}
 \begin{column}{0.5\textwidth}
 \small Tech stack:
-\begin{table}\scriptsize
 \begin{tabular}{@{}ll@{}}
 \toprule
 Layer & Choice \\
@@ -248,90 +276,262 @@ Data & UCSC, NCBI, ClinVar \\
 Analysis & sklearn ROC, seaborn \\
 \bottomrule
 \end{tabular}
-\end{table}
+\small Threshold constants:
+\begin{tabular}{@{}ll@{}}
+\toprule
+Constant & Value \\
+\midrule
+Threshold $\tau$ & $-0.0009178519$ \\
+$\sigma_{\mathrm{LOF}}$ & $0.0015140239$ \\
+$\sigma_{\mathrm{FUNC}}$ & $0.0009016589$ \\
+\bottomrule
+\end{tabular}
 \end{column}
 \end{columns}
 \end{frame}
 
 \begin{frame}{Implementation Progress}
-\begin{table}\small
 \begin{tabular}{@{}lll@{}}
 \toprule
 Area & Done & In progress \\
 \midrule
 Genome browse & Assembly/chr/gene/sequence/ClinVar & Pagination beyond 20 \\
-Scoring & 8k window, dedup, $\Delta$, thr+conf & Indel support (SNV-only now) \\
-Calibration & BRCA1-500, ROC/Youden, plot & Per-gene recal (hg19 thr on hg38) \\
-Deploy & Modal H100 live, Next.js dev & Vercel config, API auth \\
+Scoring & 8k window, dedup, $\Delta$, thr+conf (SNV + indels) & Per-gene recalibration \\
+Calibration & BRCA1-500, ROC/Youden, reference baselines & Batch endpoint \\
+Deploy & Modal H100 live, Next.js app, auth & Vercel config, API auth hardening \\
+\bottomrule
+\end{tabular}
+\end{frame}
+
+% ---------- RESULTS ----------
+\begin{frame}{Results: Calibration Data}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{itemize}\small
+\item Source assay: 3,893 BRCA1 rows; classes FUNC (2,821), INT (249), LOF (823) = 72.46\% / 6.40\% / 21.14\%; reproduces Findlay et al. (72.5\% / 6.4\% / 21.1\%).
+\item Deployed threshold fitted on first 500 rows: 100 LOF (20.0\%) --- enriched 7.79$\times$ vs homogeneous sampling (expected 12.8 $\pm$ 3.5).
+\item Localized: 41,267,755--41,276,135 (GRCh37) = 10.69\% of assayed interval; 168 transcript positions, 41 amino-acid positions; LOF 12.0\% in first half vs 28.0\% in second.
+\item Confirmed: 500/500 reference bases, 0 ambiguous window bases, GC mean 0.4623 (0.4269--0.4849); 168 unique reference windows $\Rightarrow$ 33.2\% fewer forward passes (668 of 1,000).
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[width=6.8cm,height=2.6cm,
+ group style={group size=1 by 2, vertical sep=1.0cm},
+ xlabel style={font=\footnotesize},ylabel style={font=\footnotesize},
+ tick label style={font=\scriptsize},legend style={font=\scriptsize}]
+\nextgroupplot[
+ title={Class composition},title style={font=\footnotesize},
+ ybar stacked,bar width=10pt,
+ symbolic x coords={Assay set,Calibration slice},
+ xtick=data,ylabel={variants},
+ ymin=0,ymax=3200,legend cell align=left]
+\addplot[fill=gray!45] coordinates {(Assay set,\assayFUNC) (Calibration slice,\sliceFUNC)};
+\addplot[fill=gray!70] coordinates {(Assay set,\assayINT) (Calibration slice,\sliceINT)};
+\addplot[fill=red!55] coordinates {(Assay set,\assayLOF) (Calibration slice,\sliceLOF)};
+\legend{Functional,Intermediate,Non-functional}
+\nextgroupplot[
+ title={Position coverage of the assayed region},title style={font=\footnotesize},
+ xlabel={fraction of the assayed interval},ylabel={variants per bin},
+ xmin=0,xmax=1,ymin=0,ymax=500]
+\addplot[ybar interval,fill=gray!50,draw=none,mark=none] coordinates {\coverageAll};
+\addplot[ybar interval,fill=red!65,draw=none,mark=none] coordinates {\coverageSlice};
+\end{groupplot}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Results: Reference Envelope on the Calibration Slice}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\footnotesize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Predictor & $n$ & AUROC & 95\% CI & Sens. & Spec. \\
+\midrule
+aGVD & 268 & 0.878 & 0.821--0.929 & 0.762 & 0.917 \\
+CADD & 500 & 0.791 & 0.750--0.835 & 0.900 & 0.615 \\
+phyloP & 500 & 0.777 & 0.729--0.820 & 0.880 & 0.605 \\
+PolyPhen-2 & 268 & 0.683 & 0.613--0.750 & 0.825 & 0.517 \\
+SIFT & 268 & 0.656 & 0.624--0.688 & 1.000 & 0.312 \\
+gnomAD AF & 500 & 0.530 & 0.506--0.553 & 0.960 & 0.100 \\
+\bottomrule
+\end{tabular}
+\begin{itemize}\small
+\item Context: published Evo2-7B zero-shot AUROC is 0.9037 on the full 3,893-row assay (CADD 0.8763); the deployed slice is 1/8 of the assay, fitted without a held-out split.
+\item The slice moves CADD by about 0.09 AUROC against the full assay; neighbouring bootstrap intervals overlap, so the slice cannot rank predictors.
+\item Population frequency carries almost no signal here (AUROC 0.530): saturation editing introduces variants not drawn from populations.
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=6.9cm,height=4.8cm,grid=major,xlabel={false positive rate},ylabel={true positive rate},xmin=0,xmax=1,ymin=0,ymax=1,legend style={font=\scriptsize,at={(0.98,0.98)},anchor=north east},tick label style={font=\scriptsize},label style={font=\footnotesize}]
+\addplot[dashed,gray,line width=0.4pt] coordinates {(0,0) (1,1)};
+\addplot[very thick,red!75!black,smooth] coordinates {\rocaGVD};
+\addplot[thick,blue!75!black,smooth] coordinates {\rocCADD};
+\addplot[thick,green!50!black,smooth] coordinates {\rocphyloP};
+\addplot[thick,orange!85!black,smooth] coordinates {\rocPolyPhen2};
+\addplot[thick,teal!70!black,smooth] coordinates {\rocSIFT};
+\legend{aGVD,CADD,phyloP,PolyPhen-2,SIFT}
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Results: Window Contract}
+\begin{itemize}\small
+\item Calibration routine: window from $p-4096$ to $p+4096$, 8192 bases, variant at offset 4096.
+\item Deployed endpoint: window from $p-1-4096$ to $p+4096$, 8193 bases, variant at offset 4096.
+\item Corroborated on all 500 calibration positions: the two windows share their first 8192 bases; the endpoint adds one base at the 3' end; no clipping (no variant near a chromosome end).
+\item The score difference is then a difference of means over 8193 vs 8192 terms; the deployed $\Delta$ distribution is not the one $\tau$ was fitted on.
+\end{itemize}
+\centering
+\resizebox{\textwidth}{!}{\begin{tikzpicture}[font=\scriptsize,
+  seg/.style={rectangle,draw,minimum height=0.52cm,align=center,inner sep=1.5pt,line width=0.4pt},
+  ctxs/.style={seg,fill=gray!12},
+  vars/.style={seg,fill=red!22,minimum width=0.52cm},
+  zc/.style={rectangle,draw,minimum width=0.30cm,minimum height=0.34cm,align=center,inner sep=0pt,line width=0.35pt},
+  zx/.style={zc,fill=gray!12},
+  zr/.style={zc,fill=red!22},
+  note/.style={font=\scriptsize,anchor=west,inner sep=1pt}]
+\draw[ctxs] (0,0.55) rectangle (3.45,1.07);
+\node at (1.72,0.81) {4096 bases};
+\draw[vars] (3.45,0.55) rectangle (3.97,1.07);
+\node at (3.71,0.81) {V};
+\draw[ctxs] (3.97,0.55) rectangle (7.37,1.07);
+\node at (5.67,0.81) {4095 bases};
+\draw[line width=0.5pt,red!70!black] (7.37,0.55) -- (7.37,1.07);
+\node[note,red!70!black] at (7.55,0.25) {one extra base};
+\node[anchor=east,font=\scriptsize] at (-0.15,0.81) {calibration routine};
+\draw[ctxs] (0,-1.15) rectangle (3.45,-0.63);
+\node at (1.72,-0.89) {4096 bases};
+\draw[vars] (3.45,-1.15) rectangle (3.97,-0.63);
+\node at (3.71,-0.89) {V};
+\draw[ctxs] (3.97,-1.15) rectangle (7.42,-0.63);
+\node at (5.69,-0.89) {4096 bases};
+\node[anchor=east,font=\scriptsize] at (-0.15,-0.89) {deployed endpoint};
+\draw[gray!60,line width=0.4pt] (9.30,-1.45) -- (9.30,1.45);
+\node[font=\scriptsize,align=center] at (10.45,1.70) {3' end, magnified};
+\node[font=\scriptsize,anchor=east] at (9.12,1.16) {8192};
+\foreach \i in {0,1,2,3} \node[zx] at (9.55+\i*0.30,1.10) {};
+\node[font=\scriptsize,anchor=east] at (9.12,0.66) {8193};
+\foreach \i in {0,1,2,3} \node[zx] at (9.55+\i*0.30,0.60) {};
+\node[zr] at (9.55+4*0.30,0.60) {};
+\node[font=\scriptsize,anchor=west] at (10.95,1.10) {last four bases};
+\node[font=\scriptsize,anchor=west,red!70!black] at (10.95,0.60) {plus one base};
+\end{tikzpicture}}
+\end{frame}
+
+\begin{frame}{Results: Assembly Provenance}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{itemize}\small
+\item Calibration data are GRCh37; the request path converts no assembly and carries no reference allele to verify against.
+\item BRCA1 offset GRCh38 $-$ GRCh37 is +1,847,983 bp, constant across the locus (681 conserved anchors, 680/680 indel-free; agrees with the NCBI Gene model and 290 dual-assembly ClinVar records).
+\item Same numeric coordinate in GRCh38: 0/500 reference bases correct, 0.00\% window identity (8,192 differing bases in the window).
+\item Lifted coordinate: 500/500 correct, 100.00\% window identity --- for BRCA1 this is a coordinate-naming failure, not a sequence failure.
+\item Browser path: ClinVar located by the picked assembly, but the forwarded coordinate is the \texttt{location\_sort} field, which is GRCh38 in 293 of 300 live records and GRCh37 in none.
+\item Example: hg38 chr17:43,119,628 $\leftrightarrow$ hg19 chr17:41,271,645.
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\resizebox{\linewidth}{!}{\begin{tikzpicture}[font=\scriptsize,
+  ax/.style={-{Stealth[length=2.4mm]},line width=0.5pt},
+  b/.style={rectangle,draw,rounded corners=2pt,minimum height=0.55cm,align=center,inner sep=0.2pt,line width=0.4pt}]
+\node[b,fill=gray!12,minimum width=2.3cm] (g19) at (0,0) {GRCh37\\41{,}267{,}755};
+\node[b,fill=gray!12,minimum width=2.3cm] (g38) at (5.9,0) {GRCh38\\43{,}115{,}738};
+\node[b,fill=red!18,minimum width=2.9cm] (wrong) at (1.4,-2.3) {Same numeric coordinate\\43{,}115{,}738 in GRCh37};
+\node[b,fill=green!18,minimum width=2.9cm] (right) at (4.5,-2.3) {Lifted coordinate\\43{,}115{,}738 in GRCh38};
+\draw[ax] (g19.east) -- node[above,font=\scriptsize]{$+$1{,}847{,}983} (g38.west);
+\draw[ax,red!70!black] (g19.south) -- (1.4,-1.35) -- (wrong.north);
+\draw[ax,green!50!black] (g38.south) -- (4.5,-1.35) -- (right.north);
+\node[font=\scriptsize,red!70!black,align=center] at (1.4,-2.95) {$0/500$ reference bases\\correct};
+\node[font=\scriptsize,green!50!black,align=center] at (4.5,-2.95) {$500/500$ reference bases\\correct};
+\end{tikzpicture}}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Results: Validation Conformance}
+The two validation layers were compared over a generated case matrix.
+\begin{table}
+\caption{Conformance of the two request validators over the generated case set.}
+\label{tab:validation}
+\centering
+\footnotesize
+\begin{tabular}{@{}lr@{}}
+\toprule
+Outcome & Count \\
+\midrule
+Cases executed & 55 \\
+Pydantic conforming & 43 \\
+Zod conforming & 47 \\
+Both conforming & 42 \\
+Pydantic wrong, Zod right & 5 \\
+Zod wrong, Pydantic right & 1 \\
+Both wrong & 7 \\
+\midrule
+Layers in disagreement & 6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{itemize}\small
+\item All 6 disagreements were rejected by the browser with a 400 before the scoring endpoint was reached: the cost is a round trip, not a wrong answer.
+\item Both layers accepted 7 contract-violating cases: alternative with surrounding whitespace; assembly/chromosome fields containing a semicolon, newline, slash or space.
+\item The semicolon case is the dangerous one: the backend interpolates assembly and chromosome into a UCSC query string whose parameters are semicolon-separated.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Results: Scoring Contract Behaviour}
+The deployed window and scoring functions were exercised with a stand-in scorer, to check the arithmetic of the contract without a graphics processor.
+\begin{itemize}\small
+\item A substitution at a BRCA1 position gave a score difference of $-1.03\times10^{-4}$ --- the same order of scale as the deployed threshold of $-9.18\times10^{-4}$.
+\item A deletion of three bases scored sequences of 8193 and 8190 bases; an insertion of three bases scored 8193 and 8196 bases.
+\item A null edit (alternate = reference) is accepted and yields a score difference of exactly zero; the call is benign and the confidence is $\min(1,|0-\tau|/\sigma_{\mathrm{FUNC}})=1.000000$.
+\end{itemize}
+\begin{equation*}
+\min\left(1,\frac{|0-\tau|}{\sigma_{\mathrm{FUNC}}}\right)=1.000000
+\end{equation*}
+\begin{itemize}\small
+\item The online path re-scores the reference window on every request (two forward passes); the offline routine de-duplicates reference windows (168 references for 500 variants).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Results: Reproduced Defects}
+Eight defects were reproduced and documented:
+\begin{table}
+\centering
+\footnotesize
+\begin{tabular}{@{}p{1.6cm}p{9.5cm}@{}}
+\toprule
+Layer & Defect \\
+\midrule
+Backend & A null substitution (alt = ref) returns the benign label with confidence 1.000000. \\
+Backend & The deployed context window is 8193 bases; the calibration window is 8192. \\
+Backend & The reference window is re-scored on every request (two forward passes per request). \\
+Backend & Assembly and chromosome are interpolated into the UCSC query string without validation. \\
+Backend & The threshold constants have no run artifact in the repository. \\
+Browser & The coordinate forwarded to the endpoint is always the GRCh38 position, whatever the selected assembly. \\
+Browser & No reference allele is sent, so a wrong assembly cannot be detected. \\
+Both & The two validation layers disagree on 6 of 55 cases, and both accept 7 contract-violating cases. \\
 \bottomrule
 \end{tabular}
 \end{table}
 \end{frame}
 
-% ---------- RESULTS ----------
-\begin{frame}{Results: BRCA1 Separation}
-\begin{columns}[T]
-\begin{column}{0.5\textwidth}
-\centering
-\begin{tikzpicture}
-\begin{axis}[width=5.8cm,height=4.0cm,boxplot/draw direction=y,xlabel={$\Delta$},ylabel={class},ytick={1,2},yticklabels={FUNC/INT,LOF},xmin=-0.008,xmax=0.004,tick label style={font=\tiny}]
-\addplot+[boxplot,fill=gray!20] coordinates {(-0.001,1) (-0.0002,1) (0.0005,1) (0.001,1) (0.0002,1)};
-\addplot+[boxplot,fill=red!20] coordinates {(-0.004,2) (-0.002,2) (-0.0012,2) (-0.0003,2) (-0.0015,2)};
-\draw[dashed] (axis cs:-0.00092,0.8) -- (axis cs:-0.00092,2.2) node[above,font=\tiny]{$\tau$};
-\end{axis}
-\end{tikzpicture}
-\end{column}
-\begin{column}{0.5\textwidth}
+% ---------- CONCLUSION ----------
+\begin{frame}{Conclusion}
+The scoring contract of a deployed genomic language model service was formalized and measured; the calibration data reproduce the source assay composition; the first reproducible reference envelope for the slice was computed with bootstrap intervals; the window and assembly contracts were verified.
 \begin{itemize}\small
-\item LOF mass left of $\tau$, functional right
-\item AUROC $\approx$ 0.73 on 500 BRCA1 SNVs (zero-shot, no fine-tune)
-\item Consistent with Evo2 report trend
-\item Live case: \texttt{hg38 chr17:43119628 G} $\rightarrow$ JSON with delta/prediction/confidence next to ClinVar
+\item 55 request cases: the two validation layers disagree on 6, and both accept 7 contract-violating cases; eight defects are reproducible from the scripts.
+\item Evo2Serve is a usable interface to a model's opinion about a sequence, not yet a calibrated variant classifier.
+\item Carrying the reference allele closes most of the defect set; its labels remain computational scores, not clinical explanations.
 \end{itemize}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Limits and Next Steps}
-\begin{columns}[T]
-\begin{column}{0.5\textwidth}
-\textbf{Limits (honest):}
-\begin{itemize}\small
-\item SNV-only; title-regex breaks on dels
-\item hg19-derived $\tau$ applied to hg38/other genes
-\item Public API caps; fragile ClinVar parsing
-\end{itemize}
-\end{column}
-\begin{column}{0.5\textwidth}
-\textbf{Next:}
-\begin{itemize}\small
-\item Deletion/insertion splice + validation
-\item Per-gene recal + batch endpoint
-\item Auth on FastAPI, Vercel deploy, theme tokens
-\end{itemize}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}[allowframebreaks]{References}
-\tiny
-\begin{enumerate}
-\item G.~Brixi et al., Genome modeling and design with Evo2, bioRxiv 2025.02.18.638918, 2025.
-\item E.~Nguyen et al., Sequence modeling with Evo, Science 386, 2024.
-\item J.~Cheng et al., AlphaMissense, Science 381, 2023.
-\item Z.~Lin et al., ESM-2, Science 379, 2023.
-\item H.~Dalla-Torre et al., Nucleotide Transformer, Nat.\ Methods, 2023.
-\item M.~Poli et al., Hyena Hierarchy, ICML 2023.
-\item J.~Su et al., RoFormer (RoPE), Neurocomputing 568, 2024.
-\item T.~Dao, FlashAttention-2, 2023.
-\item Z.~Avsec et al., Enformer, Nat.\ Methods 18, 2021.
-\item J.~Linder et al., Borzoi, Nat.\ Genet.\ 2023.
-\item C.~Lee et al., UCSC Genome Browser, NAR 50, 2022.
-\item M.~Landrum et al., ClinVar, NAR 42, 2014; update 2024.
-\item S.~Richards et al., ACMG guidelines, Genet.\ Med.\ 17, 2015.
-\item M.~Kircher et al., CADD, Nat.\ Genet.\ 46, 2014.
-\item Modal docs; Next.js docs; FastAPI docs, 2024.
-\end{enumerate}
 \end{frame}
 
 \begin{frame}
