@@ -22,17 +22,17 @@ Zenodo (https://zenodo.org) is a free repository run by CERN. It gives your uplo
 
 ## B. Upload steps on Zenodo
 
-1. Go to https://zenodo.org and log in (a GitHub or ORCID login works). One team member uses his or her own account; the record will list all authors.
-2. Click **Upload** (or **New upload**).
+1. Go to https://zenodo.org and sign up or log in (ORCID, GitHub or a local account all work). You must **confirm your e-mail address** before your first upload. One team member uses his or her own account; the record will list all authors.
+2. Click the **plus icon** in the header and choose **New upload**.
 3. Drag in `paper-preprint.pdf` (the final one after step A.6).
-4. Fill the form from `zenodo_metadata.md`: resource type **Publication / Preprint**, title, the five authors with affiliation (ORCID optional), description (the abstract), keywords, language English, licence CC BY 4.0, version 1, and the related identifier (is supplemented by, the repository URL).
-5. Click **Save** and read the preview carefully. Use **Reserve DOI** if you want to print the DOI in the paper before you publish.
-6. When everyone has agreed, click **Publish**. After publishing you cannot change the file of that version, but you can make a new version later (Zenodo "New version") and the DOI will point to all versions.
+4. Fill the form from `zenodo_metadata.md`: resource type **Preprint**, title, the five authors with affiliation (ORCID optional), description (the abstract), keywords, language English, licence CC BY 4.0 (Zenodo's default), version 1, publisher left at its default "Zenodo", and the related identifier (is supplemented by, the repository URL). Resource type, creators, licence and publisher are the required fields.
+5. Click **Save draft**, then **Preview**, and read the preview carefully. If you want to print the DOI in the paper before you publish, answer "No" to the question about an existing DOI and click **Get a DOI now!** (if you delete the draft, the reserved DOI is lost).
+6. When everyone has agreed, click **Publish**. Do not rely on being able to change the PDF afterwards: Zenodo's help pages say files cannot be modified once published, with a short window for minor corrections (the pages quote 30 and 45 days) and later changes only in justified cases. Check the final PDF before you publish. Metadata can be edited at any time without changing the DOI. A corrected file needs a **New version**, which is a separate record with its own DOI, linked to the other versions. The owner can delete a record only within 30 days after publication.
 
 ## C. After publishing
 
 1. Open the record, copy the DOI, and add it to the repository README (for example "Preprint: https://doi.org/10.5281/zenodo.XXXXXXX").
-2. To also get a DOI for the **code**, link the repository to Zenodo: in Zenodo go to your account > GitHub, switch the repository on, then create a GitHub **Release**. Zenodo archives that release and gives it its own DOI. Add the code DOI as a related identifier on the paper record (new version of the record).
+2. To also get a DOI for the **code**, link the repository to Zenodo: in Zenodo go to your account > GitHub, switch the repository on, then create a GitHub **Release**. Zenodo archives that release and gives it its own DOI. Add the code DOI as a related identifier on the paper record (this is a metadata edit; it does not need a new version).
 3. You may later submit the same work to a journal or conference. Check that venue's preprint policy first; most allow it.
 
 ## D. Reminders
@@ -40,3 +40,10 @@ Zenodo (https://zenodo.org) is a free repository run by CERN. It gives your uplo
 - This is a **research and education tool**, not a clinical classifier; keep that wording.
 - The Evo 2 accuracy figure of about 0.73 in the paper is a **preliminary, non-archived** number. Do not quote it elsewhere as a validated result. If you re-run the calibration on the GPU and archive the per-variant output, update the paper and upload it as a new version.
 - Do not add e-mail addresses or other personal data to the paper or the Zenodo record.
+
+## E. What to expect, checked against the official pages (27 Nov 2026)
+
+- **Zenodo** has no review before ordinary publication; the DOI is issued when you publish. Hosting is not an endorsement, and the uploader is responsible for the content. It has no rule against AI-assisted text; keep the honest AI statement in the paper anyway.
+- **Research Square** (alternative or addition): free preprint with a DOI, typically posted within about 72 business hours, with screening for ethics and competing-interest statements and for inappropriate claims; no peer review. It requires complete methods and results sections, will not post work already published in a journal, and wants any use of an AI language model documented in the Methods. Check its current submission page before relying on it.
+- **arXiv** is unlikely to be live within two weeks: new submitters need an endorsement from an established arXiv author, moderation can take days, and its pages say course projects and undergraduate research are typically not accepted unless the advisor supports them.
+- **Peer-reviewed journals**: none could decide within two weeks. The fastest free (no-APC) DOAJ listings found state about 5 weeks or more from submission to publication; JOSS requires six months of public repository history and has strict scope rules (your repository's history is about three months); Bioinformatics Advances charges an article fee (up to USD 2620 per DOAJ, with a waiver policy). Plan a journal submission for after the preprint, and check each venue's preprint policy first.
