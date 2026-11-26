@@ -9,10 +9,12 @@ Zenodo (https://zenodo.org) is a free repository run by CERN. It gives your uplo
    - Add an OSI-approved licence file, for example MIT or Apache-2.0 (GitHub: Add file > Create new file > name it `LICENSE`, and use the "Choose a license template" button). The paper says the code is in this repository, so it must be reachable.
    - Check that no secrets are committed: `.env` files, JWT secrets, database URLs, API keys. If any were ever committed, rotate them first.
 2. **All authors consent.** All four student authors and Dr. Nandini K S must read the paper and agree to be listed, in this order: Nandish S Shet, Thippeswamy S, Vishwaradhya A C, Jeevan A M, Dr. Nandini K S. Get this in writing (a message in the group is enough). Also check with the department or guide whether any institute approval is required before a preprint is posted.
-3. **Fill the three bracketed items in the paper** (Declarations section of `paper-preprint.tex`), then rebuild the PDF:
+3. **Fill the five bracketed items in the paper** (Declarations section of `paper-preprint.tex`), then rebuild the PDF:
    - `Author contributions: [to be completed by the authors]` replace with an honest description of who did what.
    - `Competing interests: None declared [authors to confirm]` confirm, then delete the bracket.
    - `Funding: None declared [authors to confirm]` confirm, then delete the bracket. If your work was supported by a funding body or a student project programme, name it here and in the Acknowledgment.
+   - `AI assistance ... [authors to confirm that they have read the whole manuscript, re-run the scripts and checked every reported number]` do this for real (re-run the scripts in `docs/analysis`, compare with the paper), then delete the bracket.
+   - `Relation to earlier work ... [authors to confirm that no earlier version has been published elsewhere]` confirm, then delete the bracket.
 4. **Re-read the whole paper** together. Check every number against the files in `docs/analysis`, check names and spellings, and make sure every author can explain every section. The AI-assistance statement is in the Declarations; keep it.
 5. **Run a similarity check** (for example the one provided by your institute library, or any plagiarism checker your department uses) and fix any passage that is too close to another source.
 6. **Rebuild the PDF** after your edits: `pdflatex paper-preprint.tex` twice. Open the PDF and look at every page.
