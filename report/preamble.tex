@@ -92,13 +92,13 @@
         \put(0,-805){\makebox(597,0)[c]{\fontsize{11}{12}\selectfont\roman{page}}}%
       \fi
     \else
-      % running header
-      \put(55,-42){\fontsize{10}{12}\selectfont\RunTitle}%
-      \put(468,-42){\makebox(68,0)[r]{\fontsize{10}{12}\selectfont\CourseCode}}%
+      % running header (outside the black page frame)
+      \put(55,-17){\fontsize{10}{12}\selectfont\RunTitle}%
+      \put(468,-17){\makebox(68,0)[r]{\fontsize{10}{12}\selectfont\CourseCode}}%
       % running footer
-      \put(48.4,-788.5){\fontsize{11}{12}\selectfont Department of AI\&DS}%
-      \put(274.7,-786.6){\fontsize{10}{12}\selectfont 2026-27}%
-      \put(513.5,-788.5){\fontsize{11}{12}\selectfont\arabic{page}}%
+      \put(55,-830){\fontsize{10}{12}\selectfont Department of AI\&DS}%
+      \put(274.7,-830){\fontsize{10}{12}\selectfont 2026-27}%
+      \put(513.5,-830){\makebox(22.5,0)[r]{\fontsize{10}{12}\selectfont\arabic{page}}}%
     \fi
   }%
 }
