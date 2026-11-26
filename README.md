@@ -30,6 +30,18 @@ Check out the paper behind the model.
 - [Paper](https://www.biorxiv.org/content/10.1101/2025.02.18.638918v1)
 - [GitHub Repository](https://github.com/ArcInstitute/evo2)
 
+## Preprint
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24568259.svg)](https://doi.org/10.5281/zenodo.24568259)
+
+The verification study of this service is available as a preprint on Zenodo (not peer reviewed): https://doi.org/10.5281/zenodo.24568259
+
+If you use this work, please cite:
+
+> Shet, N. S., S, T., A C, V., A M, J., & K S, N. (2026). *Evo2Serve: A Web-Deployed Genomic Language Model Service for Zero-Shot Variant Scoring and a Verification Study of Its Scoring Pipeline* (Version 1). Zenodo. https://doi.org/10.5281/zenodo.24568259
+
+To cite all versions, use the concept DOI [10.5281/zenodo.24568258](https://doi.org/10.5281/zenodo.24568258). The LaTeX source is in [`preprint/`](preprint/).
+
 ## Setup
 
 Follow these steps to install and set up the project.
