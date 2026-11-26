@@ -243,7 +243,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \begin{itemize}
 \item \textbf{Assembly Offset:} The calibration data use GRCh37, but the service answers for GRCh38 by default. Aligning the two assemblies across \textit{BRCA1} with 681 conserved anchors gives a constant offset of 1,847,983 bases; all 680 consecutive anchor pairs are free of indels.
 \item \textbf{Independent Confirmation:} The same offset appears in all 290 live ClinVar \textit{BRCA1} records that carry both a GRCh37 and a GRCh38 position, and agrees with the NCBI Gene model.
-\item \textbf{Effect of a Wrong Assembly:} If a calibration coordinate is submitted unchanged to the GRCh38 assembly, the reference base is correct for 0 of 500 variants and the 8,192-base window shares no base with the intended one. A correctly lifted coordinate is correct for 500 of 500.
+\item \textbf{Effect of a Wrong Assembly:} The same number read in the other assembly addresses a locus 1,847,983 bases away, that is, a different part of the genome. The example request shipped in the backend shows this: position 43,119,628 holds T in GRCh38, the same number holds C in GRCh37, and the 8,192-base windows around the two agree at only 25.2\% of positions, about what two unrelated sequences share by chance. After the correct conversion the reference base matches the assay for 500 of 500 calibration variants.
 \item \textbf{Why It Matters:} The request carries no reference allele, so the service cannot detect the error and returns a confident answer either way. Sending the expected reference base and rejecting a mismatch is therefore the first planned improvement.
 \end{itemize}
 \resfig{6.1.10}{GRCh37 and GRCh38 Coordinates at the BRCA1 Locus}{%
@@ -257,7 +257,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \draw[ax] (g19.east) -- node[above,font=\scriptsize]{$+$1,847,983} (g38.west);
 \draw[ax,red!70!black] (g19.south) -- (1.4,-1.35) -- (wrong.north);
 \draw[ax,green!50!black] (g38.south) -- (4.5,-1.35) -- (right.north);
-\node[font=\scriptsize,red!70!black,align=center] at (1.4,-3.35) {$0/500$ reference bases\\correct};
+\node[font=\scriptsize,red!70!black,align=center] at (1.4,-3.35) {different base\\(example: C instead of T)};
 \node[font=\scriptsize,green!50!black,align=center] at (4.5,-3.35) {$500/500$ reference bases\\correct};
 \end{tikzpicture}}}
 
@@ -344,7 +344,7 @@ Calibration data check & 3,893 of 3,893 rows read; 500 of 500 reference bases ma
 \hline
 Window contract & 500 of 500 windows differ by one 3$'$ base & Deployed 8,193 bases against 8,192 at calibration; variant offset 4,096 in both. \\
 \hline
-Genome assembly & Same coordinate 0 of 500; lifted 500 of 500 & Constant offset of 1,847,983 bases, confirmed on 290 live ClinVar records. \\
+Genome assembly & Lifted coordinate: 500 of 500 reference bases match; shipped example, same number: C instead of T & Constant offset of 1,847,983 bases, confirmed on 290 live ClinVar records. \\
 \hline
 Request validation, GPU tier (Pydantic) & 43 of 55 cases (78.2\%) & Accepts position zero, a negative position and empty genome or chromosome; accepts separator characters; rejects a whitespace-padded alternate base. \\
 \hline
