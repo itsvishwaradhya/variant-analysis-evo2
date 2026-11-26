@@ -75,16 +75,16 @@
 \newcommand{\pgput}[3]{\put(#1,-#2){#3}}   % x, y measured from top-left of the page
 \AddToShipoutPictureBG{%
   \AtPageUpperLeft{%
+    % black double-line page frame on EVERY page: thick outer line, thin inner line
+    \put(24,-27){\color{black}\rule{549pt}{3pt}}%
+    \put(24,-818){\rule{3pt}{794pt}}%
+    \put(570,-818){\rule{3pt}{794pt}}%
+    \put(24,-818){\rule{549pt}{3pt}}%
+    \put(28.5,-30){\rule{540pt}{1.5pt}}%
+    \put(28.5,-814){\rule{1.5pt}{785.5pt}}%
+    \put(567,-814){\rule{1.5pt}{785.5pt}}%
+    \put(28.5,-814){\rule{540pt}{1.5pt}}%
     \iffm
-      % framed pages: thick outer line, thin inner line
-      \put(24,-27){\color{black}\rule{549pt}{3pt}}%
-      \put(24,-818){\rule{3pt}{794pt}}%
-      \put(570,-818){\rule{3pt}{794pt}}%
-      \put(24,-818){\rule{549pt}{3pt}}%
-      \put(28.5,-30){\rule{540pt}{1.5pt}}%
-      \put(28.5,-814){\rule{1.5pt}{785.5pt}}%
-      \put(567,-814){\rule{1.5pt}{785.5pt}}%
-      \put(28.5,-814){\rule{540pt}{1.5pt}}%
       \iffirstfm\else
         \put(0,-805){\makebox(597,0)[c]{\fontsize{11}{12}\selectfont\bfseries\roman{page}}}%
       \fi

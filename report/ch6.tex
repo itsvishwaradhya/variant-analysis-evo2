@@ -270,7 +270,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{itemize}
 \resfig{6.1.11}{Variant Types in the Live ClinVar BRCA1 Query}{%
 \begin{tikzpicture}
-\begin{axis}[resax,xbar,xlabel={number of records},xmin=0,xmax=260,y dir=reverse,
+\begin{axis}[resax,width=0.8\linewidth,xbar,xlabel={number of records},xmin=0,xmax=260,y dir=reverse,
   symbolic y coords={Single nucleotide variant,Deletion,Duplication,Indel,Insertion,Copy number loss,Microsatellite,Haplotype,Copy number gain},
   ytick=data,y tick label style={font=\footnotesize},bar width=9pt,nodes near coords,nodes near coords style={font=\footnotesize}]
 \addplot[fill=blue!50] coordinates {(218,Single nucleotide variant) (44,Deletion) (15,Duplication) (11,Indel) (5,Insertion) (3,Copy number loss) (2,Microsatellite) (1,Haplotype) (1,Copy number gain)};
