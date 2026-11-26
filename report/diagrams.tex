@@ -1,0 +1,240 @@
+%% =====================================================================
+%%  Diagrams for Chapter 4 and 5 (TikZ).  Each macro draws one figure.
+%% =====================================================================
+\tikzset{
+  bx/.style={rectangle,draw=black!70,rounded corners=2pt,fill=white,align=center,font=\scriptsize,inner sep=2.5pt,line width=0.4pt},
+  panel/.style={rectangle,draw=black!55,rounded corners=4pt,dashed,line width=0.5pt},
+  ptitle/.style={font=\scriptsize\bfseries,align=center},
+  arr/.style={-{Stealth[length=2mm]},line width=0.6pt},
+  darr/.style={-{Stealth[length=2mm]},line width=0.5pt,densely dashed},
+  lb/.style={font=\tiny,fill=white,inner sep=1pt,align=center},
+}
+
+%% ------------------------------------------------------------------ 4.1
+\newcommand{\diagArch}{%
+\begingroup\renewcommand{\baselinestretch}{1}\selectfont\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1cm,y=1cm]
+\fill[blue!45!black] (-0.4,8.55) rectangle (19.6,9.35);
+\node[white,font=\bfseries\small] at (9.6,8.95) {EVO2SERVE: SYSTEM ARCHITECTURE};
+% five panels
+\foreach \i/\ttl/\col in {0/{DATA SOURCES\\LAYER}/gray,1/{WEB APPLICATION\\LAYER}/blue,2/{GPU INFERENCE\\LAYER (MODAL)}/orange,3/{DECISION\\LAYER}/green,4/{PRESENTATION\\LAYER}/purple}{
+  \pgfmathsetmacro{\x}{\i*3.95}
+  \draw[panel,fill=\col!5] (\x-0.1,1.55) rectangle (\x+3.6,8.3);
+  \node[ptitle] at (\x+1.75,7.75) {\ttl};
+}
+% layer 1
+\node[bx,fill=gray!15,minimum width=3.2cm,minimum height=1.05cm] (u1) at (1.75,6.65) {UCSC Genome Browser\\REST API\\assemblies, chromosomes, sequence};
+\node[bx,fill=gray!15,minimum width=3.2cm,minimum height=1.05cm] (u2) at (1.75,5.3) {NCBI Gene and\\clinicaltables search\\gene details (E-summary)};
+\node[bx,fill=gray!15,minimum width=3.2cm,minimum height=1.05cm] (u3) at (1.75,3.95) {NCBI E-utilities\\ClinVar known variants\\(chrpos37 / chrpos38)};
+\node[bx,fill=gray!15,minimum width=3.2cm,minimum height=1.05cm] (u4) at (1.75,2.6) {BRCA1 SGE workbook\\and GRCh37 chr17 FASTA\\(calibration data)};
+% layer 2
+\node[bx,fill=blue!10,minimum width=3.2cm,minimum height=1.05cm] (w1) at (5.7,6.65) {Browser client\\Next.js 15, React 19\\Tailwind, shadcn/ui};
+\node[bx,fill=blue!10,minimum width=3.2cm,minimum height=1.05cm] (w2) at (5.7,5.3) {Next.js API routes\\/api/auth/*  and  /api/analyze};
+\node[bx,fill=blue!10,minimum width=3.2cm,minimum height=1.05cm] (w3) at (5.7,3.95) {Zod validation\\JWT cookie check\\(jose, HS256)};
+\node[bx,fill=blue!10,minimum width=3.2cm,minimum height=1.05cm] (w4) at (5.7,2.6) {MongoDB\\user accounts\\(bcrypt password hashes)};
+% layer 3
+\node[bx,fill=orange!15,minimum width=3.2cm,minimum height=1.05cm] (g1) at (9.65,6.65) {FastAPI endpoint\\Pydantic validation\\bearer JWT verification};
+\node[bx,fill=orange!15,minimum width=3.2cm,minimum height=1.05cm] (g2) at (9.65,5.3) {8\,kb window fetch\\mutated sequence builder\\SNV, DEL, INS, DELINS};
+\node[bx,fill=orange!25,minimum width=3.2cm,minimum height=1.05cm] (g3) at (9.65,3.95) {Evo 2-7B (StripedHyena 2)\\NVIDIA H100 GPU\\score\_sequences};
+\node[bx,fill=green!10,minimum width=3.2cm,minimum height=1.05cm] (g4) at (9.65,2.6) {Hugging Face cache volume\\(model weights)};
+% layer 4
+\node[bx,fill=green!12,minimum width=3.2cm,minimum height=1.05cm] (d1) at (13.6,6.65) {Score difference\\$\Delta=S(w^{var})-S(w^{ref})$};
+\node[bx,fill=green!12,minimum width=3.2cm,minimum height=1.05cm] (d2) at (13.6,5.3) {Threshold $\tau$\\(Youden, BRCA1)\\label rule};
+\node[bx,fill=green!12,minimum width=3.2cm,minimum height=1.05cm] (d3) at (13.6,3.95) {Confidence\\$\min(1,|\Delta-\tau|/\sigma)$};
+\node[bx,fill=green!12,minimum width=3.2cm,minimum height=1.05cm] (d4) at (13.6,2.6) {Provisional flag\\for indel predictions};
+% layer 5
+\node[bx,fill=purple!10,minimum width=3.2cm,minimum height=1.05cm] (p1) at (17.55,6.65) {Gene viewer\\sequence and gene details};
+\node[bx,fill=purple!10,minimum width=3.2cm,minimum height=1.05cm] (p2) at (17.55,5.3) {Known-variants table\\(ClinVar classification)};
+\node[bx,fill=purple!10,minimum width=3.2cm,minimum height=1.05cm] (p3) at (17.55,3.95) {Variant analysis panel\\label, confidence bar};
+\node[bx,fill=purple!10,minimum width=3.2cm,minimum height=1.05cm] (p4) at (17.55,2.6) {Comparison modal\\Evo 2 versus ClinVar};
+% inter-panel arrows
+\draw[arr] (3.5,4.8) -- (3.85,4.8); \draw[arr] (7.45,4.8) -- (7.8,4.8);
+\draw[arr] (11.4,4.8) -- (11.75,4.8); \draw[arr] (15.35,4.8) -- (15.7,4.8);
+\draw[arr] (w2) -- (w3); \draw[arr] (g1) -- (g2); \draw[arr] (g2) -- (g3); \draw[arr] (d1) -- (d2); \draw[arr] (d2) -- (d3);
+\draw[darr] (g3) -- (g4);
+% bottom bar
+\draw[panel,fill=yellow!8] (-0.1,-0.4) rectangle (19.4,1.45);
+\node[ptitle,anchor=west] at (0.0,1.17) {OFFLINE CALIBRATION AND VERIFICATION};
+\node[bx,fill=yellow!20,minimum height=0.8cm,minimum width=3.4cm] (v1) at (1.65,0.3) {Calibration job\\(500 BRCA1 variants)};
+\node[bx,fill=yellow!20,minimum height=0.8cm,minimum width=3.4cm] (v2) at (5.6,0.3) {ROC, AUROC and\\Youden threshold};
+\node[bx,fill=yellow!20,minimum height=0.8cm,minimum width=3.4cm] (v3) at (9.55,0.3) {Reference predictors\\(CADD, SIFT, ...)};
+\node[bx,fill=yellow!20,minimum height=0.8cm,minimum width=3.4cm] (v4) at (13.5,0.3) {Window, assembly and\\validator checks};
+\node[bx,fill=yellow!20,minimum height=0.8cm,minimum width=3.4cm] (v5) at (17.45,0.3) {JSON reports\\and figures};
+\draw[arr] (v1) -- (v2); \draw[arr] (v2) -- (v3); \draw[arr] (v3) -- (v4); \draw[arr] (v4) -- (v5);
+\end{tikzpicture}}\endgroup}
+
+%% ------------------------------------------------------------------ 4.2  DFD level 0
+\newcommand{\diagDFDzero}{%
+\begingroup\renewcommand{\baselinestretch}{1}\selectfont\resizebox{0.92\linewidth}{!}{%
+\begin{tikzpicture}[>=Stealth,font=\scriptsize,
+  ent/.style={rectangle,draw,minimum width=2.5cm,minimum height=1.0cm,align=center,fill=gray!10,line width=0.5pt},
+  proc/.style={circle,draw,minimum size=3.6cm,align=center,fill=orange!12,line width=0.7pt},
+  fl/.style={-{Stealth[length=2mm]},line width=0.5pt},
+  lbl/.style={font=\tiny,fill=white,inner sep=1pt,align=center}]
+\node[proc] (p) at (0,0) {\textbf{0}\\Evo2Serve\\variant analysis\\system};
+\node[ent] (user) at (-6.2,0) {User\\(student, researcher)};
+\node[ent] (ucsc) at (6.2,2.3) {UCSC Genome\\Browser API};
+\node[ent] (ncbi) at (6.2,0) {NCBI Gene,\\E-utilities, ClinVar};
+\node[ent] (modal) at (6.2,-2.3) {Modal GPU platform\\(Evo 2-7B, H100)};
+\node[ent] (db) at (0,-3.6) {MongoDB\\(user accounts)};
+\draw[fl] ([yshift=0.25cm]user.east) -- node[lbl,above]{credentials, assembly,\\gene, mutation} ([yshift=0.25cm]p.west |- user.east);
+\draw[fl] ([yshift=-0.25cm]p.west |- user.east) -- node[lbl,below]{sequence, variants,\\label, confidence} ([yshift=-0.25cm]user.east);
+\draw[fl] (p.north east) to[out=40,in=180] node[lbl,above,pos=0.55]{sequence request} (ucsc.west);
+\draw[fl] (ucsc.south west) to[out=210,in=20] node[lbl,below,pos=0.6]{reference sequence} (p.40);
+\draw[fl] ([yshift=0.2cm]p.east) -- node[lbl,above]{gene and variant queries} ([yshift=0.2cm]ncbi.west);
+\draw[fl] ([yshift=-0.2cm]ncbi.west) -- node[lbl,below]{gene details, ClinVar records} ([yshift=-0.2cm]p.east);
+\draw[fl] (p.south east) to[out=-40,in=180] node[lbl,below,pos=0.5]{JSON request + bearer token} (modal.west);
+\draw[fl] (modal.north west) to[out=160,in=-20] node[lbl,above,pos=0.45]{$\Delta$, label,\\confidence} (p.-40);
+\draw[fl] ([xshift=-0.3cm]p.south) -- node[lbl,left]{account data} ([xshift=-0.3cm]db.north);
+\draw[fl] ([xshift=0.3cm]db.north) -- node[lbl,right]{user record} ([xshift=0.3cm]p.south);
+\end{tikzpicture}}\endgroup}
+
+%% ------------------------------------------------------------------ 4.3  DFD level 1
+\newcommand{\diagDFDone}{%
+\begingroup\renewcommand{\baselinestretch}{1}\selectfont\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[>=Stealth,font=\scriptsize,
+  ent/.style={rectangle,draw,minimum width=2.4cm,minimum height=0.95cm,align=center,fill=gray!10,line width=0.5pt},
+  proc/.style={circle,draw,minimum size=2.7cm,align=center,fill=orange!12,line width=0.6pt,inner sep=0pt},
+  fl/.style={-{Stealth[length=2mm]},line width=0.5pt},
+  lbl/.style={font=\fontsize{6}{7}\selectfont,fill=white,inner sep=0.8pt,align=center}]
+\node[ent] (user) at (0,0) {User};
+\node[proc] (p1) at (4.8,3.8) {\textbf{1.0}\\Authenticate\\user};
+\node[proc] (p2) at (4.8,0) {\textbf{2.0}\\Browse genes and\\enter mutation};
+\node[proc] (p3) at (4.8,-3.8) {\textbf{3.0}\\Retrieve known\\variants};
+\node[proc] (p4) at (9.7,0) {\textbf{4.0}\\Validate and\\forward request};
+\node[proc] (p5) at (14.6,0) {\textbf{5.0}\\Score variant\\with Evo 2};
+\node[proc] (p6) at (9.7,-3.8) {\textbf{6.0}\\Present and\\compare};
+\node[ent] (ucsca) at (9.7,3.8) {UCSC Genome\\Browser};
+\node[ent] (ucscb) at (14.6,4.2) {UCSC Genome\\Browser};
+\node[ent] (ncbi) at (4.8,-7.0) {NCBI Gene,\\E-utilities, ClinVar};
+% data stores (open rectangles)
+\draw[line width=0.6pt] (3.2,6.35) -- (6.4,6.35); \draw[line width=0.6pt] (3.2,5.75) -- (6.4,5.75);
+\node[font=\scriptsize] at (4.8,6.05) {D1  Users (MongoDB)};
+\draw[line width=0.6pt] (13.0,-3.55) -- (16.2,-3.55); \draw[line width=0.6pt] (13.0,-4.15) -- (16.2,-4.15);
+\node[font=\scriptsize] at (14.6,-3.85) {D2  Model cache volume};
+% flows
+\draw[fl] (user.north east) -- node[lbl,sloped,above,pos=0.45]{credentials} (p1.west);
+\draw[fl] (user.east) -- node[lbl,above,pos=0.5]{assembly, gene,\\mutation} (p2.west);
+\draw[fl] (user.south east) -- node[lbl,sloped,below,pos=0.45]{ClinVar click} (p3.west);
+\draw[fl] ([xshift=-0.35cm]p1.north) -- node[lbl,left]{account} ([xshift=-0.35cm]p1.north |- 0,5.75);
+\draw[fl] ([xshift=0.35cm]p1.north |- 0,5.75) -- node[lbl,right]{user record} ([xshift=0.35cm]p1.north);
+\draw[fl] (ucsca.south west) -- node[lbl,sloped,above,pos=0.5]{sequence} (p2.north east);
+\draw[fl] (p2) -- node[lbl,above]{mutation +\\session cookie} (p4);
+\draw[fl] (p3.east) -- node[lbl,sloped,above,pos=0.3]{variant} (p4.south west);
+\draw[fl] (p3) -- node[lbl,above]{ClinVar class} (p6);
+\draw[fl] (ncbi) -- node[lbl,left]{records} (p3);
+\draw[fl] (p4) -- node[lbl,above]{JSON + bearer token} (p5);
+\draw[fl] (ucscb) -- node[lbl,right]{8\,kb window} (p5);
+\draw[fl] ([xshift=0.4cm]p5.south) -- node[lbl,right]{weights} ([xshift=0.4cm]p5.south |- 0,-3.55);
+\draw[fl] (p5.south west) -- node[lbl,sloped,above]{$\Delta$, label, confidence} (p6.north east);
+\draw[fl] (p6.south) -- (9.7,-8.4) -- node[lbl,below]{prediction, agreement with ClinVar} (0,-8.4) -- (user.south);
+\end{tikzpicture}}\endgroup}
+
+%% ------------------------------------------------------------------ 4.4  sequence
+\newcommand{\msg}[5]{\draw[#5] (#1,#3) -- node[font=\tiny,fill=white,inner sep=0.8pt,above]{#4} (#2,#3);}
+\newcommand{\diagSeq}{%
+\begingroup\renewcommand{\baselinestretch}{1}\selectfont\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[>=Stealth,font=\scriptsize,
+  ll/.style={rectangle,draw,fill=blue!8,minimum width=2.15cm,minimum height=0.8cm,align=center,line width=0.5pt},
+  life/.style={dashed,line width=0.4pt,gray},
+  m/.style={-{Stealth[length=2mm]},line width=0.55pt},
+  r/.style={-{Stealth[length=2mm]},line width=0.55pt,densely dashed},
+  t/.style={font=\tiny,fill=white,inner sep=0.8pt,align=center}]
+\def\top{0}\def\bot{-15.2}
+\foreach \x/\n/\c in {0/{User}/blue,3.2/{Browser UI\\(React)}/blue,6.4/{Next.js\\API route}/gray,9.6/{FastAPI on Modal\\(Evo2Model)}/orange,12.8/{UCSC\\REST API}/gray,16.0/{Evo 2-7B\\(H100 GPU)}/orange}{
+  \node[ll,fill=\c!10] at (\x,\top) {\n};
+  \draw[life] (\x,\top-0.4) -- (\x,\bot);
+}
+\msg{0}{3.2}{-1.2}{1: enter position and alternate base}{m}
+\msg{3.2}{6.4}{-2.3}{2: POST /api/analyze (cookie)}{m}
+\draw[m] (6.4,-3.1) -- (6.9,-3.1) -- (6.9,-3.6) -- (6.4,-3.6);
+\node[t,anchor=west] at (6.95,-3.35) {3: verify JWT, Zod validate};
+\msg{6.4}{9.6}{-4.6}{4: forward JSON + bearer token}{m}
+\draw[m] (9.6,-5.4) -- (10.1,-5.4) -- (10.1,-5.9) -- (9.6,-5.9);
+\node[t,anchor=west] at (10.15,-5.65) {5: verify JWT, Pydantic validate};
+\msg{9.6}{12.8}{-6.9}{6: GET getData/sequence (8\,kb)}{m}
+\msg{12.8}{9.6}{-7.8}{7: reference window}{r}
+\draw[m] (9.6,-8.6) -- (10.1,-8.6) -- (10.1,-9.1) -- (9.6,-9.1);
+\node[t,anchor=west] at (10.15,-8.85) {8: build mutated sequence};
+\msg{9.6}{16.0}{-10.0}{9: score\_sequences(ref), score\_sequences(var)}{m}
+\msg{16.0}{9.6}{-10.9}{10: mean log-likelihoods}{r}
+\draw[m] (9.6,-11.7) -- (10.1,-11.7) -- (10.1,-12.2) -- (9.6,-12.2);
+\node[t,anchor=west] at (10.15,-11.95) {11: $\Delta$, label, confidence};
+\msg{9.6}{6.4}{-13.0}{12: JSON result}{r}
+\msg{6.4}{3.2}{-13.8}{13: JSON response}{r}
+\msg{3.2}{0}{-14.6}{14: label, confidence bar, ClinVar comparison}{r}
+\end{tikzpicture}}\endgroup}
+
+%% ------------------------------------------------------------------ 4.5  class diagram
+\newcommand{\cls}[5]{% colour, name, position, attributes, methods
+ \node[rectangle split,rectangle split parts=3,draw=black!75,fill=white,font=\scriptsize,align=left,inner sep=2.5pt,text width=3.9cm,line width=0.45pt,
+       rectangle split part fill={#1!25,white,white}] (#2) at (#3) {\textbf{#2}\nodepart{second}#4\nodepart{third}#5};}
+\newcommand{\diagClass}{%
+\begingroup\renewcommand{\baselinestretch}{1}\selectfont\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[>=Stealth,line width=0.45pt]
+\cls{blue}{HomePage}{0,0}{genomes, selectedGenome\\selectedGene, mode}{handleSearch()\\loadBRCA1Example()}
+\cls{blue}{GeneViewer}{5.4,0}{gene, genomeId, chromosome}{renders sequence, gene\\information, variants}
+\cls{blue}{KnownVariants}{10.8,0}{variants[ ], gene}{analyzeClinvarVariant()\\sort and filter}
+\cls{blue}{VariantComparisonModal}{16.2,0}{comparisonVariant\\evo2Result}{shows agreement with\\ClinVar, confidence bar}
+\cls{gray}{AuthLib}{0,-3.7}{COOKIE = token\\EXPIRES\_IN = 7d}{hashPassword(), verifyPassword()\\signJWT(), verifyJWT()}
+\cls{blue}{VariantAnalysis}{5.4,-3.7}{variantType, position\\alternative, result}{analyzeVariant()\\formatVariantLabel()}
+\cls{purple}{GenomeApi}{10.8,-3.7}{(utility module)}{getAvailableGenomes()\\searchGenes()\\fetchGeneSequence()\\fetchClinvarVariants()\\analyzeVariantWithAPI()}
+\cls{gray}{AnalyzeRoute}{16.2,-3.7}{schema (Zod)}{POST(req)\\forwards to Modal endpoint}
+\cls{gray}{User}{0,-7.2}{email\\passwordHash}{(Mongoose model)}
+\cls{orange}{ScoringFunctions}{5.4,-7.4}{VARIANT\_THRESHOLDS\\SNV\_THRESHOLD, SNV\_LOF\_STD\\SNV\_FUNC\_STD}{get\_genome\_sequence()\\analyze\_variant()}
+\cls{orange}{Evo2Model}{10.8,-7.4}{model (Evo2 7B)}{load\_evo2\_model()\\\_verify\_jwt()\\analyze\_single\_variant()}
+\cls{orange}{VariantRequest}{16.2,-7.4}{variant\_position, variant\_type\\alternative, deletion\_length\\inserted\_sequence\\genome, chromosome}{validate\_variant()}
+\cls{yellow}{CalibrationJob}{5.4,-11.2}{brca1\_subset (500 rows)\\WINDOW\_SIZE = 8192}{run\_brca1\_analysis()\\returns AUROC and plot}
+% relations
+\draw[->] (HomePage) -- node[above,font=\tiny]{renders} (GeneViewer);
+\draw[->] (GeneViewer) -- node[above,font=\tiny]{renders} (KnownVariants);
+\draw[->] (KnownVariants) -- node[above,font=\tiny]{opens} (VariantComparisonModal);
+\draw[->] (GeneViewer) -- node[right,font=\tiny]{renders} (VariantAnalysis);
+\draw[->] (HomePage) -- node[right,font=\tiny]{session} (AuthLib);
+\draw[->] (AuthLib) -- node[right,font=\tiny]{stores} (User);
+\draw[->] (VariantAnalysis) -- node[above,font=\tiny]{uses} (GenomeApi);
+\draw[->] (KnownVariants) -- node[right,font=\tiny]{uses} (GenomeApi);
+\draw[->] (GenomeApi) -- node[above,font=\tiny]{POST} (AnalyzeRoute);
+\draw[->] (AnalyzeRoute) -- node[right,font=\tiny]{forwards} (VariantRequest);
+\draw[->] (VariantRequest) -- node[above,font=\tiny]{validated by} (Evo2Model);
+\draw[->] (Evo2Model) -- node[above,font=\tiny]{calls} (ScoringFunctions);
+\draw[->,dashed] (CalibrationJob) -- node[right,font=\tiny]{thresholds} (ScoringFunctions);
+\end{tikzpicture}}\endgroup}
+
+%% ------------------------------------------------------------------ 5.1  flowchart
+\newcommand{\diagFlow}{%
+\begingroup\renewcommand{\baselinestretch}{1}\selectfont\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[>=Stealth,font=\scriptsize,
+  term/.style={rectangle,rounded corners=7pt,draw,fill=gray!15,minimum width=3.3cm,minimum height=0.95cm,align=center,line width=0.5pt},
+  stp/.style={rectangle,draw,fill=blue!7,minimum width=3.5cm,minimum height=1.1cm,align=center,line width=0.5pt,text width=3.2cm},
+  gpu/.style={rectangle,draw,fill=orange!18,minimum width=3.5cm,minimum height=1.1cm,align=center,line width=0.5pt,text width=3.2cm},
+  err/.style={rectangle,draw,fill=red!8,minimum width=3.5cm,minimum height=1.1cm,align=center,line width=0.5pt,text width=3.2cm},
+  dec/.style={diamond,aspect=2.2,draw,fill=yellow!15,align=center,inner sep=0pt,line width=0.5pt,minimum width=3.5cm,minimum height=1.5cm},
+  fl/.style={-{Stealth[length=2mm]},line width=0.55pt},
+  lbl/.style={font=\fontsize{6}{7}\selectfont,fill=white,inner sep=1pt}]
+% row 1 (left to right)
+\node[term] (s) at (0,0) {Start};
+\node[stp] (a) at (4.5,0) {Open the web application};
+\node[stp] (b) at (9,0) {Select assembly; search a gene or browse a chromosome};
+\node[stp] (c) at (13.5,0) {View gene details, reference sequence and known ClinVar variants};
+\node[stp] (d) at (18,0) {Click a ClinVar variant or enter a custom mutation};
+% row 2 (right to left)
+\node[dec] (e) at (18,-3.0) {Signed\\in?};
+\node[dec] (f) at (13.5,-3.0) {Request\\valid?};
+\node[gpu] (g) at (9,-3.0) {Next.js route forwards to Modal; fetch the 8\,kb window};
+\node[gpu] (h) at (4.5,-3.0) {Build mutated sequence; score reference and variant with Evo 2};
+\node[stp] (i) at (0,-3.0) {Compute $\Delta$; apply threshold $\tau$; confidence and provisional flag};
+% row 3
+\node[err] (x1) at (18,-6.0) {Show sign-in page; retry after login};
+\node[err] (x2) at (13.5,-6.0) {Show validation error; edit the mutation};
+\node[stp] (j) at (0,-6.0) {Display label, confidence and ClinVar comparison};
+\node[term] (t) at (4.5,-6.0) {End};
+\draw[fl] (s) -- (a); \draw[fl] (a) -- (b); \draw[fl] (b) -- (c); \draw[fl] (c) -- (d);
+\draw[fl] (d) -- (e);
+\draw[fl] (e) -- node[lbl,above]{yes} (f);
+\draw[fl] (e) -- node[lbl,right]{no} (x1);
+\draw[fl] (f) -- node[lbl,above]{yes} (g);
+\draw[fl] (f) -- node[lbl,right]{no} (x2);
+\draw[fl] (g) -- (h); \draw[fl] (h) -- (i);
+\draw[fl] (i) -- (j); \draw[fl] (j) -- (t);
+\end{tikzpicture}}\endgroup}

@@ -1,0 +1,94 @@
+\chap{2}{LITERATURE SURVEY}{4pt}
+A comprehensive review of the research on variant effect prediction, experimental variant classification, genomic language models and online interpretation services was conducted to establish the theoretical foundation of Evo2Serve. Historically, the interpretation of a genetic variant has relied on expert curation under guidelines such as ACMG/AMP, supported by computational predictors that estimate the damage a change does to a protein from evolutionary conservation, structural features and aggregated annotations. These predictors are valuable, but they are mostly restricted to protein-coding substitutions, depend on alignments or precomputed annotations, and say little about variants in non-coding regions or about insertions and deletions.
+
+In recent years, language models have changed the situation. A model trained to predict the next symbol of a sequence learns, without any labels, the statistical structure that evolution has imposed on it, and the likelihood it assigns to a mutated sequence can be used as a measure of how disruptive the mutation is. Protein language models first demonstrated this for missense variants, and DNA language models such as Nucleotide Transformer, GPN-MSA, Evo and Evo~2 extended it to nucleotide sequence of any kind. This survey examines the experimental ground truth used to evaluate such predictors, the classical and deep learning predictors that precede them, the genomic language models on which Evo2Serve is built, the calibration practices recommended for clinical use, and the online services that expose variant interpretation in a browser. Analysing these contributions establishes the algorithmic choices, the data sources and the architectural blueprint that guide the engineering and verification of Evo2Serve.
+
+\newpage
+\sect{2.1}{RELATED WORK}
+\sub{1. Saturation genome editing of BRCA1 (Findlay et al. 2018)}
+Findlay et al. used CRISPR-based genome editing in human HAP1 cells to introduce nearly every possible single-nucleotide variant in the exons of \textit{BRCA1} that encode its RING and BRCT domains, and measured the effect of each variant on cell survival. Function scores were obtained for 3,893 variants and classified as functional, intermediate or non-functional in the proportions 72.5\%, 6.4\% and 21.1\%. The classification agreed strongly with the clinical assertions in ClinVar. This dataset is the experimental ground truth used by the Evo~2 authors and by Evo2Serve to calibrate and evaluate zero-shot scoring \cite{findlay2018brca1}.
+
+\sub{2. ACMG/AMP variant classification guidelines (Richards et al. 2015)}
+Richards et al. published the joint consensus recommendation of the American College of Medical Genetics and Genomics and the Association for Molecular Pathology. It defines five classes from pathogenic to benign and combines evidence of several types, including population data, functional data, segregation and computational predictions. Computational prediction is given supporting weight only, and the guideline warns that predictions should not be the sole basis of a clinical assertion. This guidance determines how Evo2Serve words and flags its output \cite{richards2015acmg}.
+
+\sub{3. Conservation-based prediction: SIFT (Ng and Henikoff 2001)}
+SIFT predicts whether an amino-acid substitution is tolerated by examining how conserved the position is among homologous protein sequences. A substitution at a position that evolution has preserved is predicted to be deleterious. SIFT is simple, fast and widely used, but it applies only to missense changes in protein-coding regions. On the \textit{BRCA1} calibration rows used in this project it reaches an AUROC of only 0.656, which makes it a useful weak baseline \cite{ng2001sift}.
+
+\sub{4. Structure and sequence features: PolyPhen-2 (Adzhubei et al. 2010)}
+PolyPhen-2 combines sequence-based and structure-based features of a substitution in a machine learning classifier to predict damaging missense mutations. It is distributed as a web server and became one of the standard tools for missense interpretation. Like SIFT it cannot score non-coding or insertion and deletion variants. Its AUROC on the calibration rows used here is 0.683, and it serves as a second classical baseline \cite{adzhubei2010polyphen2}.
+
+\sub{5. Integrated annotation: CADD (Rentzsch et al. 2019; Schubach et al. 2024)}
+CADD integrates dozens of genomic annotations, including conservation, regulatory and protein-level features, into a single deleteriousness score that can be computed for any variant in the human genome. The 2024 version adds protein language model features and regulatory convolutional networks. CADD reaches an AUROC of 0.8763 on the full \textit{BRCA1} assay and 0.791 on the 500-row slice used by Evo2Serve for calibration; it is the strongest general-purpose reference predictor in this project \cite{rentzsch2019cadd,schubach2024cadd}.
+
+\sub{6. Annotation pipelines: Ensembl Variant Effect Predictor (McLaren et al. 2016)}
+The Ensembl Variant Effect Predictor determines the effect of variants on genes, transcripts and protein sequence and packages many predictors into one standard annotation pipeline. It is the tool of choice for annotating whole call sets, but it is a batch pipeline that is installed locally or run through a web form, and it reports annotations rather than the score of a sequence model on a user-defined mutation \cite{mclaren2016vep}.
+
+\sub{7. Proteome-wide missense prediction: AlphaMissense (Cheng et al. 2023)}
+AlphaMissense adapts a protein structure prediction network to classify missense variants across the whole human proteome as likely benign, ambiguous or likely pathogenic. In the Evo~2 evaluation it reaches an AUROC of 0.8891 on the coding variants of the \textit{BRCA1} assay. Its scope is limited to missense changes in protein-coding sequence, so it cannot score splice-region, non-coding or insertion and deletion variants \cite{cheng2023alphamissense}.
+
+\sub{8. Protein language models: ESM-2 (Lin et al. 2023)}
+Lin et al. trained transformer language models on evolutionary-scale protein sequence data and showed that atomic-level structure emerges in the representation without any structural supervision. Likelihood ratios from protein language models have since been used for zero-shot missense effect prediction. ESM-2 established the principle, on which genomic language models build, that a likelihood learned from sequence alone carries functional information \cite{lin2023esm2}.
+
+\sub{9. Long-range sequence models: Enformer (Avsec et al. 2021)}
+Enformer is a transformer-based neural network that predicts gene expression and chromatin tracks from DNA sequence by integrating long-range interactions. It demonstrated that deep models can use a large sequence context, and it is used to predict the effect of non-coding variants on expression. It is trained on supervised functional-genomics data and predicts molecular phenotypes, not a pathogenic or benign label \cite{avsec2021enformer}.
+
+\sub{10. DNA foundation models: Nucleotide Transformer (Dalla-Torre et al. 2025)}
+Nucleotide Transformer is a family of foundation models pre-trained on thousands of human genomes and on genomes from many species. It produces useful representations for many genomic tasks after fine-tuning. In the zero-shot evaluation of the Evo~2 authors on the \textit{BRCA1} assay, however, it reaches an AUROC of only 0.5496, close to chance, which shows that not every DNA language model can score variants without further training \cite{dallatorre2024nt}.
+
+\sub{11. Alignment-based DNA language model: GPN-MSA (Benegas et al. 2025)}
+GPN-MSA is a DNA language model trained on multiple-species genome alignments. It predicts the effects of genome-wide variants and reaches an AUROC of 0.8628 on the \textit{BRCA1} assay without task-specific training. Its strength comes from the alignment, which supplies evolutionary information explicitly, but at prediction time it requires the alignment of the region in other species and not just the human reference sequence \cite{benegas2025gpnmsa}.
+
+\sub{12. Genome-scale language modelling: Evo (Nguyen et al. 2024)}
+Evo is a biological foundation model trained on prokaryotic and phage genomes that models sequence at single-nucleotide resolution with a context of 131 kb and can both score and generate DNA. It showed that a single sequence model can learn from DNA at genome scale. When applied zero-shot to the human \textit{BRCA1} assay it reaches an AUROC of only 0.4972, which motivated the much larger and broader training of its successor \cite{nguyen2024evo}.
+
+\sub{13. Evo 2 (Brixi et al. 2026)}
+Evo~2 is a DNA language model with 7 billion and 40 billion parameters trained on the OpenGenome2 corpus of nearly nine trillion nucleotides from all domains of life, with a context of up to one million bases at single-nucleotide resolution. Without task-specific training it reaches an AUROC of 0.9037 (7B) on the \textit{BRCA1} saturation benchmark, above CADD (0.8763) and GPN-MSA (0.8628). A supervised classifier trained on its embeddings reaches 0.95. Evo~2 is the scoring model of Evo2Serve and its notebook method is the basis of the calibration routine \cite{brixi2026evo2}.
+
+\sub{14. Convolutional multi-hybrid architecture: StripedHyena 2 (Ku et al. 2025)}
+StripedHyena~2 is the architecture on which Evo~2 is built. It is a convolutional multi-hybrid that combines input-dependent convolution operators with attention, which gives better training and inference efficiency at long context than a pure transformer. This efficiency is what allows Evo~2 to model very long contexts, and it is why a single H100 can score the 8,193-base windows used by Evo2Serve \cite{brixi2025stripedhyena2}.
+
+\sub{15. Calibration of computational tools: ClinGen recommendations (Pejaver et al. 2022)}
+Pejaver et al. showed how continuous scores of computational tools can be converted into calibrated evidence strengths (supporting, moderate or strong) for the PP3 and BP4 criteria of the ACMG/AMP framework, using local posterior probabilities of pathogenicity. A raw threshold on a score, as used in Evo2Serve, is therefore only a first step: a calibrated probability on held-out data is required before a score can support a clinical classification \cite{pejaver2022svi}.
+
+\sub{16. Online interpretation services: VarSome and MobiDetails (Kopanos et al. 2019; Baux et al. 2021)}
+VarSome aggregates annotations from many databases behind a single search box and applies ACMG-style rules, while MobiDetails presents curated variant evidence online. Both inherit the quality of the sources they display and neither runs a large genomic language model on a new, user-defined mutation. Evo2Serve differs in that it derives its own label from its own model score, so that the label stands or falls with the threshold, the window and the coordinate handling \cite{vandenbroucke2019varsome,baux2021mobidetails}.
+\sectend{2.1}
+
+\newpage
+\sect{2.2}{GAP ANALYSIS}
+\vspace{6pt}
+\begin{enumerate}
+\setlength{\itemsep}{12pt}
+\item Evo~2 is distributed as research code that needs a data-centre GPU and notebook skills; Evo2Serve serves it on a serverless H100 behind a single authenticated FastAPI endpoint \cite{brixi2026evo2,brixi2025stripedhyena2}.
+\item Classical predictors such as SIFT and PolyPhen-2 are limited to missense substitutions; Evo2Serve scores substitutions, deletions, insertions and deletion--insertions with one method \cite{ng2001sift,adzhubei2010polyphen2}.
+\item Integrated scores such as CADD depend on a large set of precomputed annotations; Evo2Serve derives its score from the sequence alone, with no annotation lookup \cite{rentzsch2019cadd,schubach2024cadd}.
+\item Online aggregators display existing evidence but run no model on a new mutation; Evo2Serve computes a score on demand and places it beside the ClinVar classification \cite{vandenbroucke2019varsome,baux2021mobidetails}.
+\item Annotation pipelines such as the Ensembl VEP are batch tools installed locally; Evo2Serve is an interactive, browser-based service that needs no installation \cite{mclaren2016vep}.
+\item Protein language models and AlphaMissense are limited to protein-coding missense changes; Evo2Serve works at the DNA level and therefore also covers non-coding and splice-region positions \cite{cheng2023alphamissense,lin2023esm2}.
+\item Sequence-to-function models such as Enformer predict molecular phenotypes, not a pathogenicity label; Evo2Serve returns a ``likely pathogenic'' or ``likely benign'' call with a confidence value \cite{avsec2021enformer}.
+\end{enumerate}
+\sectend{2.2a}
+
+\begin{enumerate}
+\setcounter{enumi}{7}
+\setlength{\itemsep}{12pt}
+\item Earlier DNA language models score near chance on \textit{BRCA1} (0.55 and 0.50); Evo2Serve uses Evo~2, whose published zero-shot AUROC is 0.9037 \cite{dallatorre2024nt,nguyen2024evo,brixi2026evo2}.
+\item Alignment-based models such as GPN-MSA need multiple-species alignments at prediction time; Evo2Serve needs only a single 8\,kb reference window fetched from UCSC \cite{benegas2025gpnmsa}.
+\item Continuous scores must be calibrated before they can support a classification; Evo2Serve calibrates a threshold on \textit{BRCA1} variants, flags provisional predictions and plans recalibration on held-out data \cite{pejaver2022svi}.
+\item Research notebooks calibrate offline and never verify the deployed path; Evo2Serve verifies the window, the assembly and the validators of the deployed service \cite{brixi2026evo2}.
+\item Coordinates are assembly-specific and most tools cannot detect a coordinate typed in the wrong assembly; Evo2Serve measures the GRCh37--GRCh38 offset of 1,847,983 bases and plans a reference-allele check \cite{lee2022ucsc}.
+\item Experimental ground truth covers specific exons only; Evo2Serve evaluates five predictors on the same rows and states that its calibration slice is class-enriched and position-localised \cite{findlay2018brca1}.
+\item Guidelines give computational evidence supporting weight only; Evo2Serve words its output as ``likely'' and presents it as research evidence \cite{richards2015acmg}.
+\item Sequence-only models can reflect phylogenetic and ancestry bias; Evo2Serve shows curated ClinVar evidence next to every prediction and states this limitation \cite{pugh2025likelihood,pathak2024ancestry}.
+\item A 7-billion-parameter model is costly to host continuously; Evo2Serve scales GPU containers to zero when idle and caches the weights on a persistent volume \cite{brixi2026evo2}.
+\end{enumerate}
+\sectend{2.2}
+
+\newpage
+\sect{2.3}{SUMMARY}
+This chapter provided a multi-faceted review of 16 foundational and recent works spanning experimental variant classification, clinical guidelines, classical and deep learning predictors, genomic language models, calibration practice and online interpretation services. The survey established the shift from predictors that depend on hand-built features and alignments to language models that learn the structure of DNA from sequence alone. Key findings validate the selection of Evo~2 as the scoring model, the use of the \textit{BRCA1} saturation genome editing data for calibration, and the reporting of results against established baselines such as CADD, PolyPhen-2 and SIFT.
+
+Beyond model selection, the survey highlighted that a score is not an interpretation. The ACMG/AMP framework treats computational prediction as supporting evidence, the ClinGen recommendations require calibration on local data, and sequence-only models can carry phylogenetic and ancestry bias. A deployed service must therefore combine a strong model with a transparent decision rule, curated evidence shown alongside the prediction, and a verified software path from the coordinate typed by the user to the sequence scored by the model.
+
+By addressing the sixteen gaps identified in Section 2.2, namely on-demand access to a large genomic language model, scoring of all mutation types, DNA-level coverage, comparison with ClinVar, calibrated and flagged output, and verification of the window, assembly and validators, Evo2Serve bridges the gap between a research model and an accessible, honest decision-support tool for education and research triage.
+\sectend{2.3}
