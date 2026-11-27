@@ -1,0 +1,565 @@
+\documentclass[8pt,a4paper]{article}
+
+% -------------------------------------------------
+% PAGE LAYOUT: A4 PORTRAIT
+% -------------------------------------------------
+\usepackage[
+    a4paper,
+    portrait,
+    left=0.7cm,
+    right=0.7cm,
+    top=0.9cm,
+    bottom=0.9cm
+]{geometry}
+
+% -------------------------------------------------
+% TABLES AND TEXT FORMATTING
+% -------------------------------------------------
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{booktabs}
+
+% -------------------------------------------------
+% URLS AND HYPERLINKS
+% -------------------------------------------------
+\usepackage{xurl}
+\usepackage[
+    colorlinks=true,
+    urlcolor=blue,
+    linkcolor=black,
+    citecolor=black,
+    pdfborder={0 0 0}
+]{hyperref}
+
+\Urlmuskip=0mu plus 1mu\relax
+
+% -------------------------------------------------
+% TABLE COLUMN DEFINITION
+% -------------------------------------------------
+\newcolumntype{D}[1]{%
+    >{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}%
+}
+
+% -------------------------------------------------
+% DOCUMENT INFORMATION
+% -------------------------------------------------
+
+\begin{document}
+
+
+% -------------------------------------------------
+% TABLE FORMATTING
+% -------------------------------------------------
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.25}
+\setlength{\LTpre}{0pt}
+\setlength{\LTpost}{0pt}
+\setlength{\emergencystretch}{3em}
+\sloppy
+
+% -------------------------------------------------
+% PROJECT DIARY TABLE
+% A4 portrait layout with adjusted column widths
+% -------------------------------------------------
+\begin{longtable}{|
+    D{1.25cm}|
+    D{4.10cm}|
+    D{0.70cm}|
+    D{2.90cm}|
+    D{2.90cm}|
+    D{3.00cm}|
+    D{2.95cm}|
+}
+
+\hline
+\textbf{Date} &
+\textbf{Work Summary} &
+\textbf{Hours} &
+\textbf{Reference Links} &
+\textbf{Learnings} &
+\textbf{Risk and Mitigation} &
+\textbf{Skills} \\
+\hline
+\endfirsthead
+
+\multicolumn{7}{c}{\textit{}}\\
+\hline
+\textbf{Date} &
+\textbf{Work Summary} &
+\textbf{Hours} &
+\textbf{Reference Links} &
+\textbf{Learnings} &
+\textbf{Risk and Mitigation} &
+\textbf{Skills} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{7}{r}{\textit{}}\\
+\endfoot
+
+\hline
+\endlastfoot
+
+% =================================================
+% 31 JANUARY 2026
+% =================================================
+31 Jan 2026 &
+During the initial phase of our project, our team focused on understanding the fundamentals of genomic mutation analysis and the growing role of artificial intelligence in biotechnology. We studied how DNA mutations can affect human health and explored the challenges involved in identifying pathogenic and benign variants using traditional laboratory methods. We researched the rapid growth of genomic sequencing data and understood the limitations of manual mutation interpretation systems. Our team also explored recent developments in biological foundation models and genomic language models capable of understanding DNA sequences using deep learning architectures. This phase helped us establish a strong research foundation for building a scalable AI-powered genomic mutation analysis platform. &
+4 &
+\url{https://www.nature.com/}
+\par
+\url{https://www.ncbi.nlm.nih.gov/}
+&
+We understood the importance of genomic mutation analysis in healthcare and learned how AI models are transforming modern biotechnology research. We also became familiar with biological language models and large-scale genomic datasets. &
+A major risk during this phase was misunderstanding complex genomic concepts and biological terminology without sufficient domain research. &
+Research, Analysis, Biotechnology Fundamentals \\
+\hline
+
+% =================================================
+% 09 FEBRUARY 2026
+% =================================================
+09 Feb 2026 &
+This week, our team concentrated on reviewing research papers related to DNA language models, genomic transformers, mutation prediction systems, and AI-driven healthcare applications. We analyzed recent papers discussing EVO 2, DNABERT, AlphaMissense, Enformer, DeepSEA, and CADD. We carefully studied the methodologies, datasets, architectures, and evaluation metrics used in these systems. The literature review mainly focused on identifying research gaps such as lack of real-time genomic inference systems, limited context handling, and insufficient scalable deployment support. &
+4 &
+\url{https://scholar.google.com/}
+\par
+\url{https://ieeexplore.ieee.org/}
+\par
+\url{https://link.springer.com/}
+&
+We learned how modern genomic AI systems use transformer-based and long-context architectures for DNA understanding and mutation effect prediction. &
+The main risk during this phase involved incorrectly interpreting advanced research methodologies or relying on outdated genomic AI studies. &
+Literature Survey, Technical Research \\
+\hline
+
+% =================================================
+% 16 FEBRUARY 2026
+% =================================================
+16 Feb 2026 &
+During this week, our team expanded the literature survey by analyzing recent genomic AI systems and comparing their methodologies, datasets, and inference strategies. We studied how long-context DNA models process genomic sequences and how mutation scoring systems classify variants based on pathogenicity probabilities. We also explored zero-shot genomic inference and confidence scoring approaches used in modern genomic AI research. &
+4 &
+\url{https://huggingface.co/}
+\par
+\url{https://www.nature.com/}
+&
+We learned how long-context biological language models improve genomic sequence understanding and mutation classification. &
+A significant risk during this phase was selecting inappropriate methodologies that may not scale well for future genomic analysis workflows. &
+Research, Analysis, Comparative Study \\
+\hline
+
+% =================================================
+% 23 FEBRUARY 2026
+% =================================================
+23 Feb 2026 &
+This week, our team focused on identifying the proposed datasets and genomic APIs required for the project. We studied the ClinVar database, UCSC Genome Browser API, and NCBI E-utilities to understand how genomic sequences, mutation annotations, and gene metadata can be retrieved dynamically. We also explored the OpenGenome2 dataset used in EVO 2 research and studied its large-scale genomic training structure. &
+4 &
+\url{https://www.ncbi.nlm.nih.gov/clinvar/}
+\par
+\url{https://genome.ucsc.edu/}
+&
+We learned how genomic APIs and biological datasets support AI-driven mutation analysis systems. &
+The major challenge during this phase was understanding the integration workflow between genomic APIs and AI inference systems. &
+Dataset Research, API Analysis \\
+\hline
+
+% =================================================
+% 09 MARCH 2026
+% =================================================
+09 Mar 2026 &
+During this phase, our team focused on understanding the EVO 2 foundation model and the Striped Hyena 2 architecture used for genomic sequence modeling. We studied how long-context sequence processing works and how the architecture supports genomic inference across millions of DNA tokens. We also analyzed mutation scoring methodologies including delta log-likelihood scoring, confidence score estimation, ROC analysis, and Youden's J statistic for pathogenicity threshold validation. &
+4 &
+\url{https://www.nature.com/}
+\par
+\url{https://huggingface.co/arcinstitute}
+&
+We learned how biological language models perform genomic mutation scoring and how statistical validation metrics are used for classification threshold analysis. &
+The primary risk during this stage involved misunderstanding statistical validation metrics and genomic scoring interpretations. &
+AI Research, Statistical Analysis \\
+\hline
+
+% =================================================
+% 16 MARCH 2026
+% =================================================
+16 Mar 2026 &
+This week, our team finalized the proposed methodology for the genomic mutation analysis platform. We planned the workflow involving DNA sequence input, mutation preprocessing, genomic API retrieval, EVO 2 inference, pathogenicity scoring, confidence estimation, and result visualization. We also designed the proposed system architecture for future implementation. &
+4 &
+\url{https://fastapi.tiangolo.com/}
+\par
+\url{https://modal.com/}
+&
+We learned how large-scale genomic AI systems are architected using modular inference pipelines and cloud-based GPU infrastructure. &
+A major risk during this phase was designing an overly complex workflow that may become difficult to integrate during future implementation. &
+System Architecture, Workflow Planning \\
+\hline
+
+% =================================================
+% 23 MARCH 2026
+% =================================================
+23 Mar 2026 &
+During this week, our team focused on planning the proposed technology stack for the genomic mutation analysis system. We selected Next.js 15, React, and TypeScript for frontend planning and FastAPI with Python 3.12 for backend API orchestration. Tailwind CSS, Shadcn/UI, and Lucide React were shortlisted for UI design planning. We additionally studied Modal serverless GPU infrastructure with NVIDIA H100 GPU support for future cloud deployment planning. &
+4 &
+\url{https://nextjs.org/}
+\par
+\url{https://modal.com/}
+&
+We learned how modern AI healthcare applications combine scalable frontend frameworks with GPU-powered backend inference systems. &
+The main risk during this phase involved selecting technologies that may create future scalability or integration challenges. &
+Technology Planning, Cloud Architecture Research \\
+\hline
+
+% =================================================
+% 30 MARCH 2026
+% =================================================
+30 Mar 2026 &
+This week, our team concentrated on preparing project documentation including introduction, literature survey, problem statement, objectives, methodology, and proposed system architecture. We also prepared workflow diagrams, cloud architecture planning, confidence score formulas, ROC-based justification, and mutation scoring explanations required for project presentation. &
+4 &
+\url{https://ieeexplore.ieee.org/}
+\par
+\url{https://www.overleaf.com/}
+&
+We learned how to organize technical research findings into structured academic documentation and presentation materials. &
+The primary risk during this phase was incomplete technical planning before future implementation. &
+Technical Documentation, Presentation Preparation \\
+\hline
+
+% =================================================
+% 06 APRIL 2026
+% =================================================
+06 Apr 2026 &
+During Phase Review 1, our team presented the project motivation, literature survey, problem statement, objectives, proposed methodology, genomic AI architecture, and research gaps identified from existing systems. We explained the role of EVO 2, Striped Hyena 2 architecture, genomic APIs, mutation scoring, and confidence estimation strategies planned for the project. We also discussed the proposed workflow for DNA sequence analysis and pathogenicity prediction. &
+4 &
+\url{https://www.nature.com/}
+\par
+\url{https://scholar.google.com/}
+&
+We improved our understanding of explaining complex genomic AI systems in an academic review environment. &
+A major challenge during the review phase was ensuring all research concepts and methodologies were communicated clearly and accurately. &
+Technical Presentation, Research Communication \\
+\hline
+
+% =================================================
+% 13 APRIL 2026
+% =================================================
+13 Apr 2026 &
+This week, our team focused on refining the project methodology and system planning based on feedback received during Phase Review 1. We improved the literature survey structure, refined the proposed system workflow, updated cloud architecture planning, and finalized the confidence scoring explanation and threshold justification techniques. &
+4 &
+\url{https://www.scikit-learn.org/}
+\par
+\url{https://matplotlib.org/}
+&
+We learned how reviewer feedback helps strengthen methodology planning and research clarity. &
+The primary risk during this phase was overcomplicating the workflow and reducing clarity during future implementation. &
+Methodology Refinement, Documentation Review \\
+\hline
+
+% =================================================
+% 27 APRIL 2026
+% =================================================
+27 Apr 2026 &
+During Phase Review 2, our team presented the finalized research planning, proposed technology stack, genomic workflow diagrams, AI inference pipeline, mutation scoring methodologies, and cloud deployment architecture. We explained how the proposed system would use EVO 2 inference with genomic APIs and serverless GPU infrastructure for future implementation. The review also included ROC analysis planning, confidence score interpretation, and pathogenicity threshold justification. &
+4 &
+\url{https://modal.com/}
+\par
+\url{https://fastapi.tiangolo.com/}
+&
+We gained experience presenting AI-based genomic systems with technical and research-oriented explanations. &
+A significant risk during this phase was maintaining technical consistency across all documentation, workflows, and architecture diagrams. &
+Research, Presentation, System Planning \\
+\hline
+
+% =================================================
+% 04 MAY 2026
+% =================================================
+04 May 2026 &
+This week, our team focused on preparing wireframes, interface layouts, and workflow planning for the genomic mutation analysis platform. We planned the user interaction flow for DNA sequence input, genomic search, mutation analysis, result interpretation, and confidence score visualization. The frontend structure was planned conceptually using Next.js and React-based component architecture. &
+4 &
+\url{https://nextjs.org/}
+\par
+\url{https://tailwindcss.com/}
+&
+We learned how to design research-oriented healthcare interfaces suitable for genomic AI systems. &
+The primary risk during this phase was poor workflow planning that may affect future usability and backend integration. &
+UI/UX Planning, Interface Workflow Design \\
+\hline
+
+% =================================================
+% 11 MAY 2026
+% =================================================
+11 May 2026 &
+During this week, our team consolidated all project research, diagrams, references, methodologies, datasets, formulas, and workflow planning into a final structured project diary and documentation format according to VTU academic standards. Since implementation work has not yet started, the project currently remains in the research, planning, architecture design, and documentation phase. &
+4 &
+\url{https://www.nature.com/}
+\par
+\url{https://ieeexplore.ieee.org/}
+&
+We learned how to organize large-scale AI healthcare research into structured technical documentation suitable for academic evaluation. &
+The major risk during this phase was incomplete technical planning before actual implementation begins. &
+Technical Documentation, Research Planning \\
+\hline
+
+% =================================================
+% 23 JULY 2026
+% =================================================
+23 Jul 2026 &
+Started the implementation phase. Cloned the repository along with the \texttt{evo2} submodule, created a Python 3.10 virtual environment for the backend and installed dependencies from \path{evo2-backend/requirements.txt}. Authenticated the Modal CLI and surveyed the external APIs (UCSC, NCBI, ClinVar), verifying connectivity. Set up frontend environment variables and project structure for upcoming development. &
+3 &
+\url{https://www.biorxiv.org/content/10.1101/2025.02.18.638918v1}
+\par
+\url{https://github.com/ArcInstitute/evo2}
+\par
+\url{https://api.genome.ucsc.edu/}
+\par
+\url{https://www.ncbi.nlm.nih.gov/books/NBK25501/}
+\par
+\url{https://modal.com/docs}
+&
+Understood the Evo2 model and how delta-likelihood scoring ranks variant effects. Learned Git submodule management and isolated Python environment setup. Understood the data sources: UCSC for reference sequences, NCBI/ClinVar for annotations. &
+Dependency and CUDA version mismatches may break the Evo2 build. Mitigation: pinned versions in requirements.txt and planned the Modal container image carefully. &
+Git and submodules, Python virtual environments, pip, Modal CLI, REST API exploration. \\
+\hline
+
+% =================================================
+% 30 JULY 2026
+% =================================================
+30 Jul 2026 &
+Bootstrapped the frontend using the T3 stack (Next.js 15, React 19, TypeScript, Tailwind CSS, Shadcn UI). Configured environment variables in \texttt{src/env.js} using \texttt{@t3-oss/env-nextjs} and Zod. Implemented the data-access layer in \texttt{src/utils/genome-api.ts}, wrapping UCSC, NCBI and ClinVar APIs: \texttt{getAvailableGenomes}, \texttt{getGenomeChromosomes}, \texttt{searchGenes}, \texttt{fetchGeneDetails}, \texttt{fetchGeneSequence}, \texttt{fetchClinvarVariants} and \texttt{analyzeVariantWithAPI}. &
+4 &
+\url{https://create.t3.gg/}
+\par
+\url{https://nextjs.org/docs}
+\par
+\url{https://tailwindcss.com/}
+\par
+\url{https://ui.shadcn.com/}
+\par
+\url{https://api.genome.ucsc.edu/}
+\par
+\url{https://www.ncbi.nlm.nih.gov/books/NBK25501/}
+&
+Learned the T3 stack structure and Next.js App Router conventions. Practiced typed API wrappers with TypeScript interfaces. Learned UCSC and NCBI E-utilities response formats. &
+External API schemas can change and break parsing. Mitigation: centralized all API calls in genome-api.ts with error handling and default fallbacks, plus strict TypeScript interfaces. &
+TypeScript, Next.js 15, Tailwind CSS, Shadcn UI, REST client integration, Zod environment validation. \\
+\hline
+
+% =================================================
+% 06 AUGUST 2026
+% =================================================
+06 Aug 2026 &
+Built all interactive UI components: \texttt{src/app/page.tsx} main page with genome assembly selector and Search/Browse tabs; \path{src/components/gene-viewer.tsx} orchestrating gene detail view; \path{src/components/gene-sequence.tsx} color-coded nucleotides; \path{src/components/known-variants.tsx} ClinVar table; \path{src/components/variant-analysis.tsx} mutation input with validation and confidence bar; \path{src/components/variant-comparison-modal.tsx}; and \path{src/utils/coloring-utils.ts}. &
+3 &
+\url{https://react.dev/}
+\par
+\url{https://nextjs.org/docs/app}
+\par
+\url{https://ui.shadcn.com/docs/components/}
+\par
+\url{https://lucide.dev/}
+&
+Practiced React hooks (\texttt{useState}, \texttt{useEffect}, \texttt{useRef}, \texttt{useImperative\allowbreak Handle}, \texttt{forwardRef}) and client components in Next.js. Learned composing Shadcn primitives with Tailwind theming. Implemented inline validation and loading states. &
+Variant analysis component calls a backend not yet deployed. Mitigation: clean API layer (\texttt{analyze\allowbreak VariantWith\allowbreak API}) keeps the UI decoupled; errors are caught and shown gracefully. &
+React 19, TypeScript, Tailwind CSS, Shadcn UI, lucide-react icons, component architecture. \\
+\hline
+
+% =================================================
+% 13 AUGUST 2026
+% =================================================
+13 Aug 2026 &
+Wrote backend code in \texttt{evo2-backend/main.py} for serverless GPU execution on Modal. Defined a container image with CUDA 12.6, PyTorch, flash-attention and the cloned ArcInstitute/evo2 repository. Implemented \texttt{run\_brca1\_analysis}: loads \texttt{Evo2('evo2\_7b')}, parses the BRCA1 FunSeq2 dataset, builds 8192-bp windows around each variant, substitutes the alternate base, scores reference and variant sequences, computes delta-likelihood, derives an optimal pathogenic threshold from the ROC curve, and estimates LOF/FUNC standard deviations for confidence. &
+4 &
+\url{https://github.com/ArcInstitute/evo2}
+\par
+\url{https://www.biorxiv.org/content/10.1101/2025.02.18.638918v1}
+\par
+\url{https://modal.com/docs/guide/gpu}
+\par
+\url{https://github.com/Dao-AILab/flash-attention}
+&
+Learned building a Modal container image using base images, system packages, PyTorch CUDA wheels and source installation. Learned sequence windowing for tractable inference and how delta-likelihood scores rank loss-of-function variants. Learned ROC-curve threshold selection. &
+Heavy and slow container builds due to CUDA, flash-attention and Evo2 source installation. Mitigation: pinned exact versions, enabled Modal image caching, and avoided blocking frontend work on the build. &
+Python, Modal, PyTorch/CUDA, pandas, NumPy, scikit-learn, ROC/AUROC, Biopython. \\
+\hline
+
+% =================================================
+% 20 AUGUST 2026
+% =================================================
+20 Aug 2026 &
+Implemented the single-variant analysis pipeline in \texttt{evo2-backend/main.py}. The \texttt{get\_genome\_sequence()} function fetches an 8192-bp reference window from the UCSC API for a given position, genome and chromosome. The \texttt{analyze\_variant()} function computes reference versus variant likelihoods and classifies variants using a precomputed threshold and confidence derived from LOF/FUNC standard deviations. The \texttt{Evo2Model} class exposes the \texttt{analyze\_single\_variant} FastAPI endpoint via \texttt{@modal.fastapi\_endpoint}. Tested the local entrypoint with a BRCA1 example payload. Deployment remained pending. &
+3 &
+\url{https://modal.com/docs/guide/webhooks}
+\par
+\url{https://api.genome.ucsc.edu/}
+\par
+\url{https://fastapi.tiangolo.com/}
+\par
+\url{https://docs.pydantic.dev/}
+&
+Learned exposing a Modal GPU function as a FastAPI web endpoint and validating requests with Pydantic. Learned confidence estimation using class-specific standard deviations around a ROC-derived threshold. Understood the end-to-end flow: frontend to Modal URL to UCSC fetch to Evo2 scoring to prediction. &
+Backend not yet deployed to Modal. Until deployment and configuration of \path{NEXT_PUBLIC_ANALYZE_SINGLE_VARIANT_BASE_URL}, variant analysis would fail at runtime. Mitigation: frontend error handling and deployment as the immediate next step. &
+FastAPI, Pydantic, Modal web endpoints, HTTP request handling, deployment planning. \\
+\hline
+
+% =================================================
+% 27 AUGUST 2026
+% =================================================
+27 Aug 2026 &
+Deployed the backend to Modal using \texttt{modal deploy main.py}, obtained the web URL and updated \path{NEXT_PUBLIC_ANALYZE_SINGLE_VARIANT_BASE_URL} in the frontend environment. Ran an end-to-end test using a BRCA1 example from the frontend, verified the prediction response and ClinVar comparison, and fixed CORS and environment-loading issues. &
+4 &
+\url{https://modal.com/docs}
+\par
+\url{https://nextjs.org/docs}
+\par
+\url{https://fastapi.tiangolo.com/}
+&
+Learned the Modal deployment workflow, environment configuration and end-to-end debugging. Understood cold-start behaviour and how loading states improve user experience. &
+Cold-start latency on the first request may affect the user experience. Mitigation: considered warm-up calls and frontend loading indicators. &
+Modal deployment, environment configuration, integration testing, CORS handling. \\
+\hline
+
+% =================================================
+% 03 SEPTEMBER 2026
+% =================================================
+03 Sep 2026 &
+Optimized backend performance by enabling Modal image caching, reducing container build time, tuning 8192-bp window scoring and adding retry logic for UCSC API calls. Improved structured logging. Profiled inference latency and GPU memory usage on an H100 GPU. &
+3 &
+\url{https://modal.com/docs/guide/caching}
+\par
+\url{https://api.genome.ucsc.edu/}
+\par
+\url{https://pytorch.org/docs/stable/}
+&
+Learned container caching strategies, API retry patterns and GPU profiling basics. Understood trade-offs between window size, latency and accuracy. &
+Inference cost and time can be high for large windows. Mitigation: tuned window sizing and added request retries with backoff. &
+Performance tuning, debugging, logging, profiling. \\
+\hline
+
+% =================================================
+% 10 SEPTEMBER 2026
+% =================================================
+10 Sep 2026 &
+Conducted integration testing across the frontend and backend. Validated genome assembly selection, chromosome browsing, gene search, sequence display, variant analysis and the ClinVar comparison modal. Compared Evo2 predictions against ClinVar classifications for sample variants and recorded discrepancies for review. &
+4 &
+\url{https://www.ncbi.nlm.nih.gov/clinvar/}
+\par
+\url{https://api.genome.ucsc.edu/}
+\par
+\url{https://nextjs.org/docs}
+&
+Learned end-to-end validation techniques and discrepancy analysis between model predictions and curated labels. Designed reusable test cases for variant inputs. &
+Coordinate and assembly mismatches between UCSC and ClinVar data may cause incorrect comparisons. Mitigation: normalized positions and validated genome-build consistency. &
+Integration testing, debugging, data validation, test case design. \\
+\hline
+
+% =================================================
+% 17 SEPTEMBER 2026
+% =================================================
+17 Sep 2026 &
+Polished the UI/UX by improving confidence-bar visualization, adding loading spinners, enhancing error messages, making the layout responsive for mobile, and improving accessibility through ARIA labels and keyboard navigation. Refined the nucleotide colour scheme and classification badges. &
+3 &
+\url{https://tailwindcss.com/}
+\par
+\url{https://ui.shadcn.com/}
+\par
+\url{https://www.w3.org/WAI/standards-guidelines/wcag/}
+\par
+\url{https://lucide.dev/}
+&
+Learned accessibility best practices and responsive design patterns. Improved component refinement and state handling for better UX. &
+UI complexity may affect rendering performance. Mitigation: considered memoization and lazy loading for heavy components. &
+UI/UX design, Tailwind CSS, accessibility, responsive layout. \\
+\hline
+
+% =================================================
+% 24 SEPTEMBER 2026
+% =================================================
+24 Sep 2026 &
+Prepared technical documentation by updating the README, documenting the FastAPI endpoint and request/response schema, creating architecture and workflow diagrams, and documenting deployment steps and environment variables. Added code comments and TypeScript type definitions. &
+4 &
+\url{https://fastapi.tiangolo.com/}
+\par
+\url{https://www.overleaf.com/}
+\par
+\url{https://nextjs.org/docs}
+&
+Learned technical writing and documentation structuring for academic and developer audiences. Improved API specification clarity. &
+Incomplete or outdated documentation can mislead users. Mitigation: maintained a documentation checklist and performed a review. &
+Documentation, technical writing, API specification, diagramming. \\
+\hline
+
+% =================================================
+% 01 OCTOBER 2026
+% =================================================
+01 Oct 2026 &
+Performed user testing with sample genes, including BRCA1 and TP53. Collected feedback on usability and prediction accuracy. Fixed bugs involving variant-position validation, nucleotide case handling and modal close behaviour. Improved error handling for invalid inputs. &
+3 &
+\url{https://www.ncbi.nlm.nih.gov/gene/}
+\par
+\url{https://www.ncbi.nlm.nih.gov/clinvar/}
+\par
+\url{https://nextjs.org/docs}
+&
+Learned to integrate user feedback and triage bugs effectively. Strengthened input validation and edge-case handling. &
+Edge cases in variant inputs, such as invalid positions and non-ACGT characters, can cause analysis failures. Mitigation: strict validation and user-friendly error messages. &
+Testing, debugging, UX improvement, input validation. \\
+\hline
+
+% =================================================
+% 08 OCTOBER 2026
+% =================================================
+08 Oct 2026 &
+Finalized deployment by redeploying the backend with the latest changes, creating a production frontend build, verifying environment variables and running production smoke tests. Monitored logs, fixed minor issues, and prepared a demonstration script and verification checklist. &
+4 &
+\url{https://modal.com/docs}
+\par
+\url{https://nextjs.org/docs}
+\par
+\url{https://vercel.com/docs}
+&
+Learned production deployment workflows, monitoring and smoke testing. Understood the importance of staging checks before release. &
+Production environment mismatches can break deployed features. Mitigation: staging verification and environment-variable audits. &
+Deployment, monitoring, DevOps, production verification. \\
+\hline
+
+% =================================================
+% 15 OCTOBER 2026
+% =================================================
+15 Oct 2026 &
+Consolidated the project through a final code review, removal of unused code, and updates to the diary and documentation according to VTU standards. Prepared the final report, presentation slides and viva notes. Verified features end-to-end and archived the repository state. &
+3 &
+\url{https://www.nature.com/}
+\par
+\url{https://ieeexplore.ieee.org/}
+\par
+\url{https://www.overleaf.com/}
+&
+Learned project closure practices, version-control hygiene and presentation preparation. Reinforced end-to-end verification discipline. &
+Last-minute issues may arise before submission. Mitigation: reserved buffer time and followed a final checklist. &
+Project management, documentation, version control, presentation. \\
+\hline
+
+% =================================================
+% 22 OCTOBER 2026
+% =================================================
+22 Oct 2026 &
+Prepared to present the final project review. Organized the project demonstration, reviewed the system architecture, frontend and backend implementation, Evo2-based variant analysis workflow, and integration with UCSC and ClinVar data sources. Refined the presentation slides, summarized the implementation milestones, and prepared explanations of the methodology, technical challenges, limitations, and future enhancements for the review. &
+3 &
+\url{https://github.com/ArcInstitute/evo2}
+\par
+\url{https://api.genome.ucsc.edu/}
+\par
+\url{https://www.ncbi.nlm.nih.gov/clinvar/}
+\par
+\url{https://nextjs.org/docs}
+\par
+\url{https://modal.com/docs}
+&
+Improved the ability to communicate the project architecture, explain the variant-analysis workflow, summarize implementation decisions, and present technical findings clearly. Practiced organizing a demonstration and preparing for technical questions during the final review. &
+Presentation issues, incomplete demonstrations, or questions about model limitations may affect the review. Mitigation: reviewed the presentation, checked the demonstration workflow, verified key features, and prepared explanations of limitations and future improvements. &
+Technical presentation, project demonstration, system architecture, scientific communication, viva preparation, project documentation. \\
+\hline
+
+\end{longtable}
+
+\end{document}
