@@ -10,7 +10,7 @@
 \sect{6.1}{DISCUSSIONS WITH DESCRIPTION AND SNAPSHOTS}
 In the rapidly evolving field of genomic artificial intelligence, Evo2Serve represents a step towards making large genomic language models usable outside research notebooks. The web platform provides zero-shot, model-based assessments of genetic mutations by combining public genome and ClinVar data with Evo~2-7B served from a serverless H100 GPU. The primary outcomes of the project are a working sign-in, browse, analyse and compare workflow, a calibrated decision rule for \textit{BRCA1}, and a measured account of how the deployed pipeline relates to its calibration. Because the GPU, UCSC, NCBI and the account database are external services, the results below are drawn from the interface that can be shown without them and from the verification scripts of the project, which read the repository data and reproduce every figure and table without a GPU.
 
-\textbf{6.1.1 Secure Access: Sign-in and Account Creation Screen:}
+\hh{6.1.1 Secure Access: Sign-in and Account Creation Screen:}
 \begin{itemize}
 \item \textbf{Implementation:} The project began with the access layer of the web application. A single page, \texttt{/login}, switches between a ``Sign in'' and a ``Create account'' mode and posts the e-mail and password to the authentication routes.
 \item \textbf{Functionality:} On success the server sets an HTTP-only cookie holding an HS256 session token valid for seven days and redirects to the main page. Wrong credentials and duplicate accounts return a message that the form displays under the fields.
@@ -23,7 +23,7 @@ In the rapidly evolving field of genomic artificial intelligence, Evo2Serve repr
 \resfig{6.1.1}{Request Path of the Authenticated Analysis Call}{\diagSeq}}
 
 \newpage
-\textbf{6.1.2 Calibration Data: Composition of the BRCA1 Assay and of the Calibration Set:}
+\hh{6.1.2 Calibration Data: Composition of the BRCA1 Assay and of the Calibration Set:}
 \begin{itemize}
 \item \textbf{Data Ingestion:} The saturation genome editing workbook of Findlay et al. was read directly from the Evo~2 repository. It holds 3,893 single-nucleotide variants of \textit{BRCA1}, each with a function score and a class.
 \item \textbf{Reproduction of the Published Composition:} The workbook contains 2,821 functional (72.46\%), 249 intermediate (6.40\%) and 823 non-functional (21.14\%) variants, which reproduces the 72.5\%, 6.4\% and 21.1\% reported by the original study.
@@ -44,7 +44,7 @@ In the rapidly evolving field of genomic artificial intelligence, Evo2Serve repr
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.3 Position Coverage of the Calibration Set:}
+\hh{6.1.3 Position Coverage of the Calibration Set:}
 \begin{itemize}
 \item \textbf{Genomic Span:} The 500 calibration variants lie between GRCh37 positions 41,267,755 and 41,276,135, a span of 8,380 bases, which is 10.69\% of the 78,413-base interval covered by the assay.
 \item \textbf{Distinct Positions:} The slice touches 168 transcript positions and 41 amino-acid positions, against 1,326 and 326 in the whole assay.
@@ -62,7 +62,7 @@ In the rapidly evolving field of genomic artificial intelligence, Evo2Serve repr
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.4 Reference Predictors: ROC Curves on the Calibration Set:}
+\hh{6.1.4 Reference Predictors: ROC Curves on the Calibration Set:}
 \begin{itemize}
 \item \textbf{Evaluation Design:} Five established predictors whose scores are stored in the workbook were evaluated on the same 500 rows, with loss of function as the positive class and the same Youden procedure that the calibration job uses.
 \item \textbf{Strongest Predictor:} Align-GVGD separates the classes best (AUROC 0.878), followed by CADD (0.791) and phyloP (0.777).
@@ -84,7 +84,7 @@ In the rapidly evolving field of genomic artificial intelligence, Evo2Serve repr
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.5 AUROC with Bootstrap Confidence Intervals:}
+\hh{6.1.5 AUROC with Bootstrap Confidence Intervals:}
 \begin{itemize}
 \item \textbf{Method:} Confidence intervals were obtained from 2,000 stratified bootstrap resamples with a fixed seed. The interval half-widths are about 0.03 to 0.07, so neighbouring predictors cannot be ranked with confidence on 500 variants.
 \item \textbf{Evo~2-7B:} The zero-shot run of the calibration job reached an AUROC of approximately 0.73 on the same rows. This value is reported without an interval because the per-variant scores of that run were not archived.
@@ -108,7 +108,7 @@ In the rapidly evolving field of genomic artificial intelligence, Evo2Serve repr
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.6 Sensitivity and Specificity at the Youden Operating Point:}
+\hh{6.1.6 Sensitivity and Specificity at the Youden Operating Point:}
 \begin{itemize}
 \item \textbf{Operating Points:} For each predictor the threshold that maximises sensitivity plus specificity minus one was chosen, the same rule that selects $\tau$ for Evo~2 in the calibration job.
 \item \textbf{Trade-offs:} Align-GVGD has the best balance (sensitivity 0.762, specificity 0.917), CADD and phyloP favour sensitivity (0.90 and 0.88) at a specificity near 0.6, and SIFT calls almost every variant damaging (sensitivity 1.0, specificity 0.312).
@@ -143,7 +143,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{center}
 
 \newpage
-\textbf{6.1.7 Context Window: Deployed Endpoint versus Calibration Routine:}
+\hh{6.1.7 Context Window: Deployed Endpoint versus Calibration Routine:}
 \begin{itemize}
 \item \textbf{Window Rule:} The calibration routine takes the interval of 4,096 bases on each side of the zero-based position, which is 8,192 bases with the variant at offset 4,096. The deployed endpoint takes one further base, giving 8,193 bases with the variant again at offset 4,096.
 \item \textbf{Verification:} Over all 500 calibration positions the deployed window shares its first 8,192 bases with the calibration window and differs only by the final 3$'$ base; none of the 500 windows is identical, and no position is near a chromosome end.
@@ -176,7 +176,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}}
 
 \newpage
-\textbf{6.1.8 Supported Mutation Types and Scored Sequence Lengths:}
+\hh{6.1.8 Supported Mutation Types and Scored Sequence Lengths:}
 \begin{itemize}
 \item \textbf{Mutation Types:} The service applies four edit operations to the reference window: substitution, deletion, insertion and deletion--insertion, with deletions and insertions limited to 500 bases. An insertion is placed after the anchor base and a deletion--insertion replaces $n$ bases by the new bases.
 \item \textbf{Length Check:} With a stand-in scorer in place of Evo~2, a substitution gives two sequences of 8,193 bases, a 3-base deletion gives 8,193 and 8,190 bases, and a 3-base insertion gives 8,193 and 8,196 bases, as the construction rules require.
@@ -216,7 +216,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}}
 
 \newpage
-\textbf{6.1.9 Decision Rule and Confidence Function:}
+\hh{6.1.9 Decision Rule and Confidence Function:}
 \begin{itemize}
 \item \textbf{Decision Rule:} A variant is called ``Likely pathogenic'' when $\Delta<\tau=-9.18\times10^{-4}$ and ``Likely benign'' otherwise. The threshold is the Youden-optimal point of the ROC curve of $-\Delta$ on the calibration set.
 \item \textbf{Confidence Function:} The confidence is the distance of $\Delta$ from $\tau$ divided by the spread of the predicted class ($\sigma_{LOF}=1.51\times10^{-3}$ or $\sigma_{FUNC}=9.02\times10^{-4}$), capped at one. It is a distance heuristic and not a calibrated probability.
@@ -240,7 +240,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.10 GRCh37 and GRCh38 Coordinates at the BRCA1 Locus:}
+\hh{6.1.10 GRCh37 and GRCh38 Coordinates at the BRCA1 Locus:}
 \begin{itemize}
 \item \textbf{Assembly Offset:} The calibration data use GRCh37, but the service answers for GRCh38 by default. Aligning the two assemblies across \textit{BRCA1} with 681 conserved anchors gives a constant offset of 1,847,983 bases; all 680 consecutive anchor pairs are free of indels.
 \item \textbf{Independent Confirmation:} The same offset appears in all 290 live ClinVar \textit{BRCA1} records that carry both a GRCh37 and a GRCh38 position, and agrees with the NCBI Gene model.
@@ -263,7 +263,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}}
 
 \newpage
-\textbf{6.1.11 Variant Types in the Live ClinVar Query:}
+\hh{6.1.11 Variant Types in the Live ClinVar Query:}
 \begin{itemize}
 \item \textbf{Query:} A ClinVar E-search for \textit{BRCA1} returned 300 records in the run reported here. Of these, 218 are single-nucleotide variants, 44 deletions, 15 duplications, 11 indels, 5 insertions and the remainder copy-number, haplotype or microsatellite records.
 \item \textbf{Title Parsing:} The interface derives the variant type from the record title. In the 300 records, 280 are analysable and carry a usable numeric position; 42 are parsed as deletions, 20 as insertions and 13 as deletion--insertions.
@@ -279,7 +279,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.12 Conformance of the Two Request Validators:}
+\hh{6.1.12 Conformance of the Two Request Validators:}
 \begin{itemize}
 \item \textbf{Test Matrix:} A generated matrix of 55 request cases covers every discriminating field, both boundaries of every numeric constraint, the 500-base limit, whitespace handling and twelve malformed assembly and chromosome values. The expected verdict of each case comes from the request schema, not from either implementation.
 \item \textbf{Outcome:} The Pydantic model of the GPU tier conforms on 43 cases and the Zod schema of the web tier on 47; both conform on 42. The two layers disagree on 6 cases, in all of which the web tier rejects the request before it reaches the GPU.
@@ -295,7 +295,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.13 Class Balance of the Calibration Set along the Gene:}
+\hh{6.1.13 Class Balance of the Calibration Set along the Gene:}
 \begin{itemize}
 \item \textbf{Positive Rate:} The calibration set contains 100 non-functional rows, a positive rate of 20.0\%, close to the 21.1\% of the whole assay, but the rows are localised in one region of the gene (Section 6.1.3) and are not spread evenly within it.
 \item \textbf{Imbalance within the Slice:} The first 250 rows contain 30 non-functional variants (12.0\%) and the last 250 contain 70 (28.0\%), a factor of 2.3. A threshold fitted on the whole slice therefore mixes two sub-populations whose class mix differs with position.
@@ -314,7 +314,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.14 GPU Forward Passes per Request and per Calibration Run:}
+\hh{6.1.14 GPU Forward Passes per Request and per Calibration Run:}
 \begin{itemize}
 \item \textbf{Per Request:} The endpoint scores the reference window and the mutated window on every request, two forward passes over about 8,200 bases, and performs no caching across requests.
 \item \textbf{Calibration Job:} The offline routine de-duplicates the reference windows. For 500 variants it scores 168 unique references and 500 mutated windows, 668 passes instead of the 1,000 of the naive count, which is 33.2\% fewer.
@@ -331,7 +331,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \end{tikzpicture}}
 
 \newpage
-\textbf{6.1.15 Genome Browser: Assembly Selection, Gene Search and Chromosome Browsing:}
+\hh{6.1.15 Genome Browser: Assembly Selection, Gene Search and Chromosome Browsing:}
 \begin{itemize}
 \item \textbf{Implementation:} After sign-in the main page opens on the assembly selector, which is filled from the UCSC genome list and shows the human assemblies, with hg38 (GRCh38) active by default. Below it a Browse card offers two tabs.
 \item \textbf{Gene Search:} The search box queries the NLM gene service and lists matching genes with their name, cytogenetic location and chromosome. A search for ``BRCA1 breast'' returns \textit{BRCA1} on 17q21.31 and \textit{BRCA2} on 13q13.1 (Figure~6.1.15).
@@ -342,7 +342,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \resfig{6.1.16}{Chromosome Browser for the hg38 Assembly (chr17 Selected)}{\uibox{0.9}{images/ui_browse.png}}
 
 \newpage
-\textbf{6.1.17 Variant Entry and Known ClinVar Variants:}
+\hh{6.1.17 Variant Entry and Known ClinVar Variants:}
 \begin{itemize}
 \item \textbf{Variant Entry:} Once a gene is chosen, the Variant Analysis card lets the user pick one of four mutation types: substitution, deletion, insertion or deletion--insertion. The fields change with the type; a substitution needs a position and an alternative base (Figure~6.1.17), a deletion a start position and a length, and the interface shows which reference base will be removed (Figure~6.1.18).
 \item \textbf{Known Variants:} The Known Variants card lists the ClinVar records of the gene with their HGVS name, location, variant type and clinical significance, colour-coded as pathogenic, likely benign or uncertain significance (Figure~6.1.19).
@@ -353,7 +353,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \resfig{6.1.19}{Known BRCA1 Variants from ClinVar}{\uibox{0.64}{images/ui_known.png}}
 
 \newpage
-\textbf{6.1.20 Gene Sequence Viewer and Gene Information:}
+\hh{6.1.20 Gene Sequence Viewer and Gene Information:}
 \begin{itemize}
 \item \textbf{Sequence Viewer:} The selected gene region is read from UCSC and drawn in rows of 200 bases with the coordinate of the first base, using one colour for each base: A red, T blue, G green and C orange. Two sliders and two number fields choose the window, which is limited to 10,000 bases, and a Load sequence button fetches it (Figure~6.1.20).
 \item \textbf{Gene Information:} The Gene Information card shows the symbol, cytogenetic location, chromosome, genomic position and length of the gene, the Gene ID with a link to NCBI, the organism and the RefSeq summary (Figure~6.1.21).
