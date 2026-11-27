@@ -55,7 +55,7 @@
 %% chapter: label start, big heading, optional end label is set by \chapend
 \newcommand{\chap}[3]{%  #1 number, #2 TITLE (#3 unused)
   \clearpage\label{ch:#1:start}%
-  \begin{center}{\fontsize{16}{20.65}\selectfont\bfseries CHAPTER #1: #2}\end{center}\par\vspace{2pt}}
+  \begin{center}{\fontsize{16}{20.65}\selectfont\bfseries #2}\end{center}\par\vspace{2pt}}
 \newcommand{\chapend}[1]{\label{ch:#1:end}}
 \newcommand{\sect}[2]{\par\noindent\hspace*{3pt}{\fontsize{14}{20.65}\selectfont\bfseries #1\ \ #2}\label{s:#1:start}\par\vspace{5pt}}
 \newcommand{\hh}[1]{\par\noindent{\fontsize{14}{20.65}\selectfont\bfseries #1}\par}
