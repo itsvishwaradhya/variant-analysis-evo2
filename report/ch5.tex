@@ -75,7 +75,7 @@ Scenarios such as requests without a session, malformed payloads, out-of-range l
 \sub{Regression and Reproducibility Testing:}
 Because every analysis script writes a machine-readable result file, the tests can be repeated after any change to the code. A change to the window rule, the request schema or the thresholds shows up as a change in the corresponding output file, which makes regressions visible. The scripts read only files that are already in the repository, except for the two that query live UCSC and NCBI services, so the remaining tests give the same results on any machine.
 
-\tsub{5.2.1 Testing Objectives}
+\hh{5.2.1 Testing Objectives}
 The primary objectives of testing the Evo2Serve system are as follows:
 \begin{itemize}
 \item To verify that all functional requirements are correctly implemented.
