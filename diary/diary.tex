@@ -11,6 +11,8 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{array}
+\usepackage{longtable}
+\setlength{\LTleft}{0pt}\setlength{\LTright}{0pt}
 \usepackage{tikz}
 \usepackage[colorlinks=false,pdfborder={0 0 0}]{hyperref}
 \definecolor{coverred}{RGB}{192,0,0}
@@ -21,9 +23,9 @@
 \emergencystretch=30pt
 \pagestyle{empty}
 
-%% one weekly entry = one table row with a fixed minimum height
+%% one weekly entry = one table row (as tall as its content)
 %% #1 date, #2 hours, #3 summary, #4 links, #5 learnings, #6 risk, #7 skill
-\newcommand{\entry}[7]{{\raggedright #1} & #3 & #2\rule[-596pt]{0pt}{10pt} & {\raggedright #4} & #5 & #6 & {\hyphenpenalty=50\raggedright #7}}
+\newcommand{\entry}[7]{{\raggedright #1} & #3 & #2 & {\raggedright #4} & #5 & #6 & {\hyphenpenalty=50\raggedright #7}}
 
 \begin{document}
 
@@ -62,12 +64,12 @@
 \input{diary_entries}
 
 %% ------------------------------------------------------------------ totals
-\begin{tabular}{|p{360pt}|p{190pt}|}
+\begin{tabular}{|p{353pt}|p{190pt}|}
 \hline
 \textbf{Total Hours (Cumulative)} & \textbf{\totalhours} \\ \hline
 \end{tabular}
 
-\vspace{60pt}
+\vspace{40pt}
 \begin{tabular}{p{270pt}p{270pt}}
 Signature of the Guide: \rule[-2pt]{130pt}{0.4pt} & Date: \rule[-2pt]{130pt}{0.4pt}\\[34pt]
 Signature of the Students: \rule[-2pt]{110pt}{0.4pt} & Signature of the HOD: \rule[-2pt]{110pt}{0.4pt}

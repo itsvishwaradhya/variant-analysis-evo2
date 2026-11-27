@@ -139,16 +139,17 @@ def link_tex(u):
 
 out = []
 total = sum(e["hours"] for e in E)
+br = lambda t: t.replace("\\_", "\\_\\allowbreak{}")
+HEAD = r"\hline Date & Work Summary & Hours worked & Reference Links & Learnings & Risk & Skill \\ \hline"
+out.append(r"\begin{longtable}{|p{23pt}|p{146pt}|p{34pt}|p{72pt}|p{66pt}|p{93pt}|p{58pt}|}")
+out.append(HEAD + r"\endfirsthead")
+out.append(HEAD + r"\endhead")
 for i, e in enumerate(E):
     date = r"\\".join(e["date"])
     links = r"\\[8pt]".join(link_tex(u) for u in e["links"])
-    header = r"\hline Date & Work Summary & Hours worked & Reference Links & Learnings & Risk & Skill \\ \hline" + "\n" if i == 0 else r"\hline" + "\n"
-    out.append(r"\begin{tabular}{|p{23pt}|p{146pt}|p{34pt}|p{72pt}|p{66pt}|p{93pt}|p{58pt}|}")
-    out.append(header)
-    br = lambda t: t.replace("\\_", "\\_\\allowbreak{}")
-    out.append(r"\entry{%s}{%d}{%s}{%s}{%s}{%s}{%s}\\ \hline" % (date, e["hours"], br(e["summary"]), links, br(e["learn"]), br(e["risk"]), e["skill"].replace("Authentication","Authen\\-tication").replace("Configuration","Configu\\-ration").replace("Documentation","Docu\\-mentation")))
-    out.append(r"\end{tabular}")
-    out.append(r"\newpage")
+    skill = e["skill"].replace("Authentication", "Authen\\-tication").replace("Configuration", "Configu\\-ration").replace("Documentation", "Docu\\-mentation")
+    out.append(r"\entry{%s}{%d}{%s}{%s}{%s}{%s}{%s}\\ \hline" % (date, e["hours"], br(e["summary"]), links, br(e["learn"]), br(e["risk"]), skill))
+out.append(r"\end{longtable}")
 out.append(r"\def\totalhours{%d}" % total)
 open("diary_entries.tex", "w").write("\n".join(out) + "\n")
 print("entries:", len(E), "total hours:", total, "max hours:", max(e["hours"] for e in E))
