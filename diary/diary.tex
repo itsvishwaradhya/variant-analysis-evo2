@@ -1,0 +1,78 @@
+%% Project diary (implementation phase, 27 Jul - 2 Nov 2026)
+%% Build with LuaLaTeX (fonts: Carlito for the table, Liberation Serif for the cover):
+%%   python3 make_diary.py && lualatex diary.tex
+%% On Overleaf choose  Menu > Compiler > LuaLaTeX.
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,left=15pt,right=14pt,top=17pt,bottom=18pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Carlito}[Ligatures=TeX]
+\newfontfamily\cover{Liberation Serif}[Ligatures=TeX]
+\setmonofont{Liberation Mono}[Scale=0.88]
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{longtable}
+\setlength{\LTleft}{0pt}\setlength{\LTright}{0pt}
+\usepackage{tikz}
+\usepackage[colorlinks=false,pdfborder={0 0 0}]{hyperref}
+\definecolor{coverred}{RGB}{192,0,0}
+\setlength{\parindent}{0pt}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.0}
+\hyphenpenalty=10000 \exhyphenpenalty=100
+\emergencystretch=30pt
+\pagestyle{empty}
+
+%% one weekly entry = one table row (as tall as its content)
+%% #1 date, #2 hours, #3 summary, #4 links, #5 learnings, #6 risk, #7 skill
+\newcommand{\entry}[7]{{\raggedright #1} & #3 & #2 & {\raggedright #4} & #5 & #6 & {\hyphenpenalty=50\raggedright #7}}
+
+\begin{document}
+
+%% ------------------------------------------------------------------ cover
+\newcommand{\cl}[3]{\node[anchor=north,align=center,text width=520pt] at ([yshift=-#1pt]current page.north) {\cover\fontsize{#2}{#2}\selectfont #3};}
+\begin{tikzpicture}[remember picture,overlay]
+  \draw[line width=1.6pt] ([xshift=34pt,yshift=-34pt]current page.north west) rectangle ([xshift=-34.5pt,yshift=34pt]current page.south east);
+  \cl{66}{16}{\bfseries VISVESVARAYA TECHNOLOGICAL UNIVERSITY}
+  \cl{88}{12}{Jnana Sangama, Belgaum- 590 018, Karnataka}
+  \node[anchor=north] at ([yshift=-104pt]current page.north) {\includegraphics[height=108pt]{../report/images/logo_vtu.png}};
+  \cl{229}{13}{PROJECT DIARY ON}
+  \cl{266}{14}{\bfseries\color{coverred} “AI-BASED WEB APPLICATION TO ANALYSE GENETIC\\ MUTATIONS AND DISEASE IMPACT”}
+  \cl{321}{12}{\bfseries ARTIFICIAL INTELLIGENCE AND DATA SCIENCE}
+  \cl{339}{12}{\itshape During the Academic year}
+  \cl{357}{12}{\itshape 2026-2027}
+  \cl{375}{12}{\itshape Submitted By}
+  \cl{392}{13}{\bfseries\color{coverred} NANDISH S SHET [1DB23AD036]}
+  \cl{410}{13}{\bfseries\color{coverred} THIPPESWAMY S [1DB23AD057]}
+  \cl{428}{13}{\bfseries\color{coverred} VISHWARADHYA A C [1DB23AD063]}
+  \cl{446}{13}{\bfseries\color{coverred} JEEVAN A M [1DB24AD403]}
+  \cl{480}{12}{Under the Guidance of}
+  \cl{496}{12}{\bfseries Dr. Nandini K S}
+  \cl{514}{12}{Associate Professor}
+  \cl{530}{12}{\bfseries Dept. of AI \& DS}
+  \node[anchor=north] at ([yshift=-556pt]current page.north) {\includegraphics[height=84pt]{../report/images/logo_dbit_title.png}};
+  \cl{646}{13}{\bfseries Department of Artificial Intelligence And Data Science}
+  \cl{664}{14}{\bfseries DON BOSCO INSTITUTE OF TECHNOLOGY}
+  \cl{682}{11}{\bfseries\itshape (An Autonomous Institute affiliated to VTU, Belagavi)}
+  \cl{698}{11}{\bfseries\itshape Mysore Road, Kumbalagodu, Bengaluru-560074}
+  \cl{714}{11}{\bfseries\itshape 2026-27}
+\end{tikzpicture}
+\mbox{}
+\newpage
+
+%% ------------------------------------------------------------ weekly pages
+\input{diary_entries}
+
+%% ------------------------------------------------------------------ totals
+\begin{tabular}{|p{353pt}|p{190pt}|}
+\hline
+\textbf{Total Hours (Cumulative)} & \textbf{\totalhours} \\ \hline
+\end{tabular}
+
+\vspace{40pt}
+\begin{tabular}{p{270pt}p{270pt}}
+Signature of the Guide: \rule[-2pt]{130pt}{0.4pt} & Date: \rule[-2pt]{130pt}{0.4pt}\\[34pt]
+Signature of the Students: \rule[-2pt]{110pt}{0.4pt} & Signature of the HOD: \rule[-2pt]{110pt}{0.4pt}
+\end{tabular}
+
+\end{document}
