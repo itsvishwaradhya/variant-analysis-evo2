@@ -1,4 +1,5 @@
 %% ---------- helpers for the result figures ----------
+\newcommand{\uibox}[2]{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.4pt}\fcolorbox{gray!55}{white}{\includegraphics[width=#1\linewidth]{#2}}}}
 \newcommand{\resfig}[3]{\begin{center}{\renewcommand{\baselinestretch}{1}\selectfont #3}\end{center}\vspace{-8pt}\label{fig:#1}\figcap{#1}{#2}}
 \pgfplotsset{resax/.style={width=0.93\linewidth,height=6.4cm,grid=major,grid style={gray!25},
   tick label style={font=\footnotesize},label style={font=\footnotesize},legend style={font=\footnotesize},
@@ -328,6 +329,37 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \addplot[fill=blue!50] coordinates {(Naive offline (500 variants),1000) (De-duplicated offline,668) (Deployed endpoint (1 request),2)};
 \end{axis}
 \end{tikzpicture}}
+
+\newpage
+\textbf{6.1.15 Genome Browser: Assembly Selection, Gene Search and Chromosome Browsing:}
+\begin{itemize}
+\item \textbf{Implementation:} After sign-in the main page opens on the assembly selector, which is filled from the UCSC genome list and shows the human assemblies, with hg38 (GRCh38) active by default. Below it a Browse card offers two tabs.
+\item \textbf{Gene Search:} The search box queries the NLM gene service and lists matching genes with their name, cytogenetic location and chromosome. A search for ``BRCA1 breast'' returns \textit{BRCA1} on 17q21.31 and \textit{BRCA2} on 13q13.1 (Figure~6.1.15).
+\item \textbf{Chromosome Browsing:} The second tab lists chromosomes 1 to 22, M, X and Y of the selected assembly as buttons; choosing one lists the genes and regulatory elements found on it (Figure~6.1.16).
+\item \textbf{Public Access:} Both tabs work without an account, because they only read public services.
+\end{itemize}
+\resfig{6.1.15}{Gene Search Results for BRCA1}{\uibox{0.9}{images/ui_search.png}}
+\resfig{6.1.16}{Chromosome Browser for the hg38 Assembly (chr17 Selected)}{\uibox{0.9}{images/ui_browse.png}}
+
+\newpage
+\textbf{6.1.17 Variant Entry and Known ClinVar Variants:}
+\begin{itemize}
+\item \textbf{Variant Entry:} Once a gene is chosen, the Variant Analysis card lets the user pick one of four mutation types: substitution, deletion, insertion or deletion--insertion. The fields change with the type; a substitution needs a position and an alternative base (Figure~6.1.17), a deletion a start position and a length, and the interface shows which reference base will be removed (Figure~6.1.18).
+\item \textbf{Known Variants:} The Known Variants card lists the ClinVar records of the gene with their HGVS name, location, variant type and clinical significance, colour-coded as pathogenic, likely benign or uncertain significance (Figure~6.1.19).
+\item \textbf{Analyse with Evo2:} A button next to each analysable record sends its coordinate to the model service. Duplications are listed without a button, since the service does not score them. The prediction panel is not shown, because it needs the GPU endpoint, which was not connected when these snapshots were taken.
+\end{itemize}
+\resfig{6.1.17}{Variant Entry Form: Substitution Mode}{\uibox{0.4}{images/ui_variant_snv.png}}
+\resfig{6.1.18}{Variant Entry Form: Deletion Mode}{\uibox{0.4}{images/ui_variant_del.png}}
+\resfig{6.1.19}{Known BRCA1 Variants from ClinVar}{\uibox{0.64}{images/ui_known.png}}
+
+\newpage
+\textbf{6.1.20 Gene Sequence Viewer and Gene Information:}
+\begin{itemize}
+\item \textbf{Sequence Viewer:} The selected gene region is read from UCSC and drawn in rows of 200 bases with the coordinate of the first base, using one colour for each base: A red, T blue, G green and C orange. Two sliders and two number fields choose the window, which is limited to 10,000 bases, and a Load sequence button fetches it (Figure~6.1.20).
+\item \textbf{Gene Information:} The Gene Information card shows the symbol, cytogenetic location, chromosome, genomic position and length of the gene, the Gene ID with a link to NCBI, the organism and the RefSeq summary (Figure~6.1.21).
+\end{itemize}
+\resfig{6.1.20}{Gene Sequence Viewer with Window Selection}{\uibox{0.85}{images/ui_sequence.png}}
+\resfig{6.1.21}{Gene Information Card for BRCA1}{\uibox{0.85}{images/ui_geneinfo.png}}
 
 \newpage
 \label{tab:6.1}
