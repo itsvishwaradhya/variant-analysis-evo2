@@ -4,6 +4,8 @@
 \vspace{2pt}
 The functional requirements identify what the Evo2Serve system must do in order to operate as an AI-driven genetic variant analysis platform. They reflect real usage scenarios such as account access, genome browsing, gene and variant lookup, mutation entry, GPU-based scoring, comparison with ClinVar, calibration and verification.
 
+Several of these requirements follow from the nature of genome data. Every position handled by the system must travel with the name of its assembly (GRCh37 or GRCh38) and its chromosome, because a coordinate is meaningless without them. Positions are entered and displayed one-based, as in ClinVar and in the HGVS nomenclature, and are converted to the zero-based intervals that the UCSC sequence service expects. A sequence consists of the bases A, C, G and T, and the character N where the base is unknown; a window that contains an N cannot be scored reliably and must be detected. Finally, the model needs a fixed amount of context around the variant, which the system supplies as a window of 8,193 bases centred on it.
+
 \vspace{6pt}
 \tsub{1. User Registration and Authentication}
 \begin{subitemize}

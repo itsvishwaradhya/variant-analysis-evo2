@@ -6,6 +6,8 @@
 \vspace{-8pt}
 \figcap{4.1}{System Architecture of Evo2Serve}
 \vspace{-2pt}
+\sub{Genome Coordinates in the Design}
+Every layer of the design carries a position as a triple of assembly, chromosome and one-based position, so that no layer has to guess which version of the genome a number refers to. The two assemblies place the same base at different coordinates. At the \textit{BRCA1} locus the GRCh38 position is larger than the GRCh37 position by a constant 1,847,983 bases, which the verification confirmed on live ClinVar records (Chapter 6). The calibration data are given in GRCh37 and the browser works in GRCh38 by default, so the design keeps the assembly next to the coordinate from the data sources to the model service.
 \sub{1. Data Sources Layer}
 This layer supplies the public data on which the system depends:
 \begin{itemize}
