@@ -54,9 +54,37 @@ Pejaver et al. showed how continuous scores of computational tools can be conver
 
 \sub{16. Online interpretation services: VarSome and MobiDetails (Kopanos et al. 2019; Baux et al. 2021)}
 VarSome aggregates annotations from many databases behind a single search box and applies ACMG-style rules, while MobiDetails presents curated variant evidence online. Both inherit the quality of the sources they display and neither runs a large genomic language model on a new, user-defined mutation. Evo2Serve differs in that it derives its own label from its own model score, so that the label stands or falls with the threshold, the window and the coordinate handling \cite{vandenbroucke2019varsome,baux2021mobidetails}.
+
+Table~2.1 summarises the survey and the gap that Evo2Serve addresses.
+
+\begin{table}[H]\centering
+\fontsize{11}{13}\selectfont\renewcommand{\baselinestretch}{1}\selectfont
+\renewcommand{\arraystretch}{1.3}
+\label{tab:2.1}
+Table 2.1: Summary of the Literature Survey\par\vspace{4pt}
+\begin{tabular}{|p{140pt}|p{150pt}|p{150pt}|}
+\hline
+\textbf{Work} & \textbf{Approach} & \textbf{Limitation} \\
+\hline
+SIFT, PolyPhen-2 \cite{ng2001sift,adzhubei2010polyphen2} & Conservation, alignments & Missense only \\
+\hline
+CADD \cite{rentzsch2019cadd} & Annotation ensemble & Precomputed features \\
+\hline
+AlphaMissense \cite{cheng2023alphamissense} & Protein language model & Missense only \\
+\hline
+Nucleotide Transformer \cite{dallatorre2024nt} & DNA language model & Short context \\
+\hline
+Evo~2 \cite{brixi2026evo2} & 1\,Mb-context DNA model & Notebook code, needs GPU \\
+\hline
+VarSome \cite{vandenbroucke2019varsome} & Annotation aggregator & No model on new variants \\
+\hline
+\textbf{This work (Evo2Serve)} & Evo~2 as a web service & Research use only \\
+\hline
+\end{tabular}
+\end{table}
 \sectend{2.1}
 
-\newpage
+\vspace{6pt}
 \sect{2.2}{GAP ANALYSIS}
 \vspace{6pt}
 \begin{enumerate}

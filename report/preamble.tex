@@ -68,7 +68,7 @@
 \newcommand{\tsub}[1]{\par\noindent\textbf{#1}\par\vspace{-3pt}}
 
 %% ---------- figures ---------------------------------------------------
-\newcommand{\figcap}[2]{\par\begin{center}{\fontsize{12}{20.65}\selectfont Figure #1: #2}\end{center}}
+\newcommand{\figcap}[2]{\par\vspace{-2pt}{\renewcommand{\baselinestretch}{1}\fontsize{12}{14}\selectfont\centering Figure #1: #2\par}\vspace{2pt}}
 \newcommand{\figimg}[3]{% #1 label #2 width #3 file
   \begin{center}\includegraphics[width=#2]{#3}\end{center}\label{#1}}
 

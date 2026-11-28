@@ -66,7 +66,7 @@ The context diagram in Figure~4.2 shows Evo2Serve as one process surrounded by t
 
 \vspace{-2pt}
 \begin{center}\diagDFDzero\end{center}\label{fig:4.2}
-\vspace{-6pt}
+\vspace{-12pt}
 \figcap{4.2}{Data Flow Diagram, Level 0 (Context Diagram)}
 \vspace{-2pt}
 
@@ -114,7 +114,7 @@ Verifies the token, re-validates the request, fetches the 8\,kb window from UCSC
 Displays the label, confidence bar and score difference, and compares the prediction with the ClinVar classification of the same variant to state whether they agree.
 \sectend{4.2b}
 
-\begin{figure}[!tb]\centering\setlength{\diagH}{0.8\textheight}\diagDFDone\par\vspace{-2pt}\label{fig:4.3}\figcap{4.3}{Data Flow Diagram, Level 1}\end{figure}
+\begin{figure}[!tb]\centering\setlength{\diagH}{0.8\textheight}\diagDFDone\par\vspace{6pt}\label{fig:4.3}\figcap{4.3}{Data Flow Diagram, Level 1}\end{figure}
 \vspace{4pt}
 \sub{Summary of Evo2Serve Flow:}
 \begin{enumerate}
@@ -130,7 +130,7 @@ Displays the label, confidence bar and score difference, and compares the predic
 \vspace{6pt}
 \sect{4.3}{SEQUENCE DIAGRAM}
 \vspace{-2pt}
-\begin{figure}[!tb]\centering\setlength{\diagH}{0.8\textheight}\diagSeq\par\vspace{-2pt}\label{fig:4.4}\figcap{4.4}{Sequence Diagram of Evo2Serve}\end{figure}
+\begin{figure}[!tb]\centering\setlength{\diagH}{0.8\textheight}\diagSeq\par\vspace{6pt}\label{fig:4.4}\figcap{4.4}{Sequence Diagram of Evo2Serve}\end{figure}
 \vspace{-2pt}
 The sequence diagram illustrates the dynamic execution flow and message passing between the system layers during one analysis request. The process begins when the signed-in user enters a position and an alternate base, or clicks a known ClinVar variant, in the browser interface. The browser sends an HTTP POST request with the session cookie to the Next.js API route, which verifies the signed token and validates the request body with a Zod schema.
 
