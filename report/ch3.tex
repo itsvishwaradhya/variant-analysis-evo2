@@ -10,7 +10,8 @@ Several of these requirements follow from the nature of genome data. Every posit
 \tsub{1. User Registration and Authentication}
 \begin{subitemize}
 \item The system shall allow a user to create an account with an e-mail address and a password, and to sign in and sign out.
-\item Passwords shall be stored only as hashes, and a signed session token shall be issued in an HTTP-only cookie on sign-in.
+\item The system shall issue a signed session token when a user signs in successfully, and shall reject a wrong password or an already registered e-mail address with a message.
+\item Browsing shall be available without an account, whereas running the model shall require the user to be signed in.
 \end{subitemize}
 
 \vspace{4pt}
@@ -31,14 +32,13 @@ Several of these requirements follow from the nature of genome data. Every posit
 \tsub{4. Variant Entry and Validation}
 \begin{subitemize}
 \item The user shall be able to enter a substitution, deletion, insertion or deletion--insertion by clicking a base or typing a position.
-\item Every request shall be validated in the web tier and again in the GPU tier, with lengths limited to 500 bases.
+\item The system shall validate every request before scoring and reject an invalid request with a message; deletion and insertion lengths shall be limited to 500 bases.
 \end{subitemize}
-\sectend{3.1}
 
 \tsub{5. Evo 2 Scoring Service}
 \begin{subitemize}
 \item The service shall fetch an 8\,kb context window from UCSC, build the mutated sequence, and score both sequences with Evo~2-7B.
-\item It shall return the score difference $\Delta$, the label, the confidence, the threshold used and a provisional flag.
+\item It shall return the score difference $\Delta$, the label (``likely pathogenic'' or ``likely benign''), the confidence, the threshold used and a provisional flag.
 \end{subitemize}
 
 \vspace{4pt}
@@ -46,6 +46,7 @@ Several of these requirements follow from the nature of genome data. Every posit
 \begin{subitemize}
 \item The interface shall show the Evo~2 prediction and its confidence bar next to the ClinVar classification of the same variant.
 \item It shall state whether the two agree and mark indel predictions as provisional.
+\item While a prediction is running the interface shall show a loading state, and when a lookup or the model service fails it shall show an error message.
 \end{subitemize}
 
 \vspace{4pt}
@@ -59,8 +60,10 @@ Several of these requirements follow from the nature of genome data. Every posit
 \tsub{8. Verification and Reporting}
 \begin{subitemize}
 \item Scripts shall recompute the calibration data composition, the reference predictors, the assembly offset and the validator conformance.
-\item Each script shall write a machine-readable output so that every reported number can be re-checked without a GPU.
+\item Each script shall write its results to a machine-readable output file.
 \end{subitemize}
+
+\sectend{3.1}
 
 \sect{3.2}{NON- FUNCTIONAL REQUIREMENTS}
 Non-functional requirements are those that define the qualities of the system that are necessary to make it resilient, performant, and satisfactory for the users.
@@ -68,14 +71,13 @@ Non-functional requirements are those that define the qualities of the system th
 \tsub{1. Performance Requirements}
 \begin{subitemize}
 \item Web requests other than model inference shall complete within a second under typical loads.
-\item A prediction requires two forward passes over about 8,200 bases; the interface shall stay responsive and show a loading state while it runs.
+\item A prediction requires two forward passes over about 8,200 bases; the interface shall stay responsive while it runs.
 \end{subitemize}
 
 \tsub{2. Reliability}
 \begin{subitemize}
-\item The GPU function shall retry failed calls twice, and errors from UCSC, NCBI or the model service shall be reported to the user with a clear message and no crash.
+\item The GPU function shall retry failed calls twice, and a failure of UCSC, NCBI or the model service shall not crash the interface.
 \end{subitemize}
-\sectend{3.2}
 
 \tsub{3. Scalability}
 \begin{subitemize}
@@ -87,26 +89,30 @@ Non-functional requirements are those that define the qualities of the system th
 \tsub{4. Usability and Interface Quality}
 \begin{subitemize}
 \item The interface shall be responsive, with a clear layout for assembly, gene, sequence, variants and results.
-\item Browsing shall remain public, and analysis shall ask the user to sign in.
+\item The interface shall use consistent labels and colour coding, for example for the ClinVar classes pathogenic, likely benign and uncertain significance.
 \end{subitemize}
 
 \tsub{5. Security and Data Integrity}
 \begin{subitemize}
 \item All external communication shall use HTTPS; secrets such as the signing key shall be held in environment variables and Modal secrets.
+\item Passwords shall be stored only as hashes, the session token shall be held in an HTTP-only cookie, and every request shall be validated independently in the web tier and again in the GPU tier.
 \item The GPU endpoint shall reject requests without a valid bearer token with HTTP 401.
 \end{subitemize}
 
 \tsub{6. Validity of Predictions}
 \begin{subitemize}
-\item Labels shall be worded as ``likely'' and indel predictions shall be flagged as provisional.
 \item The confidence value shall be documented as a distance heuristic and not as a probability.
+\item Predictions shall be presented as computational research evidence and not as a clinical diagnosis.
 \end{subitemize}
 
-\tsub{7. Maintainability and Modularity}
+\tsub{7. Maintainability and Reproducibility}
 \begin{subitemize}
 \item The front end shall be organised in typed components and the back end in separate functions for windowing, editing and scoring.
 \item The request schema shall be defined once per tier and tested against a shared case list.
+\item Every number reported shall be reproducible without a GPU from the committed scripts and their machine-readable outputs.
 \end{subitemize}
+
+\sectend{3.2}
 
 \sect{3.3}{HARDWARE REQUIREMENTS}
 \vspace{2pt}
@@ -199,7 +205,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 \sectend{3.4}
 
-\newpage
+\vspace{6pt}
 \sect{3.5}{SYNOPSIS}
 \vspace{4pt}
 \textbf{Evo2Serve} is an AI-driven genetic variant analysis platform that integrates genome browsing, ClinVar lookup, GPU-based zero-shot scoring with Evo~2-7B, comparison with expert classifications, authenticated access and a verification suite within a unified system. The platform supports four mutation types, an 8\,kb context window, a calibrated decision threshold and a flagged confidence value. Its non-functional requirements prioritise response behaviour, reliability, architectural scalability, security, interface usability, validity of predictions and maintainability.
