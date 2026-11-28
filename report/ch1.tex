@@ -63,7 +63,7 @@ The scope of this project covers the complete design, implementation, deployment
 On the application side, the scope includes a responsive web interface with authentication, assembly selection, chromosome browsing, gene search, sequence display, a known-variant table, a variant entry form and a comparison view. The boundary of the project is deliberately drawn around the software layer. Retraining or fine-tuning Evo~2, wet-laboratory validation, clinical diagnosis and reporting, calibration for genes other than \textit{BRCA1}, and the measurement of latency and throughput on production traffic fall outside the scope, and are listed as future work.
 \sectend{1.4}
 
-\sect{1.5}{SUMMARY}
+\sect{1.5}{SYNOPSIS}
 \vspace{4pt}
 Evo2Serve is a web application that makes a state-of-the-art genomic language model usable from a browser for analysing genetic mutations and their likely disease impact. Interpreting a variant by hand is slow, and the best computational models are locked inside research notebooks. This project closes that gap by combining public genome and ClinVar data, a serverless H100 GPU running Evo~2-7B, token-based authentication and a calibrated decision rule into one platform that returns a label, a confidence value and a provisional flag within seconds.
 
