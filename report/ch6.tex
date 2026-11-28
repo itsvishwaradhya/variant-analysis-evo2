@@ -379,13 +379,39 @@ The same evaluation identified eight improvements. The request carries no refere
 \sectend{6.1}
 
 \vspace{8pt}
-\sect{6.2}{SYNOPSIS}
-\vspace{4pt}
-The results confirm that Evo2Serve achieves its core objectives of making a genomic language model usable from a browser, scoring four mutation types, protecting the GPU with token authentication, and presenting each prediction beside the curated ClinVar classification. Every module of the verification suite executed as specified: the calibration data were reproduced, five reference predictors were evaluated on the same rows, the window and assembly handling were measured, and two request validators were compared on a generated matrix.
+\sect{6.2}{ACHIEVEMENT OF OBJECTIVES}
+The four objectives of Section~1.3 are compared below with the results of this chapter. Table~6.3 names the evidence for each objective and states whether it was met, together with the limits that remain.
+
+\begin{table}[!t]\centering\label{tab:6.3}
+Table 6.3: Objectives and the Results that Address Them\par\vspace{4pt}
+\begingroup\fontsize{10.5}{12.5}\selectfont\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.4}
+\noindent\begin{tabular}{|>{\raggedright\arraybackslash}p{78pt}|>{\raggedright\arraybackslash}p{236pt}|>{\raggedright\arraybackslash}p{140pt}|}
+\hline
+Objective & Result in this chapter & Status and limits \\
+\hline
+1. Deploy zero-shot scoring as a secure service & Sign-in with a cookie token checked again on the GPU tier (6.1.1); scoring of four mutation types with the expected sequence lengths (Fig.~6.1.8); two forward passes per request (Fig.~6.1.14); request validators at both tiers tested on 55 cases, 43 and 47 conforming (Table~6.2, Fig.~6.1.12). & Met for deployment, authentication and the four mutation types. Latency and throughput were not measured; indel predictions are provisional. \\
+\hline
+2. Calibrate and report the decision & Calibration data reproduced (Figs.~6.1.2, 6.1.3, 6.1.13); Youden threshold $\tau=-9.18\times10^{-4}$ from 500 variants, AUROC about 0.73; decision rule and confidence function (Fig.~6.1.9); label, confidence and provisional flag returned. & Met for \textit{BRCA1} substitutions. The threshold has no held-out split and the confidence is a heuristic, not a probability. \\
+\hline
+3. Genome browser with ClinVar comparison & Gene search, chromosome browser, variant entry, known ClinVar variants, sequence viewer and gene information (Figs.~6.1.15 to 6.1.21); live ClinVar query of 300 records, 280 analysable (Fig.~6.1.11). & Met. A snapshot of a prediction beside its ClinVar class is not shown because the GPU endpoint was not connected. \\
+\hline
+4. Evaluate and verify the pipeline reproducibly & Five predictors compared on the same rows (Table~6.1, Figs.~6.1.4 to 6.1.6); window, assembly offset and validators checked (Figs.~6.1.7, 6.1.10, 6.1.12, Table~6.2); output stated as research evidence. The analysis scripts were re-run in a clean environment and regenerated identical output files. & Met. Eight defects were found and are listed as improvements; they are not yet repaired. \\
+\hline
+\end{tabular}
+\endgroup
+\end{table}
+
+In summary, every objective is addressed by at least one result, and all four were met within the limits stated in the table. The limits are the same ones that the verification exposed: the calibration rests on 500 variants of one gene, the deployed window and the browser's coordinate handling differ from the calibration conditions, and latency was not measured. They are carried into the future scope in Chapter~7.
+\sectend{6.2}
+
+\vspace{6pt}
+\sect{6.3}{SYNOPSIS}
+The results confirm that Evo2Serve achieves its core objectives (Table~6.3) of making a genomic language model usable from a browser, scoring four mutation types, protecting the GPU with token authentication, and presenting each prediction beside the curated ClinVar classification. Every module of the verification suite executed as specified: the calibration data were reproduced, five reference predictors were evaluated on the same rows, the window and assembly handling were measured, and two request validators were compared on a generated matrix.
 
 On the 500 \textit{BRCA1} calibration variants, the zero-shot Evo~2-7B run reached an AUROC of approximately 0.73. On the same rows Align-GVGD reached 0.878, CADD 0.791, phyloP 0.777, PolyPhen-2 0.683 and SIFT 0.656, with bootstrap intervals of about $\pm$0.03 to $\pm$0.07. Evo~2 is therefore clearly above chance, SIFT, PolyPhen-2 and population frequency, and below the alignment-based predictors on this slice. Because the slice is localised to one tenth of the assayed interval and changes its class mix by a factor of 2.3 along the gene, the figure is a statement about this slice and not about the model on the whole gene, where the published AUROC is 0.9037.
 
 The verification also showed what the deployed service does and does not guarantee. The window used at prediction time differs from the calibration window by one base, the threshold was calibrated on GRCh37 while the service answers for GRCh38, the browser forwards the GRCh38 coordinate whatever assembly is selected, and the confidence value is a distance heuristic. None of these invalidates the tool for education and research triage, but each should be fixed before any claim of clinical validity could be considered.
 
 Ultimately, the project shows that state-of-the-art genomic AI can be offered as an accessible, secured web service, and that verifying the software around the model is as important as the model itself. The platform presents its output as supporting computational evidence and documents the repairs that would make it a calibrated variant classifier.
-\sectend{6.2}
+\sectend{6.3}
