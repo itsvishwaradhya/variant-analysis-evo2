@@ -152,7 +152,7 @@ The system runs on three kinds of hardware: the developer machine, the cloud GPU
 The software environment plays a crucial role in the design, development, and execution of the genetic variant analysis system. The following software components are required:
 
 \vspace{4pt}
-\sub{Operating System:}
+\sub{1. Operating System:}
 \begin{itemize}
 \item Windows 10/11
 \item Linux (Ubuntu 22.04 or later; the GPU container image is based on Ubuntu 22.04)
@@ -160,7 +160,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Programming Languages \& Frameworks:}
+\sub{2. Programming Languages \& Frameworks:}
 \begin{itemize}
 \item \textbf{Python 3.12} -- GPU service, calibration job and analysis scripts
 \item \textbf{FastAPI and Pydantic} -- REST endpoint and request validation
@@ -169,7 +169,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 \sectend{3.4a}
 
-\sub{Machine Learning \& Data Science Libraries:}
+\sub{3. Machine Learning \& Data Science Libraries:}
 \begin{itemize}
 \item \textbf{Evo 2 package:} Official implementation of the model; loads the \texttt{evo2\_7b} checkpoint and provides \texttt{score\_sequences}.
 \item \textbf{PyTorch 2.7.1 and FlashAttention 2.8.0:} Deep learning runtime built for CUDA 12.6.
@@ -178,7 +178,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Frontend \& Interface Components:}
+\sub{4. Frontend \& Interface Components:}
 \begin{itemize}
 \item \textbf{Tailwind CSS 4 and shadcn/ui:} Styling and accessible interface components.
 \item \textbf{Zod:} Schema validation of the analysis request in the web tier.
@@ -187,7 +187,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Platforms, Data \& External APIs:}
+\sub{5. Platforms, Data \& External APIs:}
 \begin{itemize}
 \item \textbf{Modal:} Serverless GPU platform that hosts the FastAPI endpoint and the calibration job.
 \item \textbf{UCSC Genome Browser REST API:} Assemblies, chromosomes and reference sequence.
@@ -196,7 +196,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Developer Tools:}
+\sub{6. Developer Tools:}
 \begin{itemize}
 \item \textbf{Visual Studio Code:} Primary development environment.
 \item \textbf{Git \& GitHub:} Version control and repository hosting.
