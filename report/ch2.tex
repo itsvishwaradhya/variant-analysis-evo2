@@ -3,6 +3,8 @@ A comprehensive review of the research on variant effect prediction, experimenta
 
 In recent years, language models have changed the situation. A model trained to predict the next symbol of a sequence learns, without any labels, the statistical structure that evolution has imposed on it, and the likelihood it assigns to a mutated sequence can be used as a measure of how disruptive the mutation is. Protein language models first demonstrated this for missense variants, and DNA language models such as Nucleotide Transformer, GPN-MSA, Evo and Evo~2 extended it to nucleotide sequence of any kind. This survey examines the experimental ground truth used to evaluate such predictors, the classical and deep learning predictors that precede them, the genomic language models on which Evo2Serve is built, the calibration practices recommended for clinical use, and the online services that expose variant interpretation in a browser. Analysing these contributions establishes the algorithmic choices, the data sources and the architectural blueprint that guide the engineering and verification of Evo2Serve.
 
+The literature depends on a small set of public genome resources. The UCSC Genome Browser supplies reference sequences and gene annotation for many assemblies \cite{lee2022ucsc}, NCBI hosts the Gene database and ClinVar, the archive in which laboratories report variants together with a clinical significance \cite{landrum2024clinvar}, and the ACMG/AMP guidelines define the five classes in which such reports are expressed \cite{richards2015acmg}. These resources do not number positions in the same way: UCSC sequence requests use zero-based half-open intervals, whereas ClinVar and the HGVS nomenclature use one-based positions, and each coordinate belongs to one assembly. Tools that join the resources must convert between these conventions, which is a recurring source of silent errors and one of the themes of this project.
+
 \newpage
 \sect{2.1}{RELATED WORK}
 \sub{1. Saturation genome editing of BRCA1 (Findlay et al. 2018)}
@@ -85,7 +87,7 @@ VarSome aggregates annotations from many databases behind a single search box an
 \sectend{2.2}
 
 \newpage
-\sect{2.3}{SUMMARY}
+\sect{2.3}{SYNOPSIS}
 This chapter provided a multi-faceted review of 16 foundational and recent works spanning experimental variant classification, clinical guidelines, classical and deep learning predictors, genomic language models, calibration practice and online interpretation services. The survey established the shift from predictors that depend on hand-built features and alignments to language models that learn the structure of DNA from sequence alone. Key findings validate the selection of Evo~2 as the scoring model, the use of the \textit{BRCA1} saturation genome editing data for calibration, and the reporting of results against established baselines such as CADD, PolyPhen-2 and SIFT.
 
 Beyond model selection, the survey highlighted that a score is not an interpretation. The ACMG/AMP framework treats computational prediction as supporting evidence, the ClinGen recommendations require calibration on local data, and sequence-only models can carry phylogenetic and ancestry bias. A deployed service must therefore combine a strong model with a transparent decision rule, curated evidence shown alongside the prediction, and a verified software path from the coordinate typed by the user to the sequence scored by the model.

@@ -1,11 +1,13 @@
 \chap{4}{SYSTEM ANALYSIS AND DESIGN}{0pt}
 \vspace{-8pt}
 \sect{4.1}{SYSTEM ARCHITECTURE}
+Figure~4.1 shows the architecture of Evo2Serve. A request passes through five layers from left to right, and a separate offline path along the bottom of the figure produces the calibration and the verification results. The \textbf{Data Sources} layer holds the public services and data on which everything depends: UCSC for assemblies, chromosomes and sequence, NCBI Gene and clinicaltables for gene search and details, the NCBI E-utilities for the known ClinVar variants, and the \textit{BRCA1} saturation genome editing workbook with the GRCh37 chromosome~17 sequence for calibration. The \textbf{Web Application} layer is the Next.js client and its API routes, which check the session cookie, validate the request with Zod and keep the user accounts, with bcrypt password hashes, in MongoDB. The \textbf{GPU Inference} layer on Modal exposes the FastAPI endpoint, which verifies the bearer token, validates the request with Pydantic, fetches the 8\,kb window, builds the mutated sequence and scores both sequences with Evo~2-7B on an NVIDIA H100 GPU, with the model weights held in a cache volume. The \textbf{Decision} layer turns the score difference $\Delta$ into a label with the calibrated threshold $\tau$, computes the confidence and sets the provisional flag for indel predictions. The \textbf{Presentation} layer shows the result in the gene viewer, the known-variants table, the variant analysis panel and the comparison with ClinVar. The offline path runs the calibration job on 500 \textit{BRCA1} variants, derives the ROC curve and the Youden threshold, evaluates the reference predictors, checks the window, the assembly and the validators, and writes JSON reports and figures. The layers are described one by one below.
+
 \vspace{-2pt}
-\begin{center}\diagArch\end{center}\label{fig:4.1}
-\vspace{-8pt}
-\figcap{4.1}{System Architecture of Evo2Serve}
+\begin{sidewaysfigure}[p]\centering\setlength{\diagH}{0.82\portw}\diagArch\par\vspace{-2pt}\label{fig:4.1}\figcap{4.1}{System Architecture of Evo2Serve}\end{sidewaysfigure}
 \vspace{-2pt}
+\sub{Genome Coordinates in the Design}
+Every layer of the design carries a position as a triple of assembly, chromosome and one-based position, so that no layer has to guess which version of the genome a number refers to. The two assemblies place the same base at different coordinates. At the \textit{BRCA1} locus the GRCh38 position is larger than the GRCh37 position by a constant 1,847,983 bases, which the verification confirmed on live ClinVar records (Chapter 6). The calibration data are given in GRCh37 and the browser works in GRCh38 by default, so the design keeps the assembly next to the coordinate from the data sources to the model service.
 \sub{1. Data Sources Layer}
 This layer supplies the public data on which the system depends:
 \begin{itemize}
@@ -60,12 +62,13 @@ A separate Modal job scores the first 500 \textit{BRCA1} variants, computes the 
 \sectend{4.1}
 
 \sect{4.2}{DATAFLOW DIAGRAM}
+The context diagram in Figure~4.2 shows Evo2Serve as one process surrounded by the entities it exchanges data with: the user, the UCSC Genome Browser, NCBI Gene, E-utilities and ClinVar, the Modal GPU platform and the MongoDB database. Below is the explanation of how data moves between the system and its environment:
+
 \vspace{-2pt}
 \begin{center}\diagDFDzero\end{center}\label{fig:4.2}
 \vspace{-6pt}
 \figcap{4.2}{Data Flow Diagram, Level 0 (Context Diagram)}
 \vspace{-2pt}
-The context diagram shows Evo2Serve as one process surrounded by the entities it exchanges data with. Below is the explanation of how data moves between the system and its environment:
 
 \sub{1. User}
 The user, a student or researcher, supplies credentials, the genome assembly, a gene name and the mutation to analyse. In return the user receives the reference sequence, the known variants of the gene and the prediction with its label and confidence.
@@ -111,9 +114,7 @@ Verifies the token, re-validates the request, fetches the 8\,kb window from UCSC
 Displays the label, confidence bar and score difference, and compares the prediction with the ClinVar classification of the same variant to state whether they agree.
 \sectend{4.2b}
 
-\begin{center}\diagDFDone\end{center}\label{fig:4.3}
-\vspace{-6pt}
-\figcap{4.3}{Data Flow Diagram, Level 1}
+\begin{figure}[!tb]\centering\setlength{\diagH}{0.8\textheight}\diagDFDone\par\vspace{-2pt}\label{fig:4.3}\figcap{4.3}{Data Flow Diagram, Level 1}\end{figure}
 \vspace{4pt}
 \sub{Summary of Evo2Serve Flow:}
 \begin{enumerate}
@@ -126,12 +127,10 @@ Displays the label, confidence bar and score difference, and compares the predic
 \end{enumerate}
 \sectend{4.2}
 
-\newpage
+\vspace{6pt}
 \sect{4.3}{SEQUENCE DIAGRAM}
 \vspace{-2pt}
-\begin{center}\diagSeq\end{center}\label{fig:4.4}
-\vspace{-6pt}
-\figcap{4.4}{Sequence Diagram of Evo2Serve}
+\begin{figure}[!tb]\centering\setlength{\diagH}{0.8\textheight}\diagSeq\par\vspace{-2pt}\label{fig:4.4}\figcap{4.4}{Sequence Diagram of Evo2Serve}\end{figure}
 \vspace{-2pt}
 The sequence diagram illustrates the dynamic execution flow and message passing between the system layers during one analysis request. The process begins when the signed-in user enters a position and an alternate base, or clicks a known ClinVar variant, in the browser interface. The browser sends an HTTP POST request with the session cookie to the Next.js API route, which verifies the signed token and validates the request body with a Zod schema.
 
@@ -144,9 +143,7 @@ The structured result is returned to the Next.js route, which forwards it unchan
 
 \sect{4.4}{CLASS DIAGRAM}
 \vspace{-2pt}
-\begin{center}\diagClass\end{center}\label{fig:4.5}
-\vspace{-6pt}
-\figcap{4.5}{Class Diagram of Evo2Serve}
+\begin{sidewaysfigure}[p]\centering\setlength{\diagH}{0.82\portw}\diagClass\par\vspace{-2pt}\label{fig:4.5}\figcap{4.5}{Class Diagram of Evo2Serve}\end{sidewaysfigure}
 \sectend{4.4a}
 
 \sub{Detailed Description of Each Class}
@@ -207,8 +204,8 @@ Let us understand the purpose and role of each class and module in the system:
 \end{itemize}
 \sectend{4.4}
 
-\newpage
-\sect{4.5}{SUMMARY}
+\vspace{6pt}
+\sect{4.5}{SYNOPSIS}
 \vspace{4pt}
 This chapter analysed the architectural and design aspects of Evo2Serve and established the blueprint for its implementation. The system is built on a multi-layered modular architecture: a data layer of public genome services, a web layer of Next.js routes and a React client, a serverless GPU layer that hosts Evo~2-7B, a decision layer that turns scores into labels, and a presentation layer that places predictions beside curated evidence.
 

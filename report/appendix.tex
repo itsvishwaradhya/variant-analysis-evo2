@@ -1,0 +1,88 @@
+\clearpage
+\label{s:app:start}
+\begin{center}{\fontsize{16}{18}\selectfont\bfseries APPENDIX}\end{center}\vspace{2pt}
+{\fontsize{14}{16}\selectfont\bfseries A.\ \ Full Forms of Abbreviations}\par\vspace{4pt}
+\begingroup
+\fontsize{11}{12.5}\selectfont\renewcommand{\baselinestretch}{1}\selectfont\setlength{\parskip}{0pt}
+\renewcommand{\arraystretch}{1.05}
+\setlength{\LTleft}{0pt}\setlength{\LTright}{0pt}
+\begin{longtable}{|p{110pt}|p{343pt}|}
+\hline \textbf{Abbreviation} & \textbf{Full form}\\
+\endhead
+\hline ACMG/AMP & American College of Medical Genetics and Genomics / Association for Molecular Pathology\\
+\hline AI & Artificial Intelligence\\
+\hline AI \& DS & Artificial Intelligence and Data Science\\
+\hline API & Application Programming Interface\\
+\hline AUROC & Area Under the Receiver Operating Characteristic curve\\
+\hline bp / kb & base pair / kilobase (1,000 base pairs)\\
+\hline BRCA1 & Breast Cancer gene 1\\
+\hline CADD & Combined Annotation Dependent Depletion\\
+\hline ClinGen & Clinical Genome Resource\\
+\hline ClinVar & Clinical Variation database of the NCBI\\
+\hline CSS & Cascading Style Sheets\\
+\hline CUDA & Compute Unified Device Architecture\\
+\hline DBIT & Don Bosco Institute of Technology\\
+\hline DNA & Deoxyribonucleic Acid\\
+\hline GB / GHz & Gigabyte / Gigahertz\\
+\hline GPN & Genomic Pre-trained Network\\
+\hline GPU & Graphics Processing Unit\\
+\hline GRCh37 / GRCh38 & Genome Reference Consortium human genome builds 37 and 38 (UCSC names: hg19 and hg38)\\
+\hline HGVS & Human Genome Variation Society\\
+\hline HS256 & HMAC (Hash-based Message Authentication Code) using SHA-256\\
+\hline HTTP / HTTPS & Hypertext Transfer Protocol / Hypertext Transfer Protocol Secure\\
+\hline JSON & JavaScript Object Notation\\
+\hline JWT & JSON Web Token\\
+\hline LOF & Loss of Function\\
+\hline MSA & Multiple Sequence Alignment\\
+\hline NCBI & National Center for Biotechnology Information\\
+\hline NLM & National Library of Medicine\\
+\hline PolyPhen-2 & Polymorphism Phenotyping, version 2\\
+\hline RAM & Random Access Memory\\
+\hline REST & Representational State Transfer\\
+\hline ROC & Receiver Operating Characteristic\\
+\hline SGE & Saturation Genome Editing\\
+\hline SIFT & Sorting Intolerant From Tolerant\\
+\hline SNV & Single Nucleotide Variant\\
+\hline SSD & Solid State Drive\\
+\hline UCSC & University of California, Santa Cruz\\
+\hline UI & User Interface\\
+\hline URL & Uniform Resource Locator\\
+\hline VCF & Variant Call Format\\
+\hline VTU & Visvesvaraya Technological University\\
+\hline
+\end{longtable}
+\endgroup
+\clearpage
+{\fontsize{14}{16}\selectfont\bfseries B.\ \ Formulas and Notation}\par\vspace{4pt}
+\begingroup
+\fontsize{12}{14}\selectfont\renewcommand{\baselinestretch}{1.15}\selectfont\setlength{\parskip}{4pt}
+\renewcommand{\theequation}{A.\arabic{equation}}\setcounter{equation}{0}
+The formulas below are the ones used by the service and by the analysis in this report. Here $p$ is the 1-based position of the variant, $W=8192$ is the nominal window size, $w^{ref}$ and $w^{var}$ are the reference and the mutated window, and $S(\cdot)$ is the Evo~2-7B log-likelihood score of a sequence.
+
+\textbf{Genome window} (half-open, 0-based) and the offset of the variant in it:
+\begin{equation}\mathrm{start}=\max\!\left(0,\;p-1-\tfrac{W}{2}\right),\qquad \mathrm{end}=p+\tfrac{W}{2},\qquad \mathrm{offset}=p-1-\mathrm{start}\end{equation}
+This gives $W+1=8193$ bases with the variant at offset 4,096.
+
+\textbf{Score difference:}
+\begin{equation}\Delta=S(w^{var})-S(w^{ref})\end{equation}
+
+\textbf{Sensitivity, specificity and false-positive rate} (loss of function is the positive class):
+\begin{equation}\mathrm{TPR}=\frac{TP}{TP+FN},\qquad \mathrm{TNR}=\frac{TN}{TN+FP},\qquad \mathrm{FPR}=\frac{FP}{FP+TN}=1-\mathrm{TNR}\end{equation}
+
+\textbf{AUROC} (area under the ROC curve, the probability that a random positive scores above a random negative):
+\begin{equation}\mathrm{AUROC}=\int_0^1\mathrm{TPR}\;d(\mathrm{FPR})\end{equation}
+
+\textbf{Youden's index and calibrated threshold} ($\tau=-0.0009178519$):
+\begin{equation}J(t)=\mathrm{TPR}(t)-\mathrm{FPR}(t),\qquad \tau=-\arg\max_t J(t)\end{equation}
+
+\textbf{Decision rule:}
+\begin{equation}\text{label}=\begin{cases}\text{Likely pathogenic}, & \Delta<\tau,\\ \text{Likely benign}, & \Delta\ge\tau\end{cases}\end{equation}
+
+\textbf{Confidence} ($\sigma_{LOF}=0.0015140239$ for a pathogenic label, $\sigma_{FUNC}=0.0009016589$ for a benign label):
+\begin{equation}\mathrm{conf}=\min\!\left(1,\;\frac{|\Delta-\tau|}{\sigma_{class}}\right)\end{equation}
+
+\textbf{Mutated sequence length} (deletion of $n$ bases, insertion of $m$ bases) and \textbf{GPU forward passes} ($N$ variants, $U$ unique reference windows):
+\begin{equation}|w^{var}|=|w^{ref}|-n\ \text{or}\ |w^{ref}|+m,\qquad \text{passes}_{\text{request}}=2,\qquad \text{passes}_{\text{calibration}}=U+N\end{equation}
+\endgroup
+\clearpage
+\label{s:app:end}

@@ -13,6 +13,10 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{rotating}
+\usepackage[export]{adjustbox}
+\newlength{\portw}\setlength{\portw}{\textwidth}
+\newlength{\diagH}\setlength{\diagH}{0.8\textheight}
 \usepackage{enumitem}
 \usepackage{array}
 \usepackage{booktabs}
@@ -55,10 +59,10 @@
 %% chapter: label start, big heading, optional end label is set by \chapend
 \newcommand{\chap}[3]{%  #1 number, #2 TITLE (#3 unused)
   \clearpage\label{ch:#1:start}%
-  \begin{center}{\fontsize{16}{20.65}\selectfont\bfseries #2}\end{center}\par\vspace{2pt}}
+  \begin{center}{\fontsize{16}{20.65}\selectfont\bfseries CHAPTER #1}\\[-2pt]{\fontsize{16}{20.65}\selectfont\bfseries #2}\end{center}\par\vspace{2pt}}
 \newcommand{\chapend}[1]{\label{ch:#1:end}}
-\newcommand{\sect}[2]{\par\noindent\hspace*{3pt}{\fontsize{14}{20.65}\selectfont\bfseries #1\ \ #2}\label{s:#1:start}\par\vspace{5pt}}
-\newcommand{\hh}[1]{\par\noindent{\fontsize{14}{20.65}\selectfont\bfseries #1}\par}
+\newcommand{\sect}[2]{\par\noindent\hspace*{3pt}{\fontsize{14}{20.65}\selectfont\bfseries #1\ \ #2}\label{s:#1:start}\par\nobreak\vspace{5pt}\nobreak}
+\newcommand{\hh}[1]{\par\noindent{\fontsize{14}{20.65}\selectfont\bfseries #1}\par\nobreak}
 \newcommand{\sectend}[1]{\label{s:#1:end}}
 \newcommand{\sub}[1]{\par\noindent\textbf{#1}\par}
 \newcommand{\tsub}[1]{\par\noindent\textbf{#1}\par\vspace{-3pt}}
@@ -69,6 +73,9 @@
   \begin{center}\includegraphics[width=#2]{#3}\end{center}\label{#1}}
 
 %% ---------- page furniture (drawn on every page) -----------------------
+\renewcommand{\topfraction}{0.92}\renewcommand{\bottomfraction}{0.9}\renewcommand{\textfraction}{0.08}\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}\setcounter{bottomnumber}{2}\setcounter{totalnumber}{4}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}\setlength{\textfloatsep}{12pt plus 2pt minus 4pt}\setlength{\intextsep}{10pt plus 2pt minus 2pt}
 \newif\iffm \fmtrue
 \newif\iffirstfm \firstfmtrue
 \newcommand{\pgput}[3]{\put(#1,-#2){#3}}   % x, y measured from top-left of the page

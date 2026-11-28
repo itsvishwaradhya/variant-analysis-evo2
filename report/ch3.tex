@@ -4,11 +4,14 @@
 \vspace{2pt}
 The functional requirements identify what the Evo2Serve system must do in order to operate as an AI-driven genetic variant analysis platform. They reflect real usage scenarios such as account access, genome browsing, gene and variant lookup, mutation entry, GPU-based scoring, comparison with ClinVar, calibration and verification.
 
+Several of these requirements follow from the nature of genome data. Every position handled by the system must travel with the name of its assembly (GRCh37 or GRCh38) and its chromosome, because a coordinate is meaningless without them. Positions are entered and displayed one-based, as in ClinVar and in the HGVS nomenclature, and are converted to the zero-based intervals that the UCSC sequence service expects. A sequence consists of the bases A, C, G and T, and the character N where the base is unknown; a window that contains an N cannot be scored reliably and must be detected. Finally, the model needs a fixed amount of context around the variant, which the system supplies as a window of 8,193 bases centred on it.
+
 \vspace{6pt}
 \tsub{1. User Registration and Authentication}
 \begin{subitemize}
 \item The system shall allow a user to create an account with an e-mail address and a password, and to sign in and sign out.
-\item Passwords shall be stored only as hashes, and a signed session token shall be issued in an HTTP-only cookie on sign-in.
+\item The system shall issue a signed session token when a user signs in successfully, and shall reject a wrong password or an already registered e-mail address with a message.
+\item Browsing shall be available without an account, whereas running the model shall require the user to be signed in.
 \end{subitemize}
 
 \vspace{4pt}
@@ -29,14 +32,13 @@ The functional requirements identify what the Evo2Serve system must do in order 
 \tsub{4. Variant Entry and Validation}
 \begin{subitemize}
 \item The user shall be able to enter a substitution, deletion, insertion or deletion--insertion by clicking a base or typing a position.
-\item Every request shall be validated in the web tier and again in the GPU tier, with lengths limited to 500 bases.
+\item The system shall validate every request before scoring and reject an invalid request with a message; deletion and insertion lengths shall be limited to 500 bases.
 \end{subitemize}
-\sectend{3.1}
 
 \tsub{5. Evo 2 Scoring Service}
 \begin{subitemize}
 \item The service shall fetch an 8\,kb context window from UCSC, build the mutated sequence, and score both sequences with Evo~2-7B.
-\item It shall return the score difference $\Delta$, the label, the confidence, the threshold used and a provisional flag.
+\item It shall return the score difference $\Delta$, the label (``likely pathogenic'' or ``likely benign''), the confidence, the threshold used and a provisional flag.
 \end{subitemize}
 
 \vspace{4pt}
@@ -44,6 +46,7 @@ The functional requirements identify what the Evo2Serve system must do in order 
 \begin{subitemize}
 \item The interface shall show the Evo~2 prediction and its confidence bar next to the ClinVar classification of the same variant.
 \item It shall state whether the two agree and mark indel predictions as provisional.
+\item While a prediction is running the interface shall show a loading state, and when a lookup or the model service fails it shall show an error message.
 \end{subitemize}
 
 \vspace{4pt}
@@ -57,8 +60,10 @@ The functional requirements identify what the Evo2Serve system must do in order 
 \tsub{8. Verification and Reporting}
 \begin{subitemize}
 \item Scripts shall recompute the calibration data composition, the reference predictors, the assembly offset and the validator conformance.
-\item Each script shall write a machine-readable output so that every reported number can be re-checked without a GPU.
+\item Each script shall write its results to a machine-readable output file.
 \end{subitemize}
+
+\sectend{3.1}
 
 \sect{3.2}{NON- FUNCTIONAL REQUIREMENTS}
 Non-functional requirements are those that define the qualities of the system that are necessary to make it resilient, performant, and satisfactory for the users.
@@ -66,14 +71,13 @@ Non-functional requirements are those that define the qualities of the system th
 \tsub{1. Performance Requirements}
 \begin{subitemize}
 \item Web requests other than model inference shall complete within a second under typical loads.
-\item A prediction requires two forward passes over about 8,200 bases; the interface shall stay responsive and show a loading state while it runs.
+\item A prediction requires two forward passes over about 8,200 bases; the interface shall stay responsive while it runs.
 \end{subitemize}
 
 \tsub{2. Reliability}
 \begin{subitemize}
-\item The GPU function shall retry failed calls twice, and errors from UCSC, NCBI or the model service shall be reported to the user with a clear message and no crash.
+\item The GPU function shall retry failed calls twice, and a failure of UCSC, NCBI or the model service shall not crash the interface.
 \end{subitemize}
-\sectend{3.2}
 
 \tsub{3. Scalability}
 \begin{subitemize}
@@ -85,26 +89,30 @@ Non-functional requirements are those that define the qualities of the system th
 \tsub{4. Usability and Interface Quality}
 \begin{subitemize}
 \item The interface shall be responsive, with a clear layout for assembly, gene, sequence, variants and results.
-\item Browsing shall remain public, and analysis shall ask the user to sign in.
+\item The interface shall use consistent labels and colour coding, for example for the ClinVar classes pathogenic, likely benign and uncertain significance.
 \end{subitemize}
 
 \tsub{5. Security and Data Integrity}
 \begin{subitemize}
 \item All external communication shall use HTTPS; secrets such as the signing key shall be held in environment variables and Modal secrets.
+\item Passwords shall be stored only as hashes, the session token shall be held in an HTTP-only cookie, and every request shall be validated independently in the web tier and again in the GPU tier.
 \item The GPU endpoint shall reject requests without a valid bearer token with HTTP 401.
 \end{subitemize}
 
 \tsub{6. Validity of Predictions}
 \begin{subitemize}
-\item Labels shall be worded as ``likely'' and indel predictions shall be flagged as provisional.
 \item The confidence value shall be documented as a distance heuristic and not as a probability.
+\item Predictions shall be presented as computational research evidence and not as a clinical diagnosis.
 \end{subitemize}
 
-\tsub{7. Maintainability and Modularity}
+\tsub{7. Maintainability and Reproducibility}
 \begin{subitemize}
 \item The front end shall be organised in typed components and the back end in separate functions for windowing, editing and scoring.
 \item The request schema shall be defined once per tier and tested against a shared case list.
+\item Every number reported shall be reproducible without a GPU from the committed scripts and their machine-readable outputs.
 \end{subitemize}
+
+\sectend{3.2}
 
 \sect{3.3}{HARDWARE REQUIREMENTS}
 \vspace{2pt}
@@ -144,7 +152,7 @@ The system runs on three kinds of hardware: the developer machine, the cloud GPU
 The software environment plays a crucial role in the design, development, and execution of the genetic variant analysis system. The following software components are required:
 
 \vspace{4pt}
-\sub{Operating System:}
+\sub{1. Operating System:}
 \begin{itemize}
 \item Windows 10/11
 \item Linux (Ubuntu 22.04 or later; the GPU container image is based on Ubuntu 22.04)
@@ -152,7 +160,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Programming Languages \& Frameworks:}
+\sub{2. Programming Languages \& Frameworks:}
 \begin{itemize}
 \item \textbf{Python 3.12} -- GPU service, calibration job and analysis scripts
 \item \textbf{FastAPI and Pydantic} -- REST endpoint and request validation
@@ -161,7 +169,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 \sectend{3.4a}
 
-\sub{Machine Learning \& Data Science Libraries:}
+\sub{3. Machine Learning \& Data Science Libraries:}
 \begin{itemize}
 \item \textbf{Evo 2 package:} Official implementation of the model; loads the \texttt{evo2\_7b} checkpoint and provides \texttt{score\_sequences}.
 \item \textbf{PyTorch 2.7.1 and FlashAttention 2.8.0:} Deep learning runtime built for CUDA 12.6.
@@ -170,7 +178,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Frontend \& Interface Components:}
+\sub{4. Frontend \& Interface Components:}
 \begin{itemize}
 \item \textbf{Tailwind CSS 4 and shadcn/ui:} Styling and accessible interface components.
 \item \textbf{Zod:} Schema validation of the analysis request in the web tier.
@@ -179,7 +187,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Platforms, Data \& External APIs:}
+\sub{5. Platforms, Data \& External APIs:}
 \begin{itemize}
 \item \textbf{Modal:} Serverless GPU platform that hosts the FastAPI endpoint and the calibration job.
 \item \textbf{UCSC Genome Browser REST API:} Assemblies, chromosomes and reference sequence.
@@ -188,7 +196,7 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 
 \vspace{4pt}
-\sub{Developer Tools:}
+\sub{6. Developer Tools:}
 \begin{itemize}
 \item \textbf{Visual Studio Code:} Primary development environment.
 \item \textbf{Git \& GitHub:} Version control and repository hosting.
@@ -197,8 +205,8 @@ The software environment plays a crucial role in the design, development, and ex
 \end{itemize}
 \sectend{3.4}
 
-\newpage
-\sect{3.5}{SUMMARY}
+\vspace{6pt}
+\sect{3.5}{SYNOPSIS}
 \vspace{4pt}
 \textbf{Evo2Serve} is an AI-driven genetic variant analysis platform that integrates genome browsing, ClinVar lookup, GPU-based zero-shot scoring with Evo~2-7B, comparison with expert classifications, authenticated access and a verification suite within a unified system. The platform supports four mutation types, an 8\,kb context window, a calibrated decision threshold and a flagged confidence value. Its non-functional requirements prioritise response behaviour, reliability, architectural scalability, security, interface usability, validity of predictions and maintainability.
 
