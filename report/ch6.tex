@@ -1,6 +1,6 @@
 %% ---------- helpers for the result figures ----------
 \newcommand{\uibox}[2]{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.4pt}\fcolorbox{gray!55}{white}{\includegraphics[width=#1\linewidth]{#2}}}}
-\newcommand{\resfig}[3]{\begin{figure}[!tb]\centering{\renewcommand{\baselinestretch}{1}\selectfont #3}\par\vspace{-6pt}\label{fig:#1}\figcap{#1}{#2}\end{figure}}
+\newcommand{\resfig}[3]{\begin{figure}[!tb]\centering{\renewcommand{\baselinestretch}{1}\selectfont #3}\par\vspace{0pt}\label{fig:#1}\figcap{#1}{#2}\end{figure}}
 \pgfplotsset{resax/.style={width=0.84\linewidth,height=8.2cm,grid=major,grid style={gray!25},
   tick label style={font=\small},label style={font=\small},legend style={font=\small},
   every axis plot/.append style={line width=1.1pt}}}
@@ -206,7 +206,7 @@ gnomAD allele frequency & 500 & 0.530 & 0.506--0.553 & 0.960 / 0.100 \\
 \node[insc] at (2.56,-3.24) {T}; \node[insc] at (2.84,-3.24) {T};
 \node[ctx] at (3.16,-3.24) {A}; \node[ctx] at (3.58,-3.24) {C};
 \node[note] at (4.0,-3.24) {length = 8193 - n + q};
-\end{tikzpicture}}}
+\end{tikzpicture}}\vspace{4pt}}
 
 \hh{6.1.9 Decision Rule and Confidence Function:}
 \begin{itemize}
